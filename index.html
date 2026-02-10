@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+    <!-- 1. CONSOLE CLEANUP -->
+    <script>
+        const origWarn = console.warn;
+        console.warn = (...args) => {
+            if (args[0] && typeof args[0] === 'string' && args[0].includes('cdn.tailwindcss.com')) return;
+            origWarn(...args);
+        };
+    </script>
+
+    <!-- SEO & META -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#FFC107">
+    <title>Qxz Store | Premium Custom Gifts</title>
+    <link rel="icon" type="image/png" href="fevicon.png">
+
+    <!-- LIBRARIES -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: { 
+                extend: { 
+                    fontFamily: { sans: ['Poppins', 'sans-serif'] }, 
+                    colors: { brand: { DEFAULT: '#FFC107', dark: '#FFB300', light: '#FFECB3' } },
+                    animation: { 'bounce-slow': 'bounce 3s infinite', 'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite' }
+                } 
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Pacifico&family=Bangers&family=Dancing+Script&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        body { background: #f8f9fa; -webkit-tap-highlight-color: transparent; overscroll-behavior-y: none; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .glass { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255, 255, 255, 0.5); }
+        .glass-dark { background: rgba(17, 24, 39, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        .chat-bubble-user { background: #FFC107; color: #1f2937; border-radius: 18px 18px 0 18px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .chat-bubble-bot { background: #ffffff; color: #374151; border-radius: 18px 18px 18px 0; border: 1px solid #e5e7eb; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        
+        /* Animations */
+        .slide-up { animation: slideUp 0.3s ease-out forwards; }
+        @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .step-section { display: none; }
+        .step-section.active { display: flex; flex-direction: column; height: 100%; animation: fadeIn 0.3s ease-out; }
+        .snap-mandatory { scroll-snap-type: x mandatory; } .snap-center { scroll-snap-align: center; }
+        .font-pacifico { font-family: 'Pacifico', cursive; } .font-bangers { font-family: 'Bangers', cursive; }
+    </style>
+
+    <!-- FIREBASE & LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, push, onValue, update, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAjw6O7nLDBaT6-UP5nsINrsRrSbcco844",
+            authDomain: "qxz-store.firebaseapp.com",
+            databaseURL: "https://qxz-store-default-rtdb.firebaseio.com",
+            projectId: "qxz-store",
+            storageBucket: "qxz-store.firebasestorage.app",
+            messagingSenderId: "559563657391",
+            appId: "1:559563657391:web:eb7e5fa9fbac44962c845a"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        window.db = db; window.update = update; window.set = set; window.ref = ref; window.push = push;
+        
+        window.allProducts = []; 
+        window.currentOrderDetails = null;
+        window.userCustomization = {};
+        window.currentProduct = null;
+        window.currentCategory = 'all';
+        const IMGBB_API_KEY = "b7b1309895b4830daaf39c194fa78efd"; 
+        
+        // --- WHATSAPP CONFIG ---
+        window.WHATSAPP_NUMBER = "7501495916";
+
+        window.initApp = function() { 
+            showProductSkeleton(); 
+            loadProfile(); 
+            checkHash(); 
+            updateWhatsappLinks();
+        }
+
+        window.updateWhatsappLinks = function() {
+            const btns = document.querySelectorAll('.wa-link');
+            btns.forEach(b => b.href = `https://wa.me/91${window.WHATSAPP_NUMBER}?text=Hi%20QXZ%20Store`);
+        }
+
+        // --- TOAST NOTIFICATION ---
+        window.showToast = function(msg, type='success') {
+            const box = document.getElementById('toast-box');
+            const txt = document.getElementById('toast-msg');
+            const icon = document.getElementById('toast-icon');
+            txt.innerText = msg;
+            icon.className = type==='error' ? "fas fa-times-circle text-red-400 text-xl" : "fas fa-check-circle text-green-400 text-xl";
+            box.classList.remove('opacity-0', 'translate-y-10');
+            setTimeout(() => { box.classList.add('opacity-0', 'translate-y-10'); }, 3000);
+        }
+
+        // --- HASH ROUTING ---
+        window.addEventListener('hashchange', checkHash);
+        function checkHash() {
+            const hash = window.location.hash;
+            if(hash.startsWith('#product=')) {
+                const id = hash.replace('#product=', '');
+                if(window.allProducts.length === 0) setTimeout(checkHash, 500); 
+                else openProduct(id, false);
+            } else if (hash === '' || hash === '#home') {
+                closeProduct(false);
+            }
+        }
+
+        function showProductSkeleton() {
+            const list = document.getElementById('product-list');
+            if(list) {
+                list.innerHTML = '';
+                for(let i=0; i<6; i++) {
+                    list.innerHTML += `<div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-2"><div class="h-40 skeleton rounded-xl mb-3"></div><div class="h-3 skeleton rounded w-3/4 mb-2"></div><div class="h-3 skeleton rounded w-1/2"></div></div>`;
+                }
+            }
+        }
+
+        // 1. FETCH PRODUCTS
+        onValue(ref(db, 'products'), (snapshot) => {
+            if(snapshot.exists()) {
+                window.allProducts = [];
+                snapshot.forEach((child) => {
+                    const p = child.val(); p.id = child.key;
+                    if (!p.images) p.images = []; else if (!Array.isArray(p.images)) p.images = [p.images];
+                    window.allProducts.push(p);
+                });
+                window.allProducts.reverse();
+                filterProducts();
+            }
+        });
+
+        // 2. SEARCH & FILTER
+        window.filterCategory = function(cat) {
+            window.currentCategory = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => btn.className = "cat-btn bg-white text-gray-600 px-5 py-2 rounded-full text-xs font-bold whitespace-nowrap shadow-sm border border-gray-100 transition-all hover:bg-gray-50");
+            event.target.className = "cat-btn active bg-gray-900 text-white px-5 py-2 rounded-full text-xs font-bold whitespace-nowrap shadow-md transition-all transform scale-105";
+            filterProducts();
+        }
+
+        window.filterProducts = function() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const list = document.getElementById('product-list');
+            list.innerHTML = '';
+            
+            const filtered = window.allProducts.filter(p => {
+                const matchesSearch = p.title.toLowerCase().includes(query);
+                const matchesCat = window.currentCategory === 'all' || (p.category && p.category.includes(window.currentCategory));
+                return matchesSearch && matchesCat;
+            });
+
+            if(filtered.length === 0) { list.innerHTML = `<div class="col-span-2 text-center py-10 opacity-60"><i class="fas fa-search text-4xl mb-3 text-gray-300"></i><p class="text-sm font-bold text-gray-500">No Products Found</p></div>`; return; }
+
+            filtered.forEach((p) => {
+                const discount = p.old ? Math.round(((p.old - p.price) / p.old) * 100) : 0;
+                let badge = (p.category && p.category.includes('custom')) ? `<span class="absolute top-2 left-2 bg-purple-600/90 backdrop-blur text-white text-[9px] font-bold px-2 py-1 rounded-full z-10 shadow-sm">✨ Custom</span>` : '';
+                list.innerHTML += `<a href="#product=${p.id}" onclick="event.preventDefault(); openProduct('${p.id}')" class="bg-white rounded-2xl shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] border border-gray-100 overflow-hidden cursor-pointer block group relative hover:shadow-lg transition-all duration-300">${badge}<div class="h-44 relative bg-gray-50"><img src="${p.images[0]}" class="w-full h-full object-cover mix-blend-multiply transition duration-500 group-hover:scale-110" loading="lazy"></div><div class="p-3"><h2 class="text-gray-700 text-xs font-medium truncate mb-1">${p.title}</h2><div class="flex items-center gap-2"><span class="font-bold text-gray-900 text-sm">₹${p.price}</span>${discount > 0 ? `<span class="text-[10px] text-green-600 font-bold bg-green-50 px-1 rounded">${discount}% OFF</span>` : ''}</div></div></a>`;
+            });
+        }
+
+        // 3. BANNERS
+        onValue(ref(db, 'banners'), (snapshot) => {
+            if(snapshot.exists()) {
+                const track = document.getElementById('home-banner-track');
+                if(track) {
+                    track.innerHTML = '';
+                    const urls = Array.isArray(snapshot.val()) ? snapshot.val() : Object.values(snapshot.val());
+                    urls.forEach((url) => { track.innerHTML += `<div class="slide min-w-full h-full relative px-1"><img src="${url}" class="w-full h-full object-cover rounded-2xl shadow-md"></div>`; });
+                }
+            }
+        });
+
+        // 4. OPEN PRODUCT
+        window.openProduct = function(id, setHash = true) {
+            window.currentProduct = window.allProducts.find(p => p.id == id);
+            if (!window.currentProduct) return;
+            if (setHash) window.history.pushState(null, null, '#product=' + id);
+
+            document.getElementById('home-view').classList.add('hidden');
+            document.getElementById('product-view').classList.remove('hidden');
+            document.getElementById('product-view').scrollTop = 0;
+
+            const setText = (eid, val) => { const el = document.getElementById(eid); if (el) el.innerText = val; };
+            setText('p-title', window.currentProduct.title);
+            setText('p-price', `₹${window.currentProduct.price}`);
+            setText('p-old-price', `₹${window.currentProduct.old}`);
+            setText('p-disc', window.currentProduct.old ? Math.round(((window.currentProduct.old - window.currentProduct.price) / window.currentProduct.old) * 100) + "% OFF" : "");
+            setText('p-desc', window.currentProduct.description || "");
+
+            document.getElementById('p-skeleton').classList.remove('hidden');
+            document.getElementById('p-content').classList.add('hidden');
+            renderCustomizationUI(window.currentProduct.category);
+            loadProductReviews(window.currentProduct.id);
+
+            const d = new Date(); d.setDate(d.getDate() + 8);
+            setText('delivery-date', d.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' }));
+
+            // Slider
+            const tr = document.getElementById('slider-track');
+            const dotsContainer = document.getElementById('slider-dots');
+            if (tr && dotsContainer) {
+                tr.innerHTML = ''; dotsContainer.innerHTML = '';
+                window.currentProduct.images.forEach((img, idx) => {
+                    const slide = document.createElement('div');
+                    slide.className = "slide min-w-full h-full flex justify-center items-center relative snap-center"; 
+                    const imgEl = new Image(); imgEl.src = img; imgEl.className = "max-h-full max-w-full object-contain p-4"; 
+                    if (idx === 0) { imgEl.onload = () => { setTimeout(() => { document.getElementById('p-skeleton').classList.add('hidden'); document.getElementById('p-content').classList.remove('hidden'); document.getElementById('p-content').classList.add('fade-in'); }, 200); }; }
+                    slide.appendChild(imgEl); tr.appendChild(slide);
+                    if (window.currentProduct.images.length > 1) { const dot = document.createElement('div'); dot.className = `h-1.5 rounded-full transition-all duration-300 ${idx === 0 ? 'bg-gray-800 w-5' : 'bg-gray-300 w-1.5'}`; dotsContainer.appendChild(dot); }
+                });
+                tr.onscroll = () => { const index = Math.round(tr.scrollLeft / tr.offsetWidth); const allDots = dotsContainer.children; for (let i = 0; i < allDots.length; i++) { if (i === index) allDots[i].className = 'h-1.5 rounded-full bg-gray-800 w-5 transition-all duration-300'; else allDots[i].className = 'h-1.5 rounded-full bg-gray-300 w-1.5 transition-all duration-300'; } };
+            }
+
+            // Similar
+            const sim = document.getElementById('similar-grid');
+            if (sim) {
+                sim.innerHTML = '';
+                let similar = window.allProducts.filter(p => p.id != id && p.category == window.currentProduct.category).slice(0, 4);
+                if (similar.length < 2) similar = similar.concat(window.allProducts.filter(p => p.id != id && p.id != window.currentProduct.id).slice(0, 4 - similar.length));
+                similar.forEach(p => sim.innerHTML += `<div onclick="openProduct('${p.id}')" class="bg-white rounded-xl border p-2 shadow-sm"><img src="${p.images[0]}" class="w-full h-32 object-contain mb-2"><h4 class="text-xs truncate font-bold">${p.title}</h4><span class="text-sm font-bold">₹${p.price}</span></div>`);
+            }
+        }
+
+        // 5. CUSTOMIZATION UI
+        window.renderCustomizationUI = function(category) {
+            const container = document.getElementById('customization-area');
+            if (!container) return; container.innerHTML = ''; window.userCustomization = {}; 
+            if (!category) return;
+            let html = '';
+            if (category === 'custom_mobile') {
+                html = `<div class="bg-purple-50 p-4 rounded-xl border border-purple-200 mb-4 shadow-sm"><h3 class="font-bold text-sm text-purple-700 mb-3 flex items-center gap-2"><i class="fas fa-mobile-alt"></i> Customize Cover</h3><label class="text-[10px] uppercase font-bold text-gray-500 mb-1 block">Your Phone Model</label><input type="text" placeholder="Ex: iPhone 13, Vivo V29..." class="w-full border p-2.5 rounded-lg mb-3 text-sm bg-white focus:outline-none focus:border-purple-500 transition" oninput="window.userCustomization.model=this.value"><label class="text-[10px] uppercase font-bold text-gray-500 mb-1 block">Upload Photo</label><div class="relative border-2 border-dashed border-purple-300 bg-white rounded-lg p-3 text-center cursor-pointer hover:bg-purple-50 transition"><input type="file" accept="image/*" class="absolute inset-0 opacity-0 w-full h-full cursor-pointer" onchange="previewUserImage(this)"><p class="text-xs text-purple-600 font-bold"><i class="fas fa-cloud-upload-alt mr-1"></i> Tap to Upload</p></div><div id="cust-img-preview" class="mt-3 w-20 h-20 bg-gray-200 rounded-lg hidden overflow-hidden border relative"></div></div>`;
+            } else if (category === 'custom_mug' || category === 'custom_frame') {
+                html = `<div class="bg-blue-50 p-4 rounded-xl border border-blue-200 mb-4"><h3 class="font-bold text-sm text-blue-700 mb-3"><i class="fas fa-image"></i> Upload Photo</h3><input type="file" accept="image/*" class="w-full text-xs" onchange="previewUserImage(this)"><div id="cust-img-preview" class="mt-2 w-full h-32 bg-gray-200 rounded hidden overflow-hidden object-cover"></div></div>`;
+            } else if (category === 'custom_bottle' || category === 'custom_keychain') {
+                html = `<div class="bg-pink-50 p-4 rounded-xl border border-pink-200 mb-4"><h3 class="font-bold text-sm text-pink-700 mb-3"><i class="fas fa-pen"></i> Add Name</h3><input type="text" placeholder="Type Name..." class="w-full border p-2 rounded mb-3 text-sm" oninput="updateTextPreview(this.value)"><div class="flex gap-2 overflow-x-auto py-2"><button onclick="changeFont('font-sans')" class="border bg-white px-3 py-1 rounded text-sm font-sans">Simple</button><button onclick="changeFont('font-pacifico')" class="border bg-white px-3 py-1 rounded text-sm font-pacifico">Stylish</button><button onclick="changeFont('font-bangers')" class="border bg-white px-3 py-1 rounded text-sm font-bangers">Bold</button></div><div class="mt-3 bg-white p-4 rounded border text-center h-20 flex items-center justify-center"><span id="live-text-preview" class="text-2xl text-gray-800">Your Name</span></div></div>`;
+            }
+            container.innerHTML = html;
+        }
+
+        window.previewUserImage = function(input) { const file = input.files[0]; if(file) { window.userCustomization.imageFile = file; const reader = new FileReader(); reader.onload = (e) => { const el = document.getElementById('cust-img-preview'); if(el) { el.classList.remove('hidden'); el.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover">`; } }; reader.readAsDataURL(file); } }
+        window.updateTextPreview = function(val) { const el = document.getElementById('live-text-preview'); if(el) el.innerText = val || "Your Name"; window.userCustomization.text = val; }
+        window.changeFont = function(font) { const el = document.getElementById('live-text-preview'); if(el) el.className = `text-2xl text-gray-800 ${font}`; window.userCustomization.font = font; }
+
+        // 6. CHECKOUT
+        async function uploadUserImage(file) {
+            const formData = new FormData(); formData.append("image", file);
+            try { const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: formData }); const data = await res.json(); return data.success ? data.data.url : null; } catch(e) { return null; }
+        }
+
+        window.startCheckout = function() {
+            if(!window.currentProduct) return showToast("Product not loaded", "error");
+            const cat = window.currentProduct.category;
+            if(cat === 'custom_mobile' && !window.userCustomization.model) return showToast("Please type Phone Model", "error");
+            if((cat === 'custom_mobile' || cat === 'custom_mug') && !window.userCustomization.imageFile) return showToast("Please upload a Photo", "error");
+            
+            document.getElementById('checkout-view').classList.remove('hidden');
+            loadProfile();
+            document.querySelectorAll('.step-section').forEach(el=>el.classList.remove('active'));
+            document.getElementById('step-1').classList.add('active');
+            document.getElementById('progress-bar').style.width = "25%";
+        }
+
+        window.nextStep = function(s) {
+            if(s===2 && !document.getElementById('in-name').value) return showToast("Name Required", "error");
+            if(s===3 && document.getElementById('in-phone').value.length !== 10) return showToast("Valid Phone Required", "error");
+            if(s===4) {
+                if(!document.getElementById('in-city').value) return showToast("Address Required", "error");
+                const data = {name: document.getElementById('in-name').value, phone: document.getElementById('in-phone').value, village: document.getElementById('in-village').value, post: document.getElementById('in-post').value, city: document.getElementById('in-city').value, pin: document.getElementById('in-pincode').value, state: document.getElementById('in-state').value};
+                localStorage.setItem('userProfile', JSON.stringify(data));
+                document.getElementById('checkout-img').src = window.currentProduct.images[0];
+                document.getElementById('checkout-title').innerText = window.currentProduct.title;
+                document.getElementById('checkout-price').innerText = `₹${window.currentProduct.price}`;
+            }
+            document.querySelectorAll('.step-section').forEach(el=>el.classList.remove('active'));
+            document.getElementById(`step-${s}`).classList.add('active');
+            document.getElementById('progress-bar').style.width = s===1?"25%":s===2?"50%":s===3?"75%":"100%";
+        }
+
+        window.placeOrder = async function() {
+            const btn = document.querySelector('.place-btn'); btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> Processing'; btn.disabled=true;
+            let customData = {};
+            if(window.userCustomization.imageFile) {
+                btn.innerHTML='Uploading Image...';
+                const imgUrl = await uploadUserImage(window.userCustomization.imageFile);
+                if(imgUrl) customData.custom_image = imgUrl; else { showToast("Image Upload Failed", "error"); btn.innerHTML="Confirm Order"; btn.disabled=false; return; }
+            }
+            if(window.userCustomization.model) customData.phone_model = window.userCustomization.model;
+            if(window.userCustomization.text) customData.custom_text = window.userCustomization.text;
+
+            const profile = JSON.parse(localStorage.getItem('userProfile'));
+            const orderPayload = { user: profile, product: { id: window.currentProduct.id, title: window.currentProduct.title, price: window.currentProduct.price, image: window.currentProduct.images[0] }, customization: customData, date: new Date().toISOString(), status: 'Placed' };
+            window.sendOrderToDb(orderPayload);
+        }
+
+        window.sendOrderToDb = function(orderData) {
+            push(ref(db, 'orders'), orderData).then(() => {
+                set(ref(db, 'users/' + orderData.user.phone), { name: orderData.user.name, phone: orderData.user.phone, address: orderData.user, lastOrderDate: new Date().toISOString() }).catch(err => {});
+                document.getElementById('success-overlay').classList.remove('hidden'); document.getElementById('success-overlay').classList.add('flex'); confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+                setTimeout(() => { document.getElementById('success-overlay').classList.add('hidden'); document.getElementById('success-overlay').classList.remove('flex'); closeCheckout(); switchTab('account'); openMyOrders(); }, 2500);
+            }).catch((e) => { showToast("Error: " + e.message, "error"); document.querySelector('.place-btn').disabled = false; });
+        }
+
+        // Utils
+        window.loadProductReviews = function(productId) {
+            const container = document.getElementById('reviews-container'); container.innerHTML = '<p class="text-xs text-gray-400">Loading...</p>';
+            onValue(ref(db, 'reviews/' + productId), (snapshot) => {
+                container.innerHTML = '';
+                if(snapshot.exists()) {
+                    let totalStars = 0, count = 0;
+                    snapshot.forEach((child) => { const r = child.val(); totalStars += parseInt(r.rating); count++; container.innerHTML += `<div class="bg-gray-50 p-3 rounded-lg mb-2"><div class="flex items-center gap-2 mb-1"><div class="bg-green-600 text-white text-[10px] px-1.5 rounded flex items-center gap-0.5">${r.rating} <i class="fas fa-star text-[8px]"></i></div><span class="text-xs font-bold text-gray-800">${r.user}</span></div><p class="text-xs text-gray-600">${r.text}</p></div>`; });
+                    document.getElementById('p-rating-val').innerText = (totalStars / count).toFixed(1); document.getElementById('rating-count').innerText = `${count} Ratings`;
+                } else { container.innerHTML = '<div class="text-center py-4 text-gray-400 text-sm">No Reviews Yet</div>'; if(document.getElementById('p-rating-val')) { document.getElementById('p-rating-val').innerText = "New"; document.getElementById('rating-count').innerText = "0 Ratings"; } }
+            });
+        }
+        window.submitReview = function() { const text = document.getElementById('rev-text').value; if(!text) return showToast("Write something!", "error"); const reviewData = { user: window.currentOrderDetails.user.name, rating: document.getElementById('rev-rating').value, text: text, date: new Date().toLocaleDateString() }; push(ref(db, 'reviews/' + window.currentOrderDetails.product.id), reviewData).then(() => { showToast("Review Submitted!"); document.getElementById('review-modal').classList.add('hidden'); closeOrderDetails(); }); }
+        window.closeProduct = function(resetHash=true) { document.getElementById('product-view').classList.add('hidden'); document.getElementById('home-view').classList.remove('hidden'); if(resetHash) history.pushState(null, null, ' '); }
+        window.switchTab = function(t) { document.getElementById('home-view').classList.add('hidden'); if(document.getElementById('account-view')) document.getElementById('account-view').classList.add('hidden'); if(t==='home') document.getElementById('home-view').classList.remove('hidden'); if(t==='account') document.getElementById('account-view').classList.remove('hidden'); }
+        window.loadProfile = function() { let p; try { p = JSON.parse(localStorage.getItem('userProfile')); } catch(e) { p=null; } if(p) { const setVal = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; }; setVal('in-name', p.name || ''); setVal('in-phone', p.phone || ''); setVal('in-village', p.village || ''); setVal('in-post', p.post || ''); setVal('in-city', p.city || ''); setVal('in-pincode', p.pin || ''); setVal('in-state', p.state || ''); } }
+        window.closeCheckout = function() { document.getElementById('checkout-view').classList.add('hidden'); }
+        window.closeMyOrders = function() { document.getElementById('my-orders-view').classList.add('hidden'); }
+        window.closeOrderDetails = function() { document.getElementById('order-details-view').classList.add('hidden'); }
+        window.toggleOrderMenu = function() { document.getElementById('order-menu-dropdown').classList.toggle('hidden'); }
+        window.autoDetectState = function() { const map = {'11':'Delhi','40':'Maharashtra'}; const val = document.getElementById('in-pincode').value.substring(0,2); if(map[val]) document.getElementById('in-state').value = map[val]; }
+        window.openMyOrders = function() { document.getElementById('home-view').classList.add('hidden'); if(document.getElementById('account-view')) document.getElementById('account-view').classList.add('hidden'); document.getElementById('my-orders-view').classList.remove('hidden'); loadMyOrders(); }
+        
+        window.loadMyOrders = function() {
+            const list = document.getElementById('my-orders-list'); list.innerHTML = '<div class="flex justify-center mt-10"><i class="fas fa-circle-notch fa-spin text-brand text-2xl"></i></div>';
+            let profile; try { profile = JSON.parse(localStorage.getItem('userProfile')); } catch(e) { profile = null; }
+            if(!profile || !profile.phone) { list.innerHTML = '<div class="text-center mt-20 text-gray-500"><p>No orders yet.</p></div>'; return; }
+            onValue(ref(db, 'orders'), (snapshot) => {
+                list.innerHTML = '';
+                if(snapshot.exists()) {
+                    const arr = []; snapshot.forEach((child) => { const ord = child.val(); ord.id = child.key; if(ord.user && ord.user.phone == profile.phone) arr.push(ord); });
+                    arr.reverse().forEach(ord => { window.myOrdersData = window.myOrdersData || {}; window.myOrdersData[ord.id] = ord; list.innerHTML += `<div onclick="openOrderDetails('${ord.id}')" class="bg-white border border-gray-100 mb-3 p-4 rounded-xl flex gap-4 items-center cursor-pointer shadow-sm hover:shadow-md transition"><div class="w-16 h-16 bg-gray-50 rounded-lg p-1 flex-shrink-0 border"><img src="${ord.product.image}" class="w-full h-full object-contain"></div><div class="flex-1 min-w-0"><h3 class="font-bold text-gray-800 text-sm truncate">${ord.product.title}</h3><p class="text-[10px] font-bold text-green-600 mt-2 bg-green-50 inline-block px-2 rounded-full">${ord.status}</p></div><i class="fas fa-chevron-right text-gray-300"></i></div>`; });
+                } else { list.innerHTML = '<div class="text-center mt-20 text-gray-500"><p>No orders yet.</p></div>'; }
+            });
+        }
+        window.openOrderDetails = function(id) { const ord = window.myOrdersData[id]; if(!ord) return; window.currentOrderDetails = ord; document.getElementById('order-details-view').classList.remove('hidden'); let w = '0%'; if(ord.status === 'Shipped') w='50%'; if(ord.status === 'Delivered') w='100%'; let custHtml = ''; if(ord.customization) { if(ord.customization.phone_model) custHtml += `<p class="text-xs text-gray-500 mt-1">Model: <b>${ord.customization.phone_model}</b></p>`; } document.getElementById('od-content').innerHTML = `<div class="flex gap-4 mb-4 border p-4 rounded-xl bg-white shadow-sm"><img src="${ord.product.image}" class="w-20 h-20 object-contain bg-gray-50 rounded"><div><h3 class="font-bold text-sm">${ord.product.title}</h3><p class="font-bold text-brand-dark">₹${ord.product.price}</p>${custHtml}</div></div><div class="bg-white p-5 rounded-xl border mb-4 relative overflow-hidden"><h3 class="font-bold text-sm mb-6">Tracking</h3><div class="relative mb-2 mx-2"><div class="track-line"></div><div class="track-progress" style="width: ${w}"></div><div class="flex justify-between relative"><div class="flex flex-col items-center"><div class="w-5 h-5 rounded-full z-10 bg-green-600 border-2 border-white"></div><p class="text-[10px] mt-1">Ordered</p></div><div class="flex flex-col items-center"><div class="w-5 h-5 rounded-full z-10 bg-${ord.status==='Shipped'||ord.status==='Delivered'?'green-600':'gray-300'} border-2 border-white"></div><p class="text-[10px] mt-1">Shipped</p></div><div class="flex flex-col items-center"><div class="w-5 h-5 rounded-full z-10 bg-${ord.status==='Delivered'?'green-600':'gray-300'} border-2 border-white"></div><p class="text-[10px] mt-1">Delivered</p></div></div></div></div><div class="border p-5 rounded-xl bg-white text-sm"><p class="font-bold text-gray-400 text-[10px] uppercase mb-3">Shipping Details</p><p class="font-bold">${ord.user.name}</p><p class="text-gray-600 text-xs">${ord.user.village}, ${ord.user.city}<br>${ord.user.state} - ${ord.user.pin}</p><p class="text-gray-600 text-xs font-bold mt-2">Phone: ${ord.user.phone}</p></div>`; const btn = document.getElementById('cancel-btn'); if(ord.status === 'Delivered' || ord.status === 'Cancelled') { btn.classList.add('opacity-50', 'pointer-events-none'); btn.innerText = ord.status; } else { btn.classList.remove('opacity-50', 'pointer-events-none'); btn.innerText = "Cancel Order"; } }
+        window.requestCancellation = function() { if(confirm("Are you sure?")) { window.update(window.ref(window.db, 'orders/' + window.currentOrderDetails.id), { cancelRequest: 'pending' }).then(() => { showToast("Requested"); window.closeOrderDetails(); window.loadMyOrders(); }); } }
+    </script>
+</head>
+<body class="text-gray-800" onload="initApp()">
+
+    <!-- TOAST & OVERLAYS -->
+    <div id="toast-box" class="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-gray-900/90 backdrop-blur text-white px-6 py-3 rounded-full shadow-2xl z-[500] flex items-center gap-3 transition-all duration-300 opacity-0 translate-y-10 pointer-events-none border border-gray-700"><i id="toast-icon" class="fas fa-info-circle text-brand"></i><span id="toast-msg" class="text-sm font-bold tracking-wide">Message</span></div>
+    <div id="success-overlay" class="hidden fixed inset-0 z-[300] bg-white/95 backdrop-blur flex-col items-center justify-center"><div class="w-20 h-20 border-4 border-brand border-t-transparent rounded-full animate-spin mb-6"></div><h2 class="text-2xl font-bold text-gray-800">Order Placed! 🥳</h2></div>
+    
+    <!-- REVIEW MODAL -->
+    <div id="review-modal" class="hidden fixed inset-0 z-[400] bg-black/60 backdrop-blur-sm flex items-center justify-center px-4"><div class="bg-white w-full max-w-sm rounded-2xl p-6 shadow-2xl"><h2 class="text-lg font-bold mb-4 text-center">Rate Product</h2><select id="rev-rating" class="w-full border p-3 rounded-xl mb-4 bg-gray-50"><option value="5">⭐⭐⭐⭐⭐ Excellent</option><option value="4">⭐⭐⭐⭐ Good</option><option value="3">⭐⭐⭐ Average</option></select><textarea id="rev-text" class="w-full border p-3 rounded-xl h-24 mb-4 bg-gray-50" placeholder="Write review..."></textarea><div class="flex gap-3"><button onclick="document.getElementById('review-modal').classList.add('hidden')" class="flex-1 bg-gray-100 py-3 rounded-xl">Cancel</button><button onclick="submitReview()" class="flex-1 bg-brand py-3 rounded-xl font-bold">Submit</button></div></div></div>
+
+    <!-- FLOATING ACTIONS -->
+    <a href="#" class="wa-link fixed bottom-24 right-4 z-[45] bg-[#25D366] text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform"><i class="fab fa-whatsapp text-2xl"></i></a>
+    <button onclick="toggleAiChat()" class="fixed bottom-36 right-4 z-[45] bg-brand text-gray-900 w-12 h-12 rounded-full shadow-lg border-2 border-white flex items-center justify-center animate-bounce-slow"><i class="fas fa-robot text-lg"></i></button>
+
+    <!-- FULL SCREEN AI CHAT -->
+    <div id="ai-chat-window" class="fixed inset-0 z-[1000] bg-gray-50 hidden flex-col slide-up">
+        <!-- Chat Header -->
+        <div class="glass p-4 flex items-center justify-between shadow-sm z-10">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-brand rounded-full flex items-center justify-center text-gray-900 shadow-inner"><i class="fas fa-robot text-lg"></i></div>
+                <div><h3 class="font-bold text-gray-900">QXZ Assistant</h3><span class="text-xs text-green-600 flex items-center gap-1"><span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> Online</span></div>
+            </div>
+            <button onclick="toggleAiChat()" class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 hover:bg-gray-300"><i class="fas fa-times text-lg"></i></button>
+        </div>
+
+        <!-- Chat Body -->
+        <div id="chat-messages" class="flex-1 p-5 overflow-y-auto space-y-4 pb-32">
+            <!-- Initial Msg -->
+            <div class="flex items-start gap-3">
+                <div class="w-8 h-8 bg-brand rounded-full flex-shrink-0 flex items-center justify-center"><i class="fas fa-robot text-xs"></i></div>
+                <div class="chat-bubble-bot p-4 text-sm shadow-sm max-w-[85%] leading-relaxed">
+                    Hello! 👋 I am <b>QXZ AI</b>.<br>I can help you with your queries. Please select an option below or ask me directly! 😊
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Footer (Input & Chips) -->
+        <div class="absolute bottom-0 w-full glass z-20 pb-4 pt-2">
+            <!-- Smart Chips -->
+            <div class="flex gap-2 overflow-x-auto px-4 py-2 mb-2 scrollbar-hide snap-mandatory" id="ai-chips">
+                <button onclick="handleQuickReply('My Order')" class="snap-center flex-shrink-0 bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-full text-xs font-bold shadow-sm active:scale-95 transition">📦 My Order</button>
+                <button onclick="handleQuickReply('Shopping')" class="snap-center flex-shrink-0 bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-full text-xs font-bold shadow-sm active:scale-95 transition">🛍️ Shopping</button>
+                <button onclick="handleQuickReply('Payment')" class="snap-center flex-shrink-0 bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-full text-xs font-bold shadow-sm active:scale-95 transition">💳 Payment</button>
+                <button onclick="handleQuickReply('Return Policy')" class="snap-center flex-shrink-0 bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-full text-xs font-bold shadow-sm active:scale-95 transition">♻️ Return Policy</button>
+                <button onclick="handleQuickReply('Privacy Policy')" class="snap-center flex-shrink-0 bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-full text-xs font-bold shadow-sm active:scale-95 transition">🔐 Privacy</button>
+                <button onclick="handleQuickReply('Contact Support')" class="snap-center flex-shrink-0 bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-full text-xs font-bold shadow-sm active:scale-95 transition">📞 Support</button>
+            </div>
+            
+            <!-- Input Field -->
+            <div class="px-4 flex gap-2">
+                <input type="text" id="user-input" placeholder="Type a message..." class="flex-1 bg-white border border-gray-300 rounded-full px-5 py-3 text-sm focus:outline-none focus:border-brand shadow-inner" onkeypress="if(event.key==='Enter') sendMessage()">
+                <button onclick="sendMessage()" class="w-12 h-12 bg-gray-900 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-black active:scale-90 transition"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const knowledgeBase = {
+            shopping: "🛍️ **Shopping Info:**\nWe offer customized gifts & mobile covers.\n\n🚚 **Delivery:** 7-9 Working Days.\n📍 **Area:** All India Delivery.\n✨ **Note:** Custom items take 1-2 extra days.",
+            return: "🔄 **Return Policy:**\n\n✅ **Accepted:** Within 7 days if damaged/wrong product.\n❌ **Not Accepted:** Used items or Customized items (unless manufacturing defect).\n\n📸 Send us photos on WhatsApp to process return.",
+            payment: "💳 **Payment Policy:**\n\n✅ **Cash on Delivery (COD)** Available.\n🔜 **UPI:** Coming Soon.\n\n⚠️ Fake orders will be cancelled immediately.",
+            privacy: "🔐 **Privacy Policy:**\n\n🛡️ Your data (Name, Phone, Address) is **100% Safe**.\n🚫 We NEVER share or sell your details.\n✅ Info used only for order delivery.",
+            cancellation: "❌ **Cancellation:**\nPossible within **12 hours** of ordering.\n\nOnce shipped/processed, customized items cannot be cancelled.",
+            contact: "📞 **Customer Support:**\n\n💬 **WhatsApp:** 7501495916 (Message Only)\n⏰ **Response Time:** 24-48 Hours.\n\nWe are here to help! 😊",
+            default: "🤖 I am still learning.\n\nFor this query, please WhatsApp us at:\n📱 **7501495916** (Message Only)"
+        };
+
+        function toggleAiChat() { 
+            const win = document.getElementById('ai-chat-window'); 
+            if(win.classList.contains('hidden')) { win.classList.remove('hidden'); document.body.style.overflow='hidden'; }
+            else { win.classList.add('hidden'); document.body.style.overflow=''; }
+        }
+
+        function handleQuickReply(topic) {
+            const replyMap = {
+                'My Order': "To track your order, please go to the **Account** tab > **My Orders**. \n\nWe also send updates via SMS/WhatsApp.",
+                'Shopping': knowledgeBase.shopping,
+                'Payment': knowledgeBase.payment,
+                'Return Policy': knowledgeBase.return,
+                'Privacy Policy': knowledgeBase.privacy,
+                'Contact Support': knowledgeBase.contact
+            };
+            addMsg(topic, 'user');
+            setTimeout(() => addMsg(replyMap[topic] || knowledgeBase.default, 'bot'), 600);
+        }
+
+        function sendMessage() { 
+            const i = document.getElementById('user-input'); 
+            const msg = i.value.trim(); 
+            if(!msg) return; 
+            addMsg(msg, 'user'); 
+            i.value=''; 
+            
+            // Smart Logic
+            setTimeout(()=>{ 
+                const lower = msg.toLowerCase();
+                let reply = knowledgeBase.default;
+                
+                if(lower.match(/ship|deliver|time|kab|track/)) reply = knowledgeBase.shopping;
+                else if(lower.match(/return|refund|exchange|wapas/)) reply = knowledgeBase.return;
+                else if(lower.match(/pay|cod|money|upi/)) reply = knowledgeBase.payment;
+                else if(lower.match(/privacy|data|safe/)) reply = knowledgeBase.privacy;
+                else if(lower.match(/cancel/)) reply = knowledgeBase.cancellation;
+                else if(lower.match(/contact|call|number|help|talk/)) reply = knowledgeBase.contact;
+                else if(lower.match(/hi|hello|hey/)) reply = "Hello! 👋 How can I help you today?";
+
+                addMsg(reply, 'bot'); 
+            }, 800); 
+        }
+
+        function addMsg(txt, sender) { 
+            const b = document.getElementById('chat-messages'); 
+            const isBot = sender==='bot';
+            
+            // Typing Indicator
+            if(isBot) {
+                const id = 'typing-'+Date.now();
+                b.innerHTML += `<div id="${id}" class="flex items-center gap-2 mb-2 ml-10"><div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div><div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay:0.2s"></div><div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay:0.4s"></div></div>`;
+                b.scrollTop=b.scrollHeight;
+                setTimeout(() => {
+                    document.getElementById(id).remove();
+                    renderMsgHTML(txt, sender, b);
+                }, 800);
+            } else {
+                renderMsgHTML(txt, sender, b);
+            }
+        }
+
+        function renderMsgHTML(txt, sender, container) {
+            const isBot = sender==='bot';
+            const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            const html = isBot 
+                ? `<div class="flex items-start gap-3 fade-in"><div class="w-8 h-8 bg-brand rounded-full flex-shrink-0 flex items-center justify-center border border-gray-200"><i class="fas fa-robot text-xs"></i></div><div class="chat-bubble-bot p-4 text-sm max-w-[85%] leading-relaxed"><div>${txt.replace(/\n/g, '<br>')}</div><div class="text-[10px] text-gray-400 mt-2 text-right">${time}</div></div></div>`
+                : `<div class="flex justify-end fade-in"><div class="chat-bubble-user p-4 text-sm max-w-[85%]"><div>${txt}</div><div class="text-[10px] text-gray-700/60 mt-2 text-right">${time}</div></div></div>`;
+            
+            container.innerHTML += html;
+            container.scrollTop = container.scrollHeight;
+        }
+    </script>
+
+    <!-- HOME VIEW -->
+    <div id="home-view" class="pb-24">
+        <header class="glass sticky top-0 z-40 px-4 py-3">
+            <div class="flex items-center justify-between mb-3">
+                <h1 class="text-xl font-bold text-gray-900 font-pacifico tracking-wide">Qxz Store</h1>
+                <button class="bg-gray-100 w-9 h-9 rounded-full flex items-center justify-center shadow-sm"><i class="fas fa-shopping-bag text-gray-800"></i></button>
+            </div>
+            <div class="relative group">
+                <i class="fas fa-search absolute left-3 top-3 text-gray-400 text-sm group-focus-within:text-brand transition"></i>
+                <input type="text" id="search-input" placeholder="Search covers, gifts..." class="w-full bg-gray-50 rounded-xl py-2.5 pl-9 pr-4 text-sm outline-none border border-transparent focus:border-brand/30 focus:bg-white transition-all shadow-inner" oninput="filterProducts()">
+            </div>
+        </header>
+        
+        <div class="px-4 mt-4">
+            <div class="flex gap-2 overflow-x-auto scrollbar-hide pb-2" id="category-filters">
+                <button onclick="filterCategory('all')" class="cat-btn active bg-gray-900 text-white px-5 py-2 rounded-full text-xs font-bold shadow-md transform scale-105">All</button>
+                <button onclick="filterCategory('custom_mobile')" class="cat-btn bg-white text-gray-600 px-5 py-2 rounded-full text-xs font-bold border border-gray-100 shadow-sm">Mobile Covers</button>
+                <button onclick="filterCategory('custom_mug')" class="cat-btn bg-white text-gray-600 px-5 py-2 rounded-full text-xs font-bold border border-gray-100 shadow-sm">Mugs</button>
+            </div>
+        </div>
+
+        <div class="mt-2 px-4"><div id="home-banner-track" class="flex overflow-x-auto w-full aspect-video gap-4 snap-x rounded-2xl scrollbar-hide"><div class="slide min-w-full h-full skeleton rounded-2xl"></div></div></div>
+        
+        <div class="px-4 mt-6">
+            <h3 class="font-bold text-gray-800 text-sm mb-4 flex items-center gap-2"><i class="fas fa-fire text-orange-500"></i> Trending Now</h3>
+            <div id="product-list" class="grid grid-cols-2 gap-4 pb-4"></div>
+        </div>
+        
+        <nav class="glass fixed bottom-0 w-full flex justify-around py-3 z-30 shadow-[0_-5px_20px_rgba(0,0,0,0.05)] rounded-t-2xl">
+            <button onclick="switchTab('home')" class="flex flex-col items-center text-brand"><i class="fas fa-home text-xl drop-shadow-sm"></i><span class="text-[10px] font-bold mt-1">Home</span></button>
+            <button onclick="switchTab('account')" class="flex flex-col items-center text-gray-400 hover:text-gray-600 transition"><i class="fas fa-user text-xl"></i><span class="text-[10px] mt-1">Account</span></button>
+        </nav>
+    </div>
+
+    <!-- ACCOUNT VIEW -->
+    <div id="account-view" class="hidden pb-24">
+        <div class="bg-gradient-to-b from-brand to-brand-dark p-8 pb-12 rounded-b-[2.5rem] shadow-lg text-center relative">
+            <div class="w-24 h-24 bg-white rounded-full mx-auto flex items-center justify-center text-4xl text-brand mb-3 shadow-xl border-4 border-white/30"><i class="fas fa-user"></i></div>
+            <h2 class="font-bold text-2xl text-gray-900">My Profile</h2>
+        </div>
+        <div class="px-5 -mt-8 relative z-10">
+            <button onclick="openMyOrders()" class="w-full bg-white p-5 rounded-2xl shadow-lg border border-gray-100 mb-4 flex items-center justify-between transform transition active:scale-95"><div class="flex items-center gap-4"><div class="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center text-blue-600"><i class="fas fa-box"></i></div><span class="font-bold text-gray-800">My Orders</span></div><i class="fas fa-chevron-right text-gray-300"></i></button>
+        </div>
+        <nav class="glass fixed bottom-0 w-full flex justify-around py-3 z-30 shadow-[0_-5px_20px_rgba(0,0,0,0.05)] rounded-t-2xl">
+            <button onclick="switchTab('home')" class="flex flex-col items-center text-gray-400"><i class="fas fa-home text-xl"></i><span class="text-[10px] mt-1">Home</span></button>
+            <button onclick="switchTab('account')" class="flex flex-col items-center text-brand"><i class="fas fa-user text-xl drop-shadow-sm"></i><span class="text-[10px] font-bold mt-1">Account</span></button>
+        </nav>
+    </div>
+
+    <!-- PRODUCT VIEW, CHECKOUT, ORDERS (SAME AS BEFORE) -->
+    <!-- (Keeping these sections compact to fit limits, logic remains identical) -->
+    <div id="product-view" class="fixed inset-0 bg-white z-[50] overflow-y-auto hidden">
+        <div class="glass absolute top-0 w-full flex items-center p-4 z-20"><button onclick="history.back()" class="w-10 h-10 bg-white rounded-full shadow-sm border flex items-center justify-center text-gray-800"><i class="fas fa-arrow-left"></i></button><span class="ml-4 font-bold text-gray-800 line-clamp-1 flex-1 pr-4">Product Details</span></div>
+        <div id="p-skeleton" class="w-full h-full absolute inset-0 bg-white z-[60] p-4 hidden mt-16"><div class="w-full h-80 skeleton rounded-2xl mb-4"></div><div class="h-6 skeleton w-3/4 mb-2"></div><div class="h-4 skeleton w-1/4 mb-6"></div></div>
+        <div id="p-content" class="hidden opacity-0">
+            <div class="w-full bg-gray-50 h-96 relative pt-16"><div id="slider-track" class="flex overflow-x-auto w-full h-full snap-x snap-mandatory scrollbar-hide scroll-smooth"></div><div id="slider-dots" class="absolute bottom-4 left-0 w-full flex justify-center gap-2 z-10 transition-all"></div></div>
+            <div class="px-5 pt-6 pb-28 bg-white rounded-t-[2rem] -mt-6 relative z-10 shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
+                <h1 id="p-title" class="text-xl font-bold text-gray-900 leading-snug mb-2 font-sans"></h1>
+                <div class="flex items-end gap-3 mb-4"><span id="p-price" class="text-3xl font-bold text-gray-900 tracking-tight"></span><span id="p-old-price" class="text-sm text-gray-400 line-through mb-1.5"></span><span id="p-disc" class="text-xs font-bold text-green-700 bg-green-100 px-2 py-1 rounded-md mb-1.5"></span></div>
+                <div id="customization-area"></div>
+                <div class="flex items-center gap-3 mb-6 p-3 bg-gray-50 rounded-xl border border-gray-100"><div class="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded flex items-center gap-1"><span id="p-rating-val">--</span> <i class="fas fa-star text-[10px]"></i></div><p id="rating-count" class="text-xs text-gray-500 font-medium">Loading...</p><div class="h-4 w-[1px] bg-gray-300 mx-2"></div><div class="flex items-center gap-1"><i class="fas fa-truck text-brand"></i><p id="delivery-date" class="text-xs font-bold text-gray-700">Checking...</p></div></div>
+                <div class="mb-6"><h3 class="font-bold text-sm mb-2 text-gray-800">Description</h3><p id="p-desc" class="text-sm text-gray-500 leading-relaxed"></p></div>
+                <div class="mb-6"><h3 class="font-bold text-base mb-3">Customer Reviews</h3><div id="reviews-container"></div></div>
+                <h3 class="font-bold text-sm mb-3 pt-4 border-t">Similar Products</h3><div id="similar-grid" class="grid grid-cols-2 gap-3"></div>
+            </div>
+        </div>
+        <div class="glass fixed bottom-0 left-0 w-full p-3 flex gap-3 z-50 rounded-t-2xl shadow-[0_-5px_20px_rgba(0,0,0,0.1)]"><button onclick="startCheckout()" class="w-full py-3.5 bg-gray-900 text-white font-bold rounded-xl shadow-lg hover:bg-gray-800 transition transform active:scale-95 flex items-center justify-center gap-2">Buy Now <i class="fas fa-arrow-right"></i></button></div>
+    </div>
+
+    <div id="checkout-view" class="fixed inset-0 z-[200] hidden bg-white flex flex-col h-full w-full">
+        <div class="glass px-4 py-4 flex items-center gap-3 shrink-0"><button onclick="closeCheckout()" class="text-gray-900"><i class="fas fa-arrow-left"></i></button><h1 class="text-lg font-bold">Checkout</h1></div>
+        <div class="w-full bg-gray-100 h-1 shrink-0"><div id="progress-bar" class="bg-green-500 h-1 w-1/4 transition-all duration-500"></div></div>
+        <div class="flex-1 overflow-y-auto p-6">
+            <div id="step-1" class="step-section active"><h2 class="text-3xl font-bold mb-2 font-pacifico text-gray-900">What's your name?</h2><input type="text" id="in-name" placeholder="Full Name" class="w-full border-b-2 border-gray-200 py-4 text-xl outline-none focus:border-brand transition bg-transparent mb-10"><button onclick="nextStep(2)" class="w-full bg-brand font-bold py-4 rounded-2xl shadow-xl text-gray-900">Next Step</button></div>
+            <div id="step-2" class="step-section"><h2 class="text-3xl font-bold mb-2 font-pacifico text-gray-900">Your Number?</h2><input type="number" id="in-phone" placeholder="10 Digit Mobile" class="w-full border-b-2 border-gray-200 py-4 text-xl outline-none focus:border-brand transition bg-transparent mb-10"><div class="flex gap-4"><button onclick="nextStep(1)" class="w-1/3 bg-gray-100 py-4 rounded-2xl font-bold text-gray-600">Back</button><button onclick="nextStep(3)" class="w-2/3 bg-brand font-bold py-4 rounded-2xl shadow-xl text-gray-900">Next</button></div></div>
+            <div id="step-3" class="step-section"><h2 class="text-2xl font-bold mb-6 font-pacifico">Where to deliver?</h2><div class="space-y-4"><input type="text" id="in-village" placeholder="House / Colony" class="w-full border border-gray-200 rounded-xl p-4 bg-gray-50 outline-none"><input type="text" id="in-post" placeholder="Landmark" class="w-full border border-gray-200 rounded-xl p-4 bg-gray-50 outline-none"><div class="flex gap-3"><input type="text" id="in-city" placeholder="City" class="w-1/2 border border-gray-200 rounded-xl p-4"><input type="number" id="in-pincode" placeholder="Pincode" oninput="autoDetectState()" class="w-1/2 border border-gray-200 rounded-xl p-4"></div><input type="text" id="in-state" placeholder="State" class="w-full border border-gray-200 rounded-xl p-4 bg-gray-50 outline-none" readonly></div><div class="flex gap-4 mt-8"><button onclick="nextStep(2)" class="w-1/3 bg-gray-100 py-4 rounded-2xl font-bold text-gray-600">Back</button><button onclick="nextStep(4)" class="w-2/3 bg-brand font-bold py-4 rounded-2xl shadow-xl text-gray-900">Next</button></div></div>
+            <div id="step-4" class="step-section"><h2 class="text-2xl font-bold mb-4 font-pacifico">Payment</h2><div class="flex gap-4 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm mb-6"><img id="checkout-img" class="w-20 h-20 object-cover rounded-xl bg-gray-50"><div><p id="checkout-title" class="font-bold text-sm line-clamp-2 mb-1"></p><p id="checkout-price" class="font-bold text-xl text-brand-dark"></p></div></div><div onclick="placeOrder()" class="border-2 border-brand bg-yellow-50/50 p-5 rounded-2xl flex items-center justify-between cursor-pointer shadow-sm hover:shadow-md transition"><div class="flex items-center gap-4"><div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-600"><i class="fas fa-money-bill-wave"></i></div><div><p class="font-bold text-sm text-gray-900">Cash on Delivery</p><p class="text-xs text-gray-500">Pay safely when you receive</p></div></div><i class="fas fa-check-circle text-brand text-2xl"></i></div><div class="flex gap-4 mt-8"><button onclick="nextStep(3)" class="w-1/3 bg-gray-100 py-4 rounded-2xl font-bold text-gray-600">Back</button><button onclick="placeOrder()" class="w-2/3 bg-gray-900 text-white font-bold py-4 rounded-2xl place-btn shadow-xl hover:bg-black transition">Confirm Order</button></div></div>
+        </div>
+    </div>
+    
+    <div id="my-orders-view" class="fixed inset-0 z-[300] hidden bg-gray-50 overflow-y-auto"><div class="glass px-4 py-4 flex items-center gap-3 sticky top-0 z-50"><button onclick="closeMyOrders()" class="text-gray-800 text-lg w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-sm"><i class="fas fa-arrow-left"></i></button><h1 class="text-lg font-bold">My Orders</h1></div><div id="my-orders-list" class="p-4 pb-20"></div></div>
+    <div id="order-details-view" class="fixed inset-0 z-[350] hidden bg-white overflow-y-auto"><div class="glass px-4 py-4 flex items-center justify-between sticky top-0 z-50"><div class="flex items-center gap-3"><button onclick="closeOrderDetails()" class="text-gray-800 w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-sm"><i class="fas fa-arrow-left"></i></button><h1 class="font-bold">Order Details</h1></div><div class="relative"><button onclick="toggleOrderMenu()" class="w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-sm"><i class="fas fa-ellipsis-v text-sm"></i></button><div id="order-menu-dropdown" class="hidden absolute right-0 top-10 bg-white shadow-xl border rounded-xl w-40 py-2 z-50"><button onclick="requestCancellation()" id="cancel-btn" class="w-full text-left px-4 py-2 text-sm text-red-600 font-bold hover:bg-red-50">Cancel Order</button></div></div></div><div id="od-content" class="p-5 pb-20"></div></div>
+
+</body>
+</html>
