@@ -332,7 +332,57 @@
         window.closeMyOrders = function() { document.getElementById('my-orders-view').classList.add('hidden'); }
         window.closeOrderDetails = function() { document.getElementById('order-details-view').classList.add('hidden'); }
         window.toggleOrderMenu = function() { document.getElementById('order-menu-dropdown').classList.toggle('hidden'); }
-        window.autoDetectState = function() { const map = {'11':'Delhi','40':'Maharashtra'}; const val = document.getElementById('in-pincode').value.substring(0,2); if(map[val]) document.getElementById('in-state').value = map[val]; }
+        
+        // --- NEW UPDATED STATE DETECTION LOGIC (ALL INDIA) ---
+        window.autoDetectState = function() {
+            const pinVal = document.getElementById('in-pincode').value;
+            const stateInput = document.getElementById('in-state');
+            
+            if(pinVal.length < 2) return;
+            
+            const code = parseInt(pinVal.substring(0, 2));
+            let state = '';
+
+            // North
+            if (code === 11) state = "Delhi";
+            else if (code >= 12 && code <= 13) state = "Haryana";
+            else if (code >= 14 && code <= 16) state = "Punjab";
+            else if (code === 17) state = "Himachal Pradesh";
+            else if (code >= 18 && code <= 19) state = "Jammu & Kashmir";
+            
+            // Central/North
+            else if (code >= 20 && code <= 28) state = "Uttar Pradesh / Uttarakhand";
+            
+            // West
+            else if (code >= 30 && code <= 34) state = "Rajasthan";
+            else if (code >= 36 && code <= 39) state = "Gujarat";
+            else if (code >= 40 && code <= 44) state = "Maharashtra";
+            else if (code === 40) state = "Goa"; // Shared range sometimes, defaulting main to MH, but 403xxx is Goa
+            
+            // Central
+            else if (code >= 45 && code <= 48) state = "Madhya Pradesh";
+            else if (code === 49) state = "Chhattisgarh";
+            
+            // South
+            else if (code === 50) state = "Telangana";
+            else if (code >= 51 && code <= 53) state = "Andhra Pradesh";
+            else if (code >= 56 && code <= 59) state = "Karnataka";
+            else if (code >= 60 && code <= 64) state = "Tamil Nadu";
+            else if (code >= 67 && code <= 69) state = "Kerala";
+            
+            // East
+            else if (code >= 70 && code <= 74) state = "West Bengal";
+            else if (code >= 75 && code <= 77) state = "Odisha";
+            else if (code === 78) state = "Assam";
+            else if (code === 79) state = "North East (MN/ML/MZ/NL/TR)";
+            else if (code >= 80 && code <= 85) state = "Bihar / Jharkhand";
+            
+            // Army
+            else if (code >= 90 && code <= 99) state = "Army Postal Service";
+            
+            if(state) stateInput.value = state;
+        }
+
         window.openMyOrders = function() { document.getElementById('home-view').classList.add('hidden'); if(document.getElementById('account-view')) document.getElementById('account-view').classList.add('hidden'); document.getElementById('my-orders-view').classList.remove('hidden'); loadMyOrders(); }
         
         window.loadMyOrders = function() {
@@ -540,8 +590,6 @@
         </nav>
     </div>
 
-    <!-- PRODUCT VIEW, CHECKOUT, ORDERS (SAME AS BEFORE) -->
-    <!-- (Keeping these sections compact to fit limits, logic remains identical) -->
     <div id="product-view" class="fixed inset-0 bg-white z-[50] overflow-y-auto hidden">
         <div class="glass absolute top-0 w-full flex items-center p-4 z-20"><button onclick="history.back()" class="w-10 h-10 bg-white rounded-full shadow-sm border flex items-center justify-center text-gray-800"><i class="fas fa-arrow-left"></i></button><span class="ml-4 font-bold text-gray-800 line-clamp-1 flex-1 pr-4">Product Details</span></div>
         <div id="p-skeleton" class="w-full h-full absolute inset-0 bg-white z-[60] p-4 hidden mt-16"><div class="w-full h-80 skeleton rounded-2xl mb-4"></div><div class="h-6 skeleton w-3/4 mb-2"></div><div class="h-4 skeleton w-1/4 mb-6"></div></div>
