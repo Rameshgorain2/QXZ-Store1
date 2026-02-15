@@ -79,8 +79,12 @@
         window.currentCategory = 'all';
         const IMGBB_API_KEY = "b7b1309895b4830daaf39c194fa78efd"; 
         
-        // --- WHATSAPP CONFIG ---
+        // --- CONFIG ---
         window.WHATSAPP_NUMBER = "7501495916";
+        // *** UPI ID UPDATED HERE ***
+        window.MERCHANT_UPI = "ramesh.gorai@superyes"; 
+        window.MERCHANT_NAME = "QXZ Store";
+        window.selectedPaymentMethod = 'COD';
 
         window.initApp = function() { 
             showProductSkeleton(); 
@@ -94,7 +98,6 @@
             btns.forEach(b => b.href = `https://wa.me/91${window.WHATSAPP_NUMBER}?text=Hi%20QXZ%20Store`);
         }
 
-        // --- TOAST NOTIFICATION ---
         window.showToast = function(msg, type='success') {
             const box = document.getElementById('toast-box');
             const txt = document.getElementById('toast-msg');
@@ -105,7 +108,6 @@
             setTimeout(() => { box.classList.add('opacity-0', 'translate-y-10'); }, 3000);
         }
 
-        // --- HASH ROUTING ---
         window.addEventListener('hashchange', checkHash);
         function checkHash() {
             const hash = window.location.hash;
@@ -128,7 +130,6 @@
             }
         }
 
-        // 1. FETCH PRODUCTS
         onValue(ref(db, 'products'), (snapshot) => {
             if(snapshot.exists()) {
                 window.allProducts = [];
@@ -142,7 +143,6 @@
             }
         });
 
-        // 2. SEARCH & FILTER
         window.filterCategory = function(cat) {
             window.currentCategory = cat;
             document.querySelectorAll('.cat-btn').forEach(btn => btn.className = "cat-btn bg-white text-gray-600 px-5 py-2 rounded-full text-xs font-bold whitespace-nowrap shadow-sm border border-gray-100 transition-all hover:bg-gray-50");
@@ -170,7 +170,6 @@
             });
         }
 
-        // 3. BANNERS
         onValue(ref(db, 'banners'), (snapshot) => {
             if(snapshot.exists()) {
                 const track = document.getElementById('home-banner-track');
@@ -182,7 +181,6 @@
             }
         });
 
-        // 4. OPEN PRODUCT
         window.openProduct = function(id, setHash = true) {
             window.currentProduct = window.allProducts.find(p => p.id == id);
             if (!window.currentProduct) return;
@@ -207,7 +205,6 @@
             const d = new Date(); d.setDate(d.getDate() + 8);
             setText('delivery-date', d.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' }));
 
-            // Slider
             const tr = document.getElementById('slider-track');
             const dotsContainer = document.getElementById('slider-dots');
             if (tr && dotsContainer) {
@@ -223,7 +220,6 @@
                 tr.onscroll = () => { const index = Math.round(tr.scrollLeft / tr.offsetWidth); const allDots = dotsContainer.children; for (let i = 0; i < allDots.length; i++) { if (i === index) allDots[i].className = 'h-1.5 rounded-full bg-gray-800 w-5 transition-all duration-300'; else allDots[i].className = 'h-1.5 rounded-full bg-gray-300 w-1.5 transition-all duration-300'; } };
             }
 
-            // Similar
             const sim = document.getElementById('similar-grid');
             if (sim) {
                 sim.innerHTML = '';
@@ -233,7 +229,6 @@
             }
         }
 
-        // 5. CUSTOMIZATION UI
         window.renderCustomizationUI = function(category) {
             const container = document.getElementById('customization-area');
             if (!container) return; container.innerHTML = ''; window.userCustomization = {}; 
@@ -253,7 +248,6 @@
         window.updateTextPreview = function(val) { const el = document.getElementById('live-text-preview'); if(el) el.innerText = val || "Your Name"; window.userCustomization.text = val; }
         window.changeFont = function(font) { const el = document.getElementById('live-text-preview'); if(el) el.className = `text-2xl text-gray-800 ${font}`; window.userCustomization.font = font; }
 
-        // 6. CHECKOUT
         async function uploadUserImage(file) {
             const formData = new FormData(); formData.append("image", file);
             try { const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: formData }); const data = await res.json(); return data.success ? data.data.url : null; } catch(e) { return null; }
@@ -288,8 +282,53 @@
             document.getElementById('progress-bar').style.width = s===1?"25%":s===2?"50%":s===3?"75%":"100%";
         }
 
+        // --- PAYMENT LOGIC ---
+        window.selectPayment = function(method) {
+            window.selectedPaymentMethod = method;
+            const upiSec = document.getElementById('upi-section');
+            const codRadio = document.getElementById('radio-cod');
+            const upiRadio = document.getElementById('radio-upi');
+            const codBox = document.getElementById('box-cod');
+            const upiBox = document.getElementById('box-upi');
+
+            if(method === 'UPI') {
+                upiRadio.checked = true;
+                upiSec.classList.remove('hidden');
+                upiBox.classList.add('border-brand', 'bg-yellow-50');
+                codBox.classList.remove('border-brand', 'bg-yellow-50');
+                generatePaymentLinks();
+            } else {
+                codRadio.checked = true;
+                upiSec.classList.add('hidden');
+                codBox.classList.add('border-brand', 'bg-yellow-50');
+                upiBox.classList.remove('border-brand', 'bg-yellow-50');
+            }
+        }
+
+        window.generatePaymentLinks = function() {
+            if(!window.currentProduct) return;
+            const amt = window.currentProduct.price;
+            // DEEP LINK (Triggers Apps)
+            const deepLink = `upi://pay?pa=${window.MERCHANT_UPI}&pn=${window.MERCHANT_NAME}&am=${amt}&cu=INR&tn=Order${Math.floor(Math.random()*1000)}`;
+            document.getElementById('pay-now-btn').href = deepLink;
+            document.getElementById('upi-display-amt').innerText = `Pay ₹${amt}`;
+
+            // QR CODE (Fallback)
+            const qrApi = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(deepLink)}`;
+            document.getElementById('upi-qr-img').src = qrApi;
+        }
+
         window.placeOrder = async function() {
-            const btn = document.querySelector('.place-btn'); btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> Processing'; btn.disabled=true;
+            const btn = document.querySelector('.place-btn');
+            
+            // Check UPI UTR
+            let utrVal = '';
+            if(window.selectedPaymentMethod === 'UPI') {
+                utrVal = document.getElementById('upi-utr').value.trim();
+                if(utrVal.length < 4) return showToast("Please enter Payment UTR/ID", "error");
+            }
+
+            btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> Processing'; btn.disabled=true;
             let customData = {};
             if(window.userCustomization.imageFile) {
                 btn.innerHTML='Uploading Image...';
@@ -300,7 +339,23 @@
             if(window.userCustomization.text) customData.custom_text = window.userCustomization.text;
 
             const profile = JSON.parse(localStorage.getItem('userProfile'));
-            const orderPayload = { user: profile, product: { id: window.currentProduct.id, title: window.currentProduct.title, price: window.currentProduct.price, image: window.currentProduct.images[0] }, customization: customData, date: new Date().toISOString(), status: 'Placed' };
+            
+            let status = 'Placed';
+            let payDetails = 'COD';
+            if(window.selectedPaymentMethod === 'UPI') {
+                status = 'Verification Pending';
+                payDetails = `UPI (UTR: ${utrVal})`;
+            }
+
+            const orderPayload = { 
+                user: profile, 
+                product: { id: window.currentProduct.id, title: window.currentProduct.title, price: window.currentProduct.price, image: window.currentProduct.images[0] }, 
+                customization: customData, 
+                date: new Date().toISOString(), 
+                status: status,
+                paymentMethod: window.selectedPaymentMethod,
+                paymentDetails: payDetails
+            };
             window.sendOrderToDb(orderPayload);
         }
 
@@ -312,7 +367,6 @@
             }).catch((e) => { showToast("Error: " + e.message, "error"); document.querySelector('.place-btn').disabled = false; });
         }
 
-        // Utils
         window.loadProductReviews = function(productId) {
             const container = document.getElementById('reviews-container'); container.innerHTML = '<p class="text-xs text-gray-400">Loading...</p>';
             onValue(ref(db, 'reviews/' + productId), (snapshot) => {
@@ -333,53 +387,34 @@
         window.closeOrderDetails = function() { document.getElementById('order-details-view').classList.add('hidden'); }
         window.toggleOrderMenu = function() { document.getElementById('order-menu-dropdown').classList.toggle('hidden'); }
         
-        // --- NEW UPDATED STATE DETECTION LOGIC (ALL INDIA) ---
         window.autoDetectState = function() {
             const pinVal = document.getElementById('in-pincode').value;
             const stateInput = document.getElementById('in-state');
-            
             if(pinVal.length < 2) return;
-            
             const code = parseInt(pinVal.substring(0, 2));
             let state = '';
-
-            // North
             if (code === 11) state = "Delhi";
             else if (code >= 12 && code <= 13) state = "Haryana";
             else if (code >= 14 && code <= 16) state = "Punjab";
             else if (code === 17) state = "Himachal Pradesh";
             else if (code >= 18 && code <= 19) state = "Jammu & Kashmir";
-            
-            // Central/North
             else if (code >= 20 && code <= 28) state = "Uttar Pradesh / Uttarakhand";
-            
-            // West
             else if (code >= 30 && code <= 34) state = "Rajasthan";
             else if (code >= 36 && code <= 39) state = "Gujarat";
             else if (code >= 40 && code <= 44) state = "Maharashtra";
-            else if (code === 40) state = "Goa"; // Shared range sometimes, defaulting main to MH, but 403xxx is Goa
-            
-            // Central
             else if (code >= 45 && code <= 48) state = "Madhya Pradesh";
             else if (code === 49) state = "Chhattisgarh";
-            
-            // South
             else if (code === 50) state = "Telangana";
             else if (code >= 51 && code <= 53) state = "Andhra Pradesh";
             else if (code >= 56 && code <= 59) state = "Karnataka";
             else if (code >= 60 && code <= 64) state = "Tamil Nadu";
             else if (code >= 67 && code <= 69) state = "Kerala";
-            
-            // East
             else if (code >= 70 && code <= 74) state = "West Bengal";
             else if (code >= 75 && code <= 77) state = "Odisha";
             else if (code === 78) state = "Assam";
-            else if (code === 79) state = "North East (MN/ML/MZ/NL/TR)";
+            else if (code === 79) state = "North East";
             else if (code >= 80 && code <= 85) state = "Bihar / Jharkhand";
-            
-            // Army
             else if (code >= 90 && code <= 99) state = "Army Postal Service";
-            
             if(state) stateInput.value = state;
         }
 
@@ -393,11 +428,11 @@
                 list.innerHTML = '';
                 if(snapshot.exists()) {
                     const arr = []; snapshot.forEach((child) => { const ord = child.val(); ord.id = child.key; if(ord.user && ord.user.phone == profile.phone) arr.push(ord); });
-                    arr.reverse().forEach(ord => { window.myOrdersData = window.myOrdersData || {}; window.myOrdersData[ord.id] = ord; list.innerHTML += `<div onclick="openOrderDetails('${ord.id}')" class="bg-white border border-gray-100 mb-3 p-4 rounded-xl flex gap-4 items-center cursor-pointer shadow-sm hover:shadow-md transition"><div class="w-16 h-16 bg-gray-50 rounded-lg p-1 flex-shrink-0 border"><img src="${ord.product.image}" class="w-full h-full object-contain"></div><div class="flex-1 min-w-0"><h3 class="font-bold text-gray-800 text-sm truncate">${ord.product.title}</h3><p class="text-[10px] font-bold text-green-600 mt-2 bg-green-50 inline-block px-2 rounded-full">${ord.status}</p></div><i class="fas fa-chevron-right text-gray-300"></i></div>`; });
+                    arr.reverse().forEach(ord => { window.myOrdersData = window.myOrdersData || {}; window.myOrdersData[ord.id] = ord; list.innerHTML += `<div onclick="openOrderDetails('${ord.id}')" class="bg-white border border-gray-100 mb-3 p-4 rounded-xl flex gap-4 items-center cursor-pointer shadow-sm hover:shadow-md transition"><div class="w-16 h-16 bg-gray-50 rounded-lg p-1 flex-shrink-0 border"><img src="${ord.product.image}" class="w-full h-full object-contain"></div><div class="flex-1 min-w-0"><h3 class="font-bold text-gray-800 text-sm truncate">${ord.product.title}</h3><p class="text-[10px] font-bold mt-2 inline-block px-2 rounded-full ${ord.status==='Verification Pending'?'bg-yellow-100 text-yellow-700':'bg-green-50 text-green-600'}">${ord.status}</p></div><i class="fas fa-chevron-right text-gray-300"></i></div>`; });
                 } else { list.innerHTML = '<div class="text-center mt-20 text-gray-500"><p>No orders yet.</p></div>'; }
             });
         }
-        window.openOrderDetails = function(id) { const ord = window.myOrdersData[id]; if(!ord) return; window.currentOrderDetails = ord; document.getElementById('order-details-view').classList.remove('hidden'); let w = '0%'; if(ord.status === 'Shipped') w='50%'; if(ord.status === 'Delivered') w='100%'; let custHtml = ''; if(ord.customization) { if(ord.customization.phone_model) custHtml += `<p class="text-xs text-gray-500 mt-1">Model: <b>${ord.customization.phone_model}</b></p>`; } document.getElementById('od-content').innerHTML = `<div class="flex gap-4 mb-4 border p-4 rounded-xl bg-white shadow-sm"><img src="${ord.product.image}" class="w-20 h-20 object-contain bg-gray-50 rounded"><div><h3 class="font-bold text-sm">${ord.product.title}</h3><p class="font-bold text-brand-dark">₹${ord.product.price}</p>${custHtml}</div></div><div class="bg-white p-5 rounded-xl border mb-4 relative overflow-hidden"><h3 class="font-bold text-sm mb-6">Tracking</h3><div class="relative mb-2 mx-2"><div class="track-line"></div><div class="track-progress" style="width: ${w}"></div><div class="flex justify-between relative"><div class="flex flex-col items-center"><div class="w-5 h-5 rounded-full z-10 bg-green-600 border-2 border-white"></div><p class="text-[10px] mt-1">Ordered</p></div><div class="flex flex-col items-center"><div class="w-5 h-5 rounded-full z-10 bg-${ord.status==='Shipped'||ord.status==='Delivered'?'green-600':'gray-300'} border-2 border-white"></div><p class="text-[10px] mt-1">Shipped</p></div><div class="flex flex-col items-center"><div class="w-5 h-5 rounded-full z-10 bg-${ord.status==='Delivered'?'green-600':'gray-300'} border-2 border-white"></div><p class="text-[10px] mt-1">Delivered</p></div></div></div></div><div class="border p-5 rounded-xl bg-white text-sm"><p class="font-bold text-gray-400 text-[10px] uppercase mb-3">Shipping Details</p><p class="font-bold">${ord.user.name}</p><p class="text-gray-600 text-xs">${ord.user.village}, ${ord.user.city}<br>${ord.user.state} - ${ord.user.pin}</p><p class="text-gray-600 text-xs font-bold mt-2">Phone: ${ord.user.phone}</p></div>`; const btn = document.getElementById('cancel-btn'); if(ord.status === 'Delivered' || ord.status === 'Cancelled') { btn.classList.add('opacity-50', 'pointer-events-none'); btn.innerText = ord.status; } else { btn.classList.remove('opacity-50', 'pointer-events-none'); btn.innerText = "Cancel Order"; } }
+        window.openOrderDetails = function(id) { const ord = window.myOrdersData[id]; if(!ord) return; window.currentOrderDetails = ord; document.getElementById('order-details-view').classList.remove('hidden'); let w = '0%'; if(ord.status === 'Shipped') w='50%'; if(ord.status === 'Delivered') w='100%'; let custHtml = ''; if(ord.customization) { if(ord.customization.phone_model) custHtml += `<p class="text-xs text-gray-500 mt-1">Model: <b>${ord.customization.phone_model}</b></p>`; } document.getElementById('od-content').innerHTML = `<div class="flex gap-4 mb-4 border p-4 rounded-xl bg-white shadow-sm"><img src="${ord.product.image}" class="w-20 h-20 object-contain bg-gray-50 rounded"><div><h3 class="font-bold text-sm">${ord.product.title}</h3><p class="font-bold text-brand-dark">₹${ord.product.price}</p>${custHtml}</div></div><div class="bg-white p-5 rounded-xl border mb-4 relative overflow-hidden"><h3 class="font-bold text-sm mb-6">Tracking</h3><div class="relative mb-2 mx-2"><div class="track-line"></div><div class="track-progress" style="width: ${w}"></div><div class="flex justify-between relative"><div class="flex flex-col items-center"><div class="w-5 h-5 rounded-full z-10 bg-green-600 border-2 border-white"></div><p class="text-[10px] mt-1">Ordered</p></div><div class="flex flex-col items-center"><div class="w-5 h-5 rounded-full z-10 bg-${ord.status==='Shipped'||ord.status==='Delivered'?'green-600':'gray-300'} border-2 border-white"></div><p class="text-[10px] mt-1">Shipped</p></div><div class="flex flex-col items-center"><div class="w-5 h-5 rounded-full z-10 bg-${ord.status==='Delivered'?'green-600':'gray-300'} border-2 border-white"></div><p class="text-[10px] mt-1">Delivered</p></div></div></div></div><div class="border p-5 rounded-xl bg-white text-sm"><p class="font-bold text-gray-400 text-[10px] uppercase mb-3">Shipping Details</p><p class="font-bold">${ord.user.name}</p><p class="text-gray-600 text-xs">${ord.user.village}, ${ord.user.city}<br>${ord.user.state} - ${ord.user.pin}</p><p class="text-gray-600 text-xs font-bold mt-2">Phone: ${ord.user.phone}</p><p class="text-gray-600 text-xs mt-2">Pay via: <b>${ord.paymentMethod}</b></p></div>`; const btn = document.getElementById('cancel-btn'); if(ord.status === 'Delivered' || ord.status === 'Cancelled') { btn.classList.add('opacity-50', 'pointer-events-none'); btn.innerText = ord.status; } else { btn.classList.remove('opacity-50', 'pointer-events-none'); btn.innerText = "Cancel Order"; } }
         window.requestCancellation = function() { if(confirm("Are you sure?")) { window.update(window.ref(window.db, 'orders/' + window.currentOrderDetails.id), { cancelRequest: 'pending' }).then(() => { showToast("Requested"); window.closeOrderDetails(); window.loadMyOrders(); }); } }
     </script>
 </head>
@@ -615,7 +650,31 @@
             <div id="step-1" class="step-section active"><h2 class="text-3xl font-bold mb-2 font-pacifico text-gray-900">What's your name?</h2><input type="text" id="in-name" placeholder="Full Name" class="w-full border-b-2 border-gray-200 py-4 text-xl outline-none focus:border-brand transition bg-transparent mb-10"><button onclick="nextStep(2)" class="w-full bg-brand font-bold py-4 rounded-2xl shadow-xl text-gray-900">Next Step</button></div>
             <div id="step-2" class="step-section"><h2 class="text-3xl font-bold mb-2 font-pacifico text-gray-900">Your Number?</h2><input type="number" id="in-phone" placeholder="10 Digit Mobile" class="w-full border-b-2 border-gray-200 py-4 text-xl outline-none focus:border-brand transition bg-transparent mb-10"><div class="flex gap-4"><button onclick="nextStep(1)" class="w-1/3 bg-gray-100 py-4 rounded-2xl font-bold text-gray-600">Back</button><button onclick="nextStep(3)" class="w-2/3 bg-brand font-bold py-4 rounded-2xl shadow-xl text-gray-900">Next</button></div></div>
             <div id="step-3" class="step-section"><h2 class="text-2xl font-bold mb-6 font-pacifico">Where to deliver?</h2><div class="space-y-4"><input type="text" id="in-village" placeholder="House / Colony" class="w-full border border-gray-200 rounded-xl p-4 bg-gray-50 outline-none"><input type="text" id="in-post" placeholder="Landmark" class="w-full border border-gray-200 rounded-xl p-4 bg-gray-50 outline-none"><div class="flex gap-3"><input type="text" id="in-city" placeholder="City" class="w-1/2 border border-gray-200 rounded-xl p-4"><input type="number" id="in-pincode" placeholder="Pincode" oninput="autoDetectState()" class="w-1/2 border border-gray-200 rounded-xl p-4"></div><input type="text" id="in-state" placeholder="State" class="w-full border border-gray-200 rounded-xl p-4 bg-gray-50 outline-none" readonly></div><div class="flex gap-4 mt-8"><button onclick="nextStep(2)" class="w-1/3 bg-gray-100 py-4 rounded-2xl font-bold text-gray-600">Back</button><button onclick="nextStep(4)" class="w-2/3 bg-brand font-bold py-4 rounded-2xl shadow-xl text-gray-900">Next</button></div></div>
-            <div id="step-4" class="step-section"><h2 class="text-2xl font-bold mb-4 font-pacifico">Payment</h2><div class="flex gap-4 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm mb-6"><img id="checkout-img" class="w-20 h-20 object-cover rounded-xl bg-gray-50"><div><p id="checkout-title" class="font-bold text-sm line-clamp-2 mb-1"></p><p id="checkout-price" class="font-bold text-xl text-brand-dark"></p></div></div><div onclick="placeOrder()" class="border-2 border-brand bg-yellow-50/50 p-5 rounded-2xl flex items-center justify-between cursor-pointer shadow-sm hover:shadow-md transition"><div class="flex items-center gap-4"><div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-600"><i class="fas fa-money-bill-wave"></i></div><div><p class="font-bold text-sm text-gray-900">Cash on Delivery</p><p class="text-xs text-gray-500">Pay safely when you receive</p></div></div><i class="fas fa-check-circle text-brand text-2xl"></i></div><div class="flex gap-4 mt-8"><button onclick="nextStep(3)" class="w-1/3 bg-gray-100 py-4 rounded-2xl font-bold text-gray-600">Back</button><button onclick="placeOrder()" class="w-2/3 bg-gray-900 text-white font-bold py-4 rounded-2xl place-btn shadow-xl hover:bg-black transition">Confirm Order</button></div></div>
+            
+            <!-- STEP 4: PAYMENT (UPDATED) -->
+            <div id="step-4" class="step-section">
+                <h2 class="text-2xl font-bold mb-4 font-pacifico">Payment Method</h2>
+                <div class="flex gap-4 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm mb-6"><img id="checkout-img" class="w-20 h-20 object-cover rounded-xl bg-gray-50"><div><p id="checkout-title" class="font-bold text-sm line-clamp-2 mb-1"></p><p id="checkout-price" class="font-bold text-xl text-brand-dark"></p></div></div>
+                
+                <div class="space-y-3">
+                    <label id="box-cod" class="border-2 border-brand bg-yellow-50 p-4 rounded-2xl flex items-center justify-between cursor-pointer shadow-sm transition" onclick="selectPayment('COD')">
+                        <div class="flex items-center gap-4"><input type="radio" name="pay-method" id="radio-cod" checked class="accent-brand w-5 h-5"><div><p class="font-bold text-sm text-gray-900">Cash on Delivery</p><p class="text-xs text-gray-500">Pay cash when you receive</p></div></div><i class="fas fa-truck text-gray-400 text-xl"></i>
+                    </label>
+                    <label id="box-upi" class="border-2 border-gray-200 bg-white p-4 rounded-2xl flex items-center justify-between cursor-pointer shadow-sm transition" onclick="selectPayment('UPI')">
+                        <div class="flex items-center gap-4"><input type="radio" name="pay-method" id="radio-upi" class="accent-brand w-5 h-5"><div><p class="font-bold text-sm text-gray-900">Pay via UPI App</p><p class="text-xs text-green-600 font-bold">GPay / PhonePe / Paytm</p></div></div><i class="fas fa-mobile-alt text-brand text-xl"></i>
+                    </label>
+                </div>
+
+                <div id="upi-section" class="hidden mt-6 bg-gray-50 p-5 rounded-2xl border border-brand/50 text-center">
+                    <p class="text-xs font-bold text-gray-500 mb-3">Tap below to pay securely</p>
+                    <a id="pay-now-btn" href="#" class="block w-full bg-blue-600 text-white py-3 rounded-xl font-bold text-lg shadow-lg hover:bg-blue-700 transition mb-4 transform active:scale-95"><i class="fas fa-lock mr-2"></i> Pay Now</a>
+                    <p id="upi-display-amt" class="text-xl font-bold text-gray-900 mb-4"></p>
+                    <div class="text-left bg-white p-3 rounded-xl border mb-3"><label class="text-[10px] font-bold text-gray-500 uppercase">Verification (Required)</label><input type="text" id="upi-utr" placeholder="Enter UTR / Transaction ID" class="w-full border-b border-gray-200 py-2 text-sm outline-none focus:border-brand"></div>
+                    <div class="flex justify-center"><img id="upi-qr-img" class="w-24 h-24 mix-blend-multiply opacity-50"></div><p class="text-[10px] text-gray-400 mt-1">Scan if on PC</p>
+                </div>
+
+                <div class="flex gap-4 mt-8"><button onclick="nextStep(3)" class="w-1/3 bg-gray-100 py-4 rounded-2xl font-bold text-gray-600">Back</button><button onclick="placeOrder()" class="w-2/3 bg-gray-900 text-white font-bold py-4 rounded-2xl place-btn shadow-xl hover:bg-black transition">Confirm Order</button></div>
+            </div>
         </div>
     </div>
     
