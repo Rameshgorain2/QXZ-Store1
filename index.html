@@ -51,12 +51,19 @@
         .step-section.active { display: flex; flex-direction: column; height: 100%; animation: fadeIn 0.3s ease-out; }
         .snap-mandatory { scroll-snap-type: x mandatory; } .snap-center { scroll-snap-align: center; }
         .font-pacifico { font-family: 'Pacifico', cursive; } .font-bangers { font-family: 'Bangers', cursive; }
+        
+        /* Stepper Styles */
+        .step-circle { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: bold; font-size: 12px; transition: all 0.3s; z-index: 10; position: relative; }
+        .step-active { background: #FFC107; color: #000; box-shadow: 0 0 10px rgba(255, 193, 7, 0.5); border: 2px solid white; }
+        .step-inactive { background: #e5e7eb; color: #9ca3af; border: 2px solid white; }
+        .step-line { height: 2px; flex: 1; background: #e5e7eb; margin: 0 -2px; z-index: 0; }
+        .line-active { background: #FFC107; }
     </style>
 
     <!-- FIREBASE & LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, push, onValue, update, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, push, onValue, update, set, get, child } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAjw6O7nLDBaT6-UP5nsINrsRrSbcco844",
@@ -70,18 +77,20 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        window.db = db; window.update = update; window.set = set; window.ref = ref; window.push = push;
+        window.db = db; window.update = update; window.set = set; window.ref = ref; window.push = push; window.get = get; window.child = child;
         
         window.allProducts = []; 
         window.currentOrderDetails = null;
         window.userCustomization = {};
         window.currentProduct = null;
         window.currentCategory = 'all';
+        window.discountAmount = 0;
+        window.appliedCouponCode = null;
+
         const IMGBB_API_KEY = "b7b1309895b4830daaf39c194fa78efd"; 
         
         // --- CONFIG ---
         window.WHATSAPP_NUMBER = "7501495916";
-        // *** UPI ID UPDATED HERE ***
         window.MERCHANT_UPI = "ramesh.gorai@superyes"; 
         window.MERCHANT_NAME = "QXZ Store";
         window.selectedPaymentMethod = 'COD';
@@ -143,10 +152,18 @@
             }
         });
 
+        // --- NEW INSTA CATEGORY FILTER ---
         window.filterCategory = function(cat) {
             window.currentCategory = cat;
-            document.querySelectorAll('.cat-btn').forEach(btn => btn.className = "cat-btn bg-white text-gray-600 px-5 py-2 rounded-full text-xs font-bold whitespace-nowrap shadow-sm border border-gray-100 transition-all hover:bg-gray-50");
-            event.target.className = "cat-btn active bg-gray-900 text-white px-5 py-2 rounded-full text-xs font-bold whitespace-nowrap shadow-md transition-all transform scale-105";
+            document.querySelectorAll('.cat-item').forEach(el => {
+                el.classList.remove('cat-active');
+                el.querySelector('.cat-ring').className = "cat-ring w-14 h-14 rounded-full p-[2px] bg-gray-200 transition";
+            });
+            const activeBtn = document.getElementById(`cat-${cat}`);
+            if(activeBtn) {
+                activeBtn.classList.add('cat-active');
+                activeBtn.querySelector('.cat-ring').className = "cat-ring w-14 h-14 rounded-full p-[2px] bg-gradient-to-tr from-brand-dark to-red-500 animate-pulse";
+            }
             filterProducts();
         }
 
@@ -229,6 +246,11 @@
             }
         }
 
+        window.shareProduct = function() {
+            if (navigator.share) { navigator.share({ title: window.currentProduct.title, text: `Check out this amazing ${window.currentProduct.title} on QXZ Store!`, url: window.location.href }); } 
+            else { window.open(`https://wa.me/?text=Check out this ${window.currentProduct.title} - ${window.location.href}`); }
+        }
+
         window.renderCustomizationUI = function(category) {
             const container = document.getElementById('customization-area');
             if (!container) return; container.innerHTML = ''; window.userCustomization = {}; 
@@ -255,15 +277,30 @@
 
         window.startCheckout = function() {
             if(!window.currentProduct) return showToast("Product not loaded", "error");
+            window.discountAmount = 0; window.appliedCouponCode = null;
             const cat = window.currentProduct.category;
             if(cat === 'custom_mobile' && !window.userCustomization.model) return showToast("Please type Phone Model", "error");
             if((cat === 'custom_mobile' || cat === 'custom_mug') && !window.userCustomization.imageFile) return showToast("Please upload a Photo", "error");
             
             document.getElementById('checkout-view').classList.remove('hidden');
             loadProfile();
+            updateStepper(1);
             document.querySelectorAll('.step-section').forEach(el=>el.classList.remove('active'));
             document.getElementById('step-1').classList.add('active');
-            document.getElementById('progress-bar').style.width = "25%";
+        }
+
+        window.updateStepper = function(step) {
+            const circles = [1, 2, 3, 4];
+            const lines = [1, 2, 3];
+            circles.forEach(n => {
+                const el = document.getElementById(`step-circle-${n}`);
+                if(n <= step) { el.className = "step-circle step-active"; el.innerHTML = n < step ? '<i class="fas fa-check"></i>' : n; }
+                else { el.className = "step-circle step-inactive"; el.innerHTML = n; }
+            });
+            lines.forEach(n => {
+                const el = document.getElementById(`step-line-${n}`);
+                el.className = n < step ? "step-line line-active" : "step-line";
+            });
         }
 
         window.nextStep = function(s) {
@@ -273,16 +310,84 @@
                 if(!document.getElementById('in-city').value) return showToast("Address Required", "error");
                 const data = {name: document.getElementById('in-name').value, phone: document.getElementById('in-phone').value, village: document.getElementById('in-village').value, post: document.getElementById('in-post').value, city: document.getElementById('in-city').value, pin: document.getElementById('in-pincode').value, state: document.getElementById('in-state').value};
                 localStorage.setItem('userProfile', JSON.stringify(data));
+                
+                // Init Payment
                 document.getElementById('checkout-img').src = window.currentProduct.images[0];
                 document.getElementById('checkout-title').innerText = window.currentProduct.title;
                 document.getElementById('checkout-price').innerText = `₹${window.currentProduct.price}`;
+                
+                // BILL DETAILS
+                const price = parseInt(window.currentProduct.price);
+                document.getElementById('bill-item-total').innerText = `₹${price}`;
+                document.getElementById('bill-shipping').innerText = `₹0 (Free)`;
+                document.getElementById('bill-coupon').innerText = `- ₹0`;
+                document.getElementById('bill-grand-total').innerText = `₹${price}`;
+
+                // Reset Coupon
+                document.getElementById('coupon-input').value = "";
+                document.getElementById('coupon-input').disabled = false;
+                document.getElementById('btn-apply').disabled = false;
+                document.getElementById('btn-apply').innerText = "APPLY";
+                document.getElementById('btn-apply').className = "bg-gray-900 text-white px-6 rounded-xl font-bold text-xs shadow-lg hover:bg-gray-800 transition";
+                document.getElementById('coupon-msg').classList.add('hidden');
             }
+            updateStepper(s);
             document.querySelectorAll('.step-section').forEach(el=>el.classList.remove('active'));
             document.getElementById(`step-${s}`).classList.add('active');
-            document.getElementById('progress-bar').style.width = s===1?"25%":s===2?"50%":s===3?"75%":"100%";
         }
 
-        // --- PAYMENT LOGIC ---
+        window.applyCoupon = function() {
+            const codeInput = document.getElementById('coupon-input');
+            const msg = document.getElementById('coupon-msg');
+            const btn = document.getElementById('btn-apply');
+            const code = codeInput.value.trim().toUpperCase();
+
+            if(!code) return showToast("Enter a code first", "error");
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            
+            const dbRef = window.ref(window.db);
+            window.get(window.child(dbRef, `coupons/${code}`)).then((snapshot) => {
+                btn.innerText = "APPLY";
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    if(data.active) {
+                        window.discountAmount = data.discount;
+                        window.appliedCouponCode = code;
+                        msg.innerHTML = `<i class="fas fa-check-circle"></i> Coupon <b>${code}</b> Applied!`;
+                        msg.className = "text-xs mt-2 text-green-600 font-bold block";
+                        codeInput.disabled = true;
+                        btn.disabled = true;
+                        btn.innerText = "SAVED";
+                        btn.className = "bg-green-600 text-white px-6 rounded-xl font-bold text-xs shadow-lg";
+                        updateFinalPrice();
+                    } else { showCouponError("Coupon Expired"); }
+                } else { showCouponError("Invalid Coupon Code"); }
+            }).catch((error) => { btn.innerText = "APPLY"; showCouponError("Error checking coupon"); });
+        }
+
+        function showCouponError(text) {
+            const msg = document.getElementById('coupon-msg');
+            msg.innerHTML = `<i class="fas fa-times-circle"></i> ${text}`;
+            msg.className = "text-xs mt-2 text-red-500 font-bold block";
+            window.discountAmount = 0; window.appliedCouponCode = null;
+            updateFinalPrice();
+        }
+
+        window.updateFinalPrice = function() {
+            if(!window.currentProduct) return;
+            const originalPrice = parseInt(window.currentProduct.price);
+            const finalPrice = Math.max(0, originalPrice - window.discountAmount);
+            
+            document.getElementById('bill-coupon').innerText = `- ₹${window.discountAmount}`;
+            document.getElementById('bill-grand-total').innerText = `₹${finalPrice}`;
+            
+            const summaryPrice = document.getElementById('checkout-price');
+            if(window.discountAmount > 0) summaryPrice.innerHTML = `<span class="line-through text-gray-400 text-sm mr-2">₹${originalPrice}</span> <span class="text-brand-dark">₹${finalPrice}</span>`;
+            else summaryPrice.innerText = `₹${originalPrice}`;
+
+            if(window.selectedPaymentMethod === 'UPI') generatePaymentLinks(finalPrice);
+        }
+
         window.selectPayment = function(method) {
             window.selectedPaymentMethod = method;
             const upiSec = document.getElementById('upi-section');
@@ -292,36 +397,28 @@
             const upiBox = document.getElementById('box-upi');
 
             if(method === 'UPI') {
-                upiRadio.checked = true;
-                upiSec.classList.remove('hidden');
-                upiBox.classList.add('border-brand', 'bg-yellow-50');
-                codBox.classList.remove('border-brand', 'bg-yellow-50');
-                generatePaymentLinks();
+                upiRadio.checked = true; upiSec.classList.remove('hidden');
+                upiBox.classList.add('border-brand', 'bg-yellow-50'); codBox.classList.remove('border-brand', 'bg-yellow-50');
+                const originalPrice = parseInt(window.currentProduct.price);
+                const finalPrice = Math.max(0, originalPrice - window.discountAmount);
+                generatePaymentLinks(finalPrice);
             } else {
-                codRadio.checked = true;
-                upiSec.classList.add('hidden');
-                codBox.classList.add('border-brand', 'bg-yellow-50');
-                upiBox.classList.remove('border-brand', 'bg-yellow-50');
+                codRadio.checked = true; upiSec.classList.add('hidden');
+                codBox.classList.add('border-brand', 'bg-yellow-50'); upiBox.classList.remove('border-brand', 'bg-yellow-50');
             }
         }
 
-        window.generatePaymentLinks = function() {
-            if(!window.currentProduct) return;
-            const amt = window.currentProduct.price;
-            // DEEP LINK (Triggers Apps)
+        window.generatePaymentLinks = function(amt) {
+            if(!amt) amt = window.currentProduct.price;
             const deepLink = `upi://pay?pa=${window.MERCHANT_UPI}&pn=${window.MERCHANT_NAME}&am=${amt}&cu=INR&tn=Order${Math.floor(Math.random()*1000)}`;
             document.getElementById('pay-now-btn').href = deepLink;
             document.getElementById('upi-display-amt').innerText = `Pay ₹${amt}`;
-
-            // QR CODE (Fallback)
             const qrApi = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(deepLink)}`;
             document.getElementById('upi-qr-img').src = qrApi;
         }
 
         window.placeOrder = async function() {
             const btn = document.querySelector('.place-btn');
-            
-            // Check UPI UTR
             let utrVal = '';
             if(window.selectedPaymentMethod === 'UPI') {
                 utrVal = document.getElementById('upi-utr').value.trim();
@@ -339,22 +436,17 @@
             if(window.userCustomization.text) customData.custom_text = window.userCustomization.text;
 
             const profile = JSON.parse(localStorage.getItem('userProfile'));
-            
-            let status = 'Placed';
-            let payDetails = 'COD';
-            if(window.selectedPaymentMethod === 'UPI') {
-                status = 'Verification Pending';
-                payDetails = `UPI (UTR: ${utrVal})`;
-            }
+            let status = 'Placed'; let payDetails = 'COD';
+            if(window.selectedPaymentMethod === 'UPI') { status = 'Verification Pending'; payDetails = `UPI (UTR: ${utrVal})`; }
+
+            const originalPrice = parseInt(window.currentProduct.price);
+            const finalToPay = Math.max(0, originalPrice - window.discountAmount);
 
             const orderPayload = { 
                 user: profile, 
-                product: { id: window.currentProduct.id, title: window.currentProduct.title, price: window.currentProduct.price, image: window.currentProduct.images[0] }, 
-                customization: customData, 
-                date: new Date().toISOString(), 
-                status: status,
-                paymentMethod: window.selectedPaymentMethod,
-                paymentDetails: payDetails
+                product: { id: window.currentProduct.id, title: window.currentProduct.title, price: finalToPay, originalPrice: originalPrice, image: window.currentProduct.images[0] }, 
+                coupon: { code: window.appliedCouponCode || 'NONE', discount: window.discountAmount },
+                customization: customData, date: new Date().toISOString(), status: status, paymentMethod: window.selectedPaymentMethod, paymentDetails: payDetails
             };
             window.sendOrderToDb(orderPayload);
         }
@@ -589,11 +681,37 @@
             </div>
         </header>
         
+        <!-- INSTA STYLE CATEGORIES -->
         <div class="px-4 mt-4">
-            <div class="flex gap-2 overflow-x-auto scrollbar-hide pb-2" id="category-filters">
-                <button onclick="filterCategory('all')" class="cat-btn active bg-gray-900 text-white px-5 py-2 rounded-full text-xs font-bold shadow-md transform scale-105">All</button>
-                <button onclick="filterCategory('custom_mobile')" class="cat-btn bg-white text-gray-600 px-5 py-2 rounded-full text-xs font-bold border border-gray-100 shadow-sm">Mobile Covers</button>
-                <button onclick="filterCategory('custom_mug')" class="cat-btn bg-white text-gray-600 px-5 py-2 rounded-full text-xs font-bold border border-gray-100 shadow-sm">Mugs</button>
+            <div class="flex gap-4 overflow-x-auto scrollbar-hide pb-2">
+                <!-- All -->
+                <div id="cat-all" onclick="filterCategory('all')" class="cat-item flex flex-col items-center gap-1 cursor-pointer min-w-[60px] cat-active">
+                    <div class="cat-ring w-14 h-14 rounded-full p-[2px] bg-gradient-to-tr from-brand-dark to-red-500 animate-pulse">
+                        <div class="w-full h-full bg-white rounded-full p-0.5"><img src="https://cdn-icons-png.flaticon.com/512/3502/3502601.png" class="w-full h-full object-cover rounded-full"></div>
+                    </div>
+                    <span class="text-[10px] font-bold text-gray-700">All</span>
+                </div>
+                <!-- Covers -->
+                <div id="cat-custom_mobile" onclick="filterCategory('custom_mobile')" class="cat-item flex flex-col items-center gap-1 cursor-pointer min-w-[60px]">
+                    <div class="cat-ring w-14 h-14 rounded-full p-[2px] bg-gray-200 transition">
+                        <div class="w-full h-full bg-white rounded-full p-0.5"><img src="https://cdn-icons-png.flaticon.com/512/15/15735.png" class="w-full h-full object-cover rounded-full"></div>
+                    </div>
+                    <span class="text-[10px] font-bold text-gray-700">Covers</span>
+                </div>
+                <!-- Mugs -->
+                <div id="cat-custom_mug" onclick="filterCategory('custom_mug')" class="cat-item flex flex-col items-center gap-1 cursor-pointer min-w-[60px]">
+                    <div class="cat-ring w-14 h-14 rounded-full p-[2px] bg-gray-200 transition">
+                        <div class="w-full h-full bg-white rounded-full p-0.5"><img src="https://cdn-icons-png.flaticon.com/512/1902/1902724.png" class="w-full h-full object-cover rounded-full"></div>
+                    </div>
+                    <span class="text-[10px] font-bold text-gray-700">Mugs</span>
+                </div>
+                 <!-- Keychains -->
+                 <div id="cat-custom_keychain" onclick="filterCategory('custom_keychain')" class="cat-item flex flex-col items-center gap-1 cursor-pointer min-w-[60px]">
+                    <div class="cat-ring w-14 h-14 rounded-full p-[2px] bg-gray-200 transition">
+                        <div class="w-full h-full bg-white rounded-full p-0.5"><img src="https://cdn-icons-png.flaticon.com/512/1039/1039328.png" class="w-full h-full object-cover rounded-full"></div>
+                    </div>
+                    <span class="text-[10px] font-bold text-gray-700">Keychains</span>
+                </div>
             </div>
         </div>
 
@@ -629,7 +747,11 @@
         <div class="glass absolute top-0 w-full flex items-center p-4 z-20"><button onclick="history.back()" class="w-10 h-10 bg-white rounded-full shadow-sm border flex items-center justify-center text-gray-800"><i class="fas fa-arrow-left"></i></button><span class="ml-4 font-bold text-gray-800 line-clamp-1 flex-1 pr-4">Product Details</span></div>
         <div id="p-skeleton" class="w-full h-full absolute inset-0 bg-white z-[60] p-4 hidden mt-16"><div class="w-full h-80 skeleton rounded-2xl mb-4"></div><div class="h-6 skeleton w-3/4 mb-2"></div><div class="h-4 skeleton w-1/4 mb-6"></div></div>
         <div id="p-content" class="hidden opacity-0">
-            <div class="w-full bg-gray-50 h-96 relative pt-16"><div id="slider-track" class="flex overflow-x-auto w-full h-full snap-x snap-mandatory scrollbar-hide scroll-smooth"></div><div id="slider-dots" class="absolute bottom-4 left-0 w-full flex justify-center gap-2 z-10 transition-all"></div></div>
+            <div class="w-full bg-gray-50 h-96 relative pt-16">
+                <!-- SHARE BUTTON -->
+                <div class="absolute top-16 right-4 z-30"><button onclick="shareProduct()" class="w-10 h-10 bg-white/80 backdrop-blur rounded-full shadow-md flex items-center justify-center text-gray-700 hover:text-brand transition"><i class="fas fa-share-alt"></i></button></div>
+                <div id="slider-track" class="flex overflow-x-auto w-full h-full snap-x snap-mandatory scrollbar-hide scroll-smooth"></div><div id="slider-dots" class="absolute bottom-4 left-0 w-full flex justify-center gap-2 z-10 transition-all"></div>
+            </div>
             <div class="px-5 pt-6 pb-28 bg-white rounded-t-[2rem] -mt-6 relative z-10 shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
                 <h1 id="p-title" class="text-xl font-bold text-gray-900 leading-snug mb-2 font-sans"></h1>
                 <div class="flex items-end gap-3 mb-4"><span id="p-price" class="text-3xl font-bold text-gray-900 tracking-tight"></span><span id="p-old-price" class="text-sm text-gray-400 line-through mb-1.5"></span><span id="p-disc" class="text-xs font-bold text-green-700 bg-green-100 px-2 py-1 rounded-md mb-1.5"></span></div>
@@ -644,36 +766,93 @@
     </div>
 
     <div id="checkout-view" class="fixed inset-0 z-[200] hidden bg-white flex flex-col h-full w-full">
-        <div class="glass px-4 py-4 flex items-center gap-3 shrink-0"><button onclick="closeCheckout()" class="text-gray-900"><i class="fas fa-arrow-left"></i></button><h1 class="text-lg font-bold">Checkout</h1></div>
-        <div class="w-full bg-gray-100 h-1 shrink-0"><div id="progress-bar" class="bg-green-500 h-1 w-1/4 transition-all duration-500"></div></div>
-        <div class="flex-1 overflow-y-auto p-6">
+        <!-- HEADER WITH STEPPER -->
+        <div class="glass px-4 py-3 shrink-0">
+            <div class="flex items-center gap-3 mb-4"><button onclick="closeCheckout()" class="text-gray-900"><i class="fas fa-arrow-left"></i></button><h1 class="text-lg font-bold">Checkout</h1></div>
+            <!-- STEPPER UI -->
+            <div class="flex items-center justify-between px-4 pb-2">
+                <div id="step-circle-1" class="step-circle step-active">1</div>
+                <div id="step-line-1" class="step-line"></div>
+                <div id="step-circle-2" class="step-circle step-inactive">2</div>
+                <div id="step-line-2" class="step-line"></div>
+                <div id="step-circle-3" class="step-circle step-inactive">3</div>
+                <div id="step-line-3" class="step-line"></div>
+                <div id="step-circle-4" class="step-circle step-inactive">4</div>
+            </div>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-6 bg-gray-50/50">
             <div id="step-1" class="step-section active"><h2 class="text-3xl font-bold mb-2 font-pacifico text-gray-900">What's your name?</h2><input type="text" id="in-name" placeholder="Full Name" class="w-full border-b-2 border-gray-200 py-4 text-xl outline-none focus:border-brand transition bg-transparent mb-10"><button onclick="nextStep(2)" class="w-full bg-brand font-bold py-4 rounded-2xl shadow-xl text-gray-900">Next Step</button></div>
             <div id="step-2" class="step-section"><h2 class="text-3xl font-bold mb-2 font-pacifico text-gray-900">Your Number?</h2><input type="number" id="in-phone" placeholder="10 Digit Mobile" class="w-full border-b-2 border-gray-200 py-4 text-xl outline-none focus:border-brand transition bg-transparent mb-10"><div class="flex gap-4"><button onclick="nextStep(1)" class="w-1/3 bg-gray-100 py-4 rounded-2xl font-bold text-gray-600">Back</button><button onclick="nextStep(3)" class="w-2/3 bg-brand font-bold py-4 rounded-2xl shadow-xl text-gray-900">Next</button></div></div>
             <div id="step-3" class="step-section"><h2 class="text-2xl font-bold mb-6 font-pacifico">Where to deliver?</h2><div class="space-y-4"><input type="text" id="in-village" placeholder="House / Colony" class="w-full border border-gray-200 rounded-xl p-4 bg-gray-50 outline-none"><input type="text" id="in-post" placeholder="Landmark" class="w-full border border-gray-200 rounded-xl p-4 bg-gray-50 outline-none"><div class="flex gap-3"><input type="text" id="in-city" placeholder="City" class="w-1/2 border border-gray-200 rounded-xl p-4"><input type="number" id="in-pincode" placeholder="Pincode" oninput="autoDetectState()" class="w-1/2 border border-gray-200 rounded-xl p-4"></div><input type="text" id="in-state" placeholder="State" class="w-full border border-gray-200 rounded-xl p-4 bg-gray-50 outline-none" readonly></div><div class="flex gap-4 mt-8"><button onclick="nextStep(2)" class="w-1/3 bg-gray-100 py-4 rounded-2xl font-bold text-gray-600">Back</button><button onclick="nextStep(4)" class="w-2/3 bg-brand font-bold py-4 rounded-2xl shadow-xl text-gray-900">Next</button></div></div>
             
-            <!-- STEP 4: PAYMENT (UPDATED) -->
+            <!-- STEP 4: PAYMENT (IMPROVED UI) -->
             <div id="step-4" class="step-section">
-                <h2 class="text-2xl font-bold mb-4 font-pacifico">Payment Method</h2>
-                <div class="flex gap-4 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm mb-6"><img id="checkout-img" class="w-20 h-20 object-cover rounded-xl bg-gray-50"><div><p id="checkout-title" class="font-bold text-sm line-clamp-2 mb-1"></p><p id="checkout-price" class="font-bold text-xl text-brand-dark"></p></div></div>
                 
-                <div class="space-y-3">
-                    <label id="box-cod" class="border-2 border-brand bg-yellow-50 p-4 rounded-2xl flex items-center justify-between cursor-pointer shadow-sm transition" onclick="selectPayment('COD')">
-                        <div class="flex items-center gap-4"><input type="radio" name="pay-method" id="radio-cod" checked class="accent-brand w-5 h-5"><div><p class="font-bold text-sm text-gray-900">Cash on Delivery</p><p class="text-xs text-gray-500">Pay cash when you receive</p></div></div><i class="fas fa-truck text-gray-400 text-xl"></i>
-                    </label>
-                    <label id="box-upi" class="border-2 border-gray-200 bg-white p-4 rounded-2xl flex items-center justify-between cursor-pointer shadow-sm transition" onclick="selectPayment('UPI')">
-                        <div class="flex items-center gap-4"><input type="radio" name="pay-method" id="radio-upi" class="accent-brand w-5 h-5"><div><p class="font-bold text-sm text-gray-900">Pay via UPI App</p><p class="text-xs text-green-600 font-bold">GPay / PhonePe / Paytm</p></div></div><i class="fas fa-mobile-alt text-brand text-xl"></i>
-                    </label>
+                <!-- PRODUCT SUMMARY CARD -->
+                <div class="flex gap-4 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm mb-4">
+                    <img id="checkout-img" class="w-16 h-16 object-cover rounded-xl bg-gray-50 border">
+                    <div class="flex-1">
+                        <p id="checkout-title" class="font-bold text-xs line-clamp-2 mb-1 text-gray-800"></p>
+                        <p id="checkout-price" class="font-bold text-lg text-brand-dark"></p>
+                    </div>
                 </div>
 
-                <div id="upi-section" class="hidden mt-6 bg-gray-50 p-5 rounded-2xl border border-brand/50 text-center">
-                    <p class="text-xs font-bold text-gray-500 mb-3">Tap below to pay securely</p>
-                    <a id="pay-now-btn" href="#" class="block w-full bg-blue-600 text-white py-3 rounded-xl font-bold text-lg shadow-lg hover:bg-blue-700 transition mb-4 transform active:scale-95"><i class="fas fa-lock mr-2"></i> Pay Now</a>
-                    <p id="upi-display-amt" class="text-xl font-bold text-gray-900 mb-4"></p>
-                    <div class="text-left bg-white p-3 rounded-xl border mb-3"><label class="text-[10px] font-bold text-gray-500 uppercase">Verification (Required)</label><input type="text" id="upi-utr" placeholder="Enter UTR / Transaction ID" class="w-full border-b border-gray-200 py-2 text-sm outline-none focus:border-brand"></div>
-                    <div class="flex justify-center"><img id="upi-qr-img" class="w-24 h-24 mix-blend-multiply opacity-50"></div><p class="text-[10px] text-gray-400 mt-1">Scan if on PC</p>
+                <!-- BILL DETAILS -->
+                <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm mb-4">
+                    <h3 class="text-xs font-bold text-gray-400 uppercase mb-3 tracking-wider">Bill Details</h3>
+                    <div class="flex justify-between text-xs text-gray-600 mb-2"><span>Item Total</span><span id="bill-item-total">₹0</span></div>
+                    <div class="flex justify-between text-xs text-gray-600 mb-2"><span>Delivery Fee</span><span id="bill-shipping" class="text-green-600 font-bold">Free</span></div>
+                    <div class="flex justify-between text-xs text-gray-600 mb-2"><span>Coupon Discount</span><span id="bill-coupon" class="text-green-600">₹0</span></div>
+                    <div class="h-[1px] bg-gray-100 my-2"></div>
+                    <div class="flex justify-between text-sm font-bold text-gray-900"><span>To Pay</span><span id="bill-grand-total">₹0</span></div>
+                </div>
+                
+                <!-- COUPON INPUT -->
+                <div class="mb-4 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 block">Apply Coupon</label>
+                    <div class="flex gap-2">
+                        <div class="relative flex-1"><div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="fas fa-tag text-gray-400"></i></div><input type="text" id="coupon-input" placeholder="Enter Code" class="w-full pl-10 pr-3 py-2.5 border border-gray-200 rounded-xl text-sm uppercase font-bold outline-none focus:border-brand bg-gray-50/50"></div>
+                        <button onclick="applyCoupon()" id="btn-apply" class="bg-gray-900 text-white px-5 rounded-xl font-bold text-[10px] shadow-lg hover:bg-gray-800 transition">APPLY</button>
+                    </div>
+                    <p id="coupon-msg" class="text-xs mt-2 hidden transition-all duration-300"></p>
                 </div>
 
-                <div class="flex gap-4 mt-8"><button onclick="nextStep(3)" class="w-1/3 bg-gray-100 py-4 rounded-2xl font-bold text-gray-600">Back</button><button onclick="placeOrder()" class="w-2/3 bg-gray-900 text-white font-bold py-4 rounded-2xl place-btn shadow-xl hover:bg-black transition">Confirm Order</button></div>
+                <!-- PAYMENT METHOD -->
+                <h3 class="text-xs font-bold text-gray-400 uppercase mb-3 tracking-wider ml-1">Payment Mode</h3>
+                <div class="space-y-3 mb-6">
+                    <label id="box-cod" class="border-2 border-brand bg-yellow-50 p-3 rounded-xl flex items-center justify-between cursor-pointer shadow-sm transition" onclick="selectPayment('COD')">
+                        <div class="flex items-center gap-3"><div class="w-5 h-5 rounded-full border-2 border-brand flex items-center justify-center"><div id="radio-cod-dot" class="w-2.5 h-2.5 bg-brand rounded-full"></div></div><div><p class="font-bold text-sm text-gray-900">Cash on Delivery</p></div></div><i class="fas fa-truck text-gray-400"></i>
+                    </label>
+                    <label id="box-upi" class="border-2 border-gray-200 bg-white p-3 rounded-xl flex items-center justify-between cursor-pointer shadow-sm transition" onclick="selectPayment('UPI')">
+                        <div class="flex items-center gap-3"><div class="w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center"><div id="radio-upi-dot" class="w-2.5 h-2.5 bg-brand rounded-full hidden"></div></div><div><p class="font-bold text-sm text-gray-900">Pay via UPI</p><p class="text-[10px] text-green-600 font-bold">Fast Delivery ⚡</p></div></div><i class="fas fa-qrcode text-brand"></i>
+                    </label>
+                    <!-- HIDDEN RADIOS FOR LOGIC -->
+                    <input type="radio" name="pay-method" id="radio-cod" checked class="hidden">
+                    <input type="radio" name="pay-method" id="radio-upi" class="hidden">
+                </div>
+
+                <!-- UPI SCANNER -->
+                <div id="upi-section" class="hidden mb-6 bg-white p-5 rounded-2xl border border-brand text-center shadow-lg relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-green-500 text-white text-[9px] px-2 py-1 rounded-bl-lg font-bold">Recommended</div>
+                    <p class="text-xs font-bold text-gray-500 mb-3">Scan to Pay</p>
+                    <a id="pay-now-btn" href="#" class="block w-full bg-blue-600 text-white py-3 rounded-xl font-bold text-sm shadow-md mb-4"><i class="fas fa-bolt mr-1"></i> Pay via App</a>
+                    <div class="flex justify-center mb-2"><img id="upi-qr-img" class="w-32 h-32 mix-blend-multiply"></div>
+                    <p id="upi-display-amt" class="text-lg font-bold text-gray-900 mb-3"></p>
+                    <input type="text" id="upi-utr" placeholder="Enter UTR / Ref No (Required)" class="w-full border-b border-gray-300 py-2 text-center text-sm outline-none focus:border-brand bg-transparent">
+                </div>
+
+                <!-- TRUST BADGES -->
+                <div class="flex justify-center gap-6 mb-8 opacity-60 grayscale">
+                    <div class="flex flex-col items-center"><i class="fas fa-shield-alt text-xl mb-1"></i><span class="text-[8px] font-bold">Secure</span></div>
+                    <div class="flex flex-col items-center"><i class="fas fa-undo text-xl mb-1"></i><span class="text-[8px] font-bold">Returns</span></div>
+                    <div class="flex flex-col items-center"><i class="fas fa-check-circle text-xl mb-1"></i><span class="text-[8px] font-bold">Verified</span></div>
+                </div>
+
+                <div class="flex gap-3 pb-8">
+                    <button onclick="nextStep(3)" class="w-1/3 bg-white border border-gray-200 py-3 rounded-xl font-bold text-gray-600 text-sm">Back</button>
+                    <button onclick="placeOrder()" class="w-2/3 bg-gray-900 text-white font-bold py-3 rounded-xl place-btn shadow-xl hover:bg-black transition text-sm flex items-center justify-center gap-2">Place Order <i class="fas fa-arrow-right"></i></button>
+                </div>
             </div>
         </div>
     </div>
