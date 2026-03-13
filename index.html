@@ -39,6 +39,8 @@
         .inactive-dot { background: #d1d5db; }
         .active-line { background: #22c55e !important; }
         .cart-badge { position: absolute; top: -5px; right: -5px; background: red; color: white; font-size: 10px; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: bold; }
+        /* Size Button Active State */
+        .size-active { background-color: #000; color: #fff; border-color: #000; }
     </style>
 
     <script type="module">
@@ -70,7 +72,6 @@
         window.MERCHANT_UPI = "ramesh.gorai@superyes"; 
         window.IMGBB_API_KEY = "b7b1309895b4830daaf39c194fa78efd";
 
-        // Sound Effect
         const successAudio = new Audio('https://notificationsounds.com/storage/sounds/file-sounds-1150-pristine.mp3');
 
         window.slugify = (text) => text.toString().toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w\-]+/g, '').replace(/\-\-+/g, '-');
@@ -87,7 +88,6 @@
             showSkeleton();
             updateCartCount();
             
-            // Auto Slide Banner (5 Seconds)
             setInterval(() => {
                 const track = document.getElementById('home-banner-track');
                 if(track) {
@@ -121,7 +121,6 @@
         }
         window.setRoute = (path) => history.pushState(null, null, path);
 
-        // Data Loading
         onValue(ref(db, 'products'), (snapshot) => {
             if(snapshot.exists()) {
                 window.allProducts = [];
@@ -144,7 +143,6 @@
             }
         });
 
-        // Filter & Products
         window.filterCategory = (cat) => {
             document.querySelectorAll('.cat-ring').forEach(el => el.className = "cat-ring w-14 h-14 rounded-full p-[2px] bg-gray-200 transition");
             const active = document.getElementById(`cat-${cat}`);
@@ -198,7 +196,29 @@
         window.renderCustomization = (cat) => {
             const area = document.getElementById('customization-area'); area.innerHTML = ''; window.userCustomization = {};
             if(!cat) return;
-            if(cat.includes('mobile')) {
+            
+            // --- T-SHIRT CUSTOMIZATION START ---
+            if(cat.includes('tshirt')) {
+                area.innerHTML = `
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 mb-4">
+                    <h3 class="font-bold text-xs text-gray-800 mb-3 uppercase tracking-wide">Select Size</h3>
+                    <div class="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
+                        ${['XXS','XS','S','M','L','XL','XXL'].map(s => 
+                            `<button onclick="selectSize('${s}')" class="size-btn min-w-[50px] h-10 rounded-lg border border-gray-300 bg-white text-gray-800 font-bold text-xs hover:border-black transition" id="size-${s}">${s}</button>`
+                        ).join('')}
+                    </div>
+                </div>
+                <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 mb-4">
+                    <h3 class="font-bold text-xs text-blue-700 mb-2">👕 Upload Design/Logo</h3>
+                    <div class="relative border-2 border-dashed border-blue-300 bg-white rounded-lg p-3 text-center cursor-pointer">
+                        <input type="file" accept="image/*" class="absolute inset-0 opacity-0 w-full h-full" onchange="previewImg(this)">
+                        <p class="text-[10px] text-blue-600 font-bold">CLICK TO UPLOAD</p>
+                    </div>
+                    <div id="preview-box" class="mt-2 w-20 h-20 bg-gray-200 rounded hidden overflow-hidden border mx-auto"></div>
+                </div>`;
+            } 
+            // --- T-SHIRT END ---
+            else if(cat.includes('mobile')) {
                 area.innerHTML = `<div class="bg-purple-50 p-4 rounded-xl border border-purple-100 mb-4"><h3 class="font-bold text-xs text-purple-700 mb-2">📱 Phone Model</h3><input type="text" placeholder="Ex: iPhone 13, Vivo V20" class="w-full text-xs p-3 rounded-lg border mb-3 outline-none" oninput="window.userCustomization.model=this.value"><div class="relative border-2 border-dashed border-purple-300 bg-white rounded-lg p-3 text-center"><input type="file" accept="image/*" class="absolute inset-0 opacity-0 w-full h-full" onchange="previewImg(this)"><p class="text-[10px] text-purple-600 font-bold">UPLOAD PHOTO</p></div><div id="preview-box" class="mt-2 w-16 h-16 bg-gray-200 rounded hidden overflow-hidden border"></div></div>`;
             } else if(cat.includes('mug') || cat.includes('frame')) {
                 area.innerHTML = `<div class="bg-blue-50 p-4 rounded-xl border border-blue-100 mb-4"><h3 class="font-bold text-xs text-blue-700 mb-2">🖼️ Upload Photo</h3><input type="file" accept="image/*" class="w-full text-xs" onchange="previewImg(this)"><div id="preview-box" class="mt-2 w-full h-32 bg-gray-200 rounded hidden overflow-hidden object-cover"></div></div>`;
@@ -206,6 +226,13 @@
                 area.innerHTML = `<div class="bg-pink-50 p-4 rounded-xl border border-pink-100 mb-4"><h3 class="font-bold text-xs text-pink-700 mb-2">✒️ Add Name</h3><input type="text" placeholder="Type Name..." class="w-full border p-2 rounded mb-2 text-sm" oninput="document.getElementById('txt-prev').innerText=this.value; window.userCustomization.text=this.value"><div class="bg-white p-3 rounded border text-center"><span id="txt-prev" class="text-xl font-pacifico text-gray-800">Your Name</span></div></div>`;
             }
         }
+
+        window.selectSize = (size) => {
+            window.userCustomization.size = size;
+            document.querySelectorAll('.size-btn').forEach(btn => btn.className = "size-btn min-w-[50px] h-10 rounded-lg border border-gray-300 bg-white text-gray-800 font-bold text-xs hover:border-black transition");
+            document.getElementById(`size-${size}`).className = "size-btn min-w-[50px] h-10 rounded-lg border border-black bg-black text-white font-bold text-xs shadow-md transition";
+        }
+
         window.previewImg = (input) => {
             if(input.files && input.files[0]) {
                 window.userCustomization.imageFile = input.files[0];
@@ -213,20 +240,22 @@
             }
         }
 
-        // Cart Logic
         window.addToCart = () => {
             const p = window.currentProduct;
+            if(p.category.includes('tshirt') && !window.userCustomization.size) return showToast("Please Select Size", "error");
             const existing = window.cart.find(item => item.id === p.id);
             if(existing) { showToast("Already in Cart"); return; }
-            window.cart.push({ id: p.id, title: p.title, price: p.price, image: p.images[0] });
+            window.cart.push({ id: p.id, title: p.title, price: p.price, image: p.images[0], size: window.userCustomization.size });
             localStorage.setItem('cart', JSON.stringify(window.cart));
             updateCartCount(); showToast("Added to Cart 🛒");
         }
+
         window.updateCartCount = () => {
             document.querySelectorAll('.cart-count').forEach(el => el.innerText = window.cart.length);
             if(window.cart.length === 0) document.querySelectorAll('.cart-badge').forEach(el => el.classList.add('hidden'));
             else document.querySelectorAll('.cart-badge').forEach(el => el.classList.remove('hidden'));
         }
+
         window.openCart = () => {
             document.getElementById('home-view').classList.add('hidden');
             document.getElementById('account-view').classList.add('hidden');
@@ -235,15 +264,16 @@
             const list = document.getElementById('cart-list'); list.innerHTML = '';
             if(window.cart.length === 0) { list.innerHTML = `<div class="text-center mt-20 opacity-50"><i class="fas fa-shopping-cart text-4xl mb-3 text-gray-300"></i><p>Cart is Empty</p></div>`; return; }
             window.cart.forEach((item, idx) => {
-                list.innerHTML += `<div class="bg-white p-3 rounded-xl border shadow-sm flex gap-3 items-center mb-3"><img src="${item.image}" class="w-16 h-16 rounded object-cover"><div class="flex-1"><h3 class="font-bold text-xs">${item.title}</h3><p class="text-brand-dark font-bold">₹${item.price}</p></div><button onclick="buyCartItem('${item.id}')" class="bg-black text-white px-3 py-1 rounded text-xs font-bold mr-2">Buy</button><button onclick="removeFromCart(${idx})" class="text-red-500"><i class="fas fa-trash"></i></button></div>`;
+                list.innerHTML += `<div class="bg-white p-3 rounded-xl border shadow-sm flex gap-3 items-center mb-3"><img src="${item.image}" class="w-16 h-16 rounded object-cover"><div class="flex-1"><h3 class="font-bold text-xs">${item.title}</h3><p class="text-brand-dark font-bold">₹${item.price}</p>${item.size ? `<p class="text-[10px] bg-gray-100 inline-block px-2 rounded mt-1">Size: ${item.size}</p>`:''}</div><button onclick="buyCartItem('${item.id}')" class="bg-black text-white px-3 py-1 rounded text-xs font-bold mr-2">Buy</button><button onclick="removeFromCart(${idx})" class="text-red-500"><i class="fas fa-trash"></i></button></div>`;
             });
         }
         window.removeFromCart = (idx) => { window.cart.splice(idx, 1); localStorage.setItem('cart', JSON.stringify(window.cart)); updateCartCount(); openCart(); }
         window.buyCartItem = (id) => { openProduct(id); setTimeout(startCheckout, 500); }
 
-        // Checkout & Payment
         window.startCheckout = () => {
-            if((window.currentProduct.category.includes('mobile') || window.currentProduct.category.includes('mug')) && !window.userCustomization.imageFile) return showToast("Please upload photo", "error");
+            if(window.currentProduct.category.includes('tshirt') && !window.userCustomization.size) return showToast("Please Select Size", "error");
+            if((window.currentProduct.category.includes('mobile') || window.currentProduct.category.includes('mug') || window.currentProduct.category.includes('tshirt')) && !window.userCustomization.imageFile) return showToast("Please upload photo", "error");
+            
             document.getElementById('checkout-view').classList.remove('hidden');
             loadProfile(); showStep(1); selectPayment('COD');
             document.getElementById('chk-img').src = window.currentProduct.images[0];
@@ -287,7 +317,7 @@
                 document.getElementById('upi-box').classList.remove('hidden');
                 const link = `upi://pay?pa=${window.MERCHANT_UPI}&pn=QXZStore&am=${window.currentProduct.price}&cu=INR`;
                 document.getElementById('qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(link)}`;
-                document.getElementById('upi-app-btn').href = link; // Deep link
+                document.getElementById('upi-app-btn').href = link;
             } else {
                 document.getElementById('upi-box').classList.add('hidden');
             }
@@ -317,7 +347,7 @@
             };
             
             push(ref(db, 'orders'), order).then(() => {
-                successAudio.play(); // Play Sound
+                successAudio.play();
                 confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
                 showToast("Order Placed Successfully!");
                 setTimeout(() => { document.getElementById('checkout-view').classList.add('hidden'); openMyOrders(); }, 2000);
@@ -375,10 +405,17 @@
             document.getElementById('od-content').innerHTML = `
                 <div class="bg-white p-4 rounded-xl border shadow-sm mb-4 flex gap-4"><img src="${o.product.image}" class="w-16 h-16 rounded bg-gray-50 object-cover"><div><h3 class="font-bold text-sm text-gray-900">${o.product.title}</h3><p class="font-bold text-brand-dark">₹${o.product.price}</p></div></div>
                 <div class="bg-white p-5 rounded-xl border mb-4"><h3 class="font-bold text-xs mb-4 text-gray-500 uppercase tracking-wider">Order Status</h3><div class="vertical-timeline">${trackingHTML}</div></div>
-                <div class="bg-white p-4 rounded-xl border text-xs"><p class="font-bold text-gray-400 text-[10px] uppercase mb-2">Delivery Address</p><p class="font-bold text-gray-800">${o.user.name}</p><p class="text-gray-600">${o.user.village}, ${o.user.post || ''}</p><p class="text-gray-600">${o.user.city} - ${o.user.pin}</p><p class="font-bold mt-1">Phone: ${o.user.phone}</p><div class="border-t mt-3 pt-2"><p class="font-bold text-gray-400 text-[10px] uppercase mb-1">Payment</p><p>Mode: <b>${o.paymentMethod}</b></p></div></div>`;
+                <div class="bg-white p-4 rounded-xl border text-xs"><p class="font-bold text-gray-400 text-[10px] uppercase mb-2">Delivery Address</p><p class="font-bold text-gray-800">${o.user.name}</p><p class="text-gray-600">${o.user.village}, ${o.user.post || ''}</p><p class="text-gray-600">${o.user.city} - ${o.user.pin}</p><p class="font-bold mt-1">Phone: ${o.user.phone}</p>
+                <div class="border-t mt-3 pt-2">
+                    <p class="font-bold text-gray-400 text-[10px] uppercase mb-1">Customization</p>
+                    ${o.customization.size ? `<p class="mb-1">Size: <b>${o.customization.size}</b></p>` : ''}
+                    ${o.customization.model ? `<p class="mb-1">Model: <b>${o.customization.model}</b></p>` : ''}
+                    ${o.customization.text ? `<p class="mb-1">Name: <b>${o.customization.text}</b></p>` : ''}
+                    ${o.customization.custom_image ? `<a href="${o.customization.custom_image}" target="_blank" class="text-blue-600 underline">View Uploaded Image</a>` : ''}
+                </div>
+                <div class="border-t mt-3 pt-2"><p class="font-bold text-gray-400 text-[10px] uppercase mb-1">Payment</p><p>Mode: <b>${o.paymentMethod}</b></p></div></div>`;
         }
         
-        // About Page Logic
         window.openAbout = () => {
             document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
             document.getElementById('about-view').classList.remove('hidden');
@@ -404,7 +441,6 @@
             }} catch(e){}
         }
 
-        // AUTO STATE LOGIC
         window.autoState = () => { 
             const pin = document.getElementById('in-pin').value;
             if(pin.length > 2) {
@@ -425,13 +461,12 @@
                 else if(prefix>=56 && prefix<=59) s="Karnataka";
                 else if(prefix>=60 && prefix<=64) s="Tamil Nadu";
                 else if(prefix>=67 && prefix<=69) s="Kerala";
-                else if(prefix>=70 && prefix<=74) s="West Bengal"; // PURULIA
+                else if(prefix>=70 && prefix<=74) s="West Bengal"; 
                 else if(prefix>=75 && prefix<=77) s="Odisha";
                 else if(prefix===78) s="Assam";
                 else if(prefix===79) s="North East";
                 else if(prefix>=80 && prefix<=85) s="Bihar / Jharkhand";
                 else s = "India";
-                
                 document.getElementById('in-state').value = s;
             }
         }
@@ -467,6 +502,10 @@
                 <div id="cat-all" onclick="filterCategory('all')" class="flex flex-col items-center gap-1 cursor-pointer min-w-[60px]">
                     <div class="cat-ring w-14 h-14 rounded-full p-[2px] bg-gradient-to-tr from-brand-dark to-red-500 animate-pulse"><div class="w-full h-full bg-white rounded-full p-0.5"><img src="https://cdn-icons-png.flaticon.com/512/3502/3502601.png" class="rounded-full"></div></div>
                     <span class="text-[10px] font-bold">All</span>
+                </div>
+                <div id="cat-custom_tshirt" onclick="filterCategory('custom_tshirt')" class="flex flex-col items-center gap-1 cursor-pointer min-w-[60px]">
+                    <div class="cat-ring w-14 h-14 rounded-full p-[2px] bg-gray-200"><div class="w-full h-full bg-white rounded-full p-0.5"><img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="rounded-full"></div></div>
+                    <span class="text-[10px] font-bold">T-Shirts</span>
                 </div>
                 <div id="cat-custom_mobile" onclick="filterCategory('custom_mobile')" class="flex flex-col items-center gap-1 cursor-pointer min-w-[60px]">
                     <div class="cat-ring w-14 h-14 rounded-full p-[2px] bg-gray-200"><div class="w-full h-full bg-white rounded-full p-0.5"><img src="https://cdn-icons-png.flaticon.com/512/15/15735.png" class="rounded-full"></div></div>
