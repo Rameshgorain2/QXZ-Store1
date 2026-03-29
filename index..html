@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>QxzStore - Earn Rewards with Surveys</title>
+    <meta name="description" content="Join QxzStore and earn rewards by completing simple surveys. Fast, easy, and free.">
+    <meta name="keywords" content="earn money online India, free survey earning, QxzStore deals, reward surveys">
+    <link rel="canonical" href="https://qxzstore.in/">
+    
+    <!-- Open Graph for Social Sharing -->
+    <meta property="og:title" content="Earn Money Online with QxzStore">
+    <meta property="og:description" content="Join thousands of users completing simple surveys for real rewards.">
+    <meta property="og:type" content="website">
+
+    <!-- CSS STYLES -->
+    <style>
+        /* Variables */
+        :root {
+            --primary-color: #6a11cb;
+            --secondary-color: #2575fc;
+            --bg-color: #f4f7f6;
+            --text-color: #333;
+            --card-bg: #ffffff;
+        }
+
+        /* Base Styles */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; }
+        .hidden { display: none !important; }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1rem 2rem;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        /* Hero Section */
+        .hero { display: flex; justify-content: center; padding: 3rem 1rem; text-align: center; }
+        .hero h1 { font-size: 2.5rem; margin-bottom: 10px; color: var(--primary-color); }
+        .social-proof { background: #ffecd2; color: #e65c00; padding: 10px; border-radius: 20px; display: inline-block; margin: 15px 0; font-size: 0.9rem; }
+
+        /* Cards */
+        .card { background: var(--card-bg); padding: 2rem; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); margin: 20px auto; max-width: 500px; }
+        
+        /* Form */
+        .input-group { margin-bottom: 15px; text-align: left; }
+        .input-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9rem; }
+        .input-group input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
+        
+        /* Buttons */
+        .gradient-btn { width: 100%; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white; padding: 12px; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: transform 0.2s; }
+        .gradient-btn:hover { transform: scale(1.02); }
+
+        /* Info Section (SEO) */
+        .info-section { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; padding: 0 1rem 3rem 1rem; }
+        .info-card { flex: 1; min-width: 300px; text-align: left; margin: 0; }
+        .info-card h3 { margin-bottom: 10px; color: var(--secondary-color); }
+        .info-card ul, .info-card ol { margin-left: 20px; }
+
+        /* Footer */
+        footer { text-align: center; padding: 20px; background: #fff; font-size: 0.9rem; color: #777; }
+
+        /* Loading Overlay */
+        .overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255, 255, 255, 0.95); display: flex; justify-content: center; align-items: center; z-index: 1000; flex-direction: column; }
+        .spinner { width: 60px; height: 60px; border: 6px solid #f3f3f3; border-top: 6px solid var(--primary-color); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Admin Table */
+        .admin-header { background: #333; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 10px; border-bottom: 1px solid #ddd; text-align: left; font-size: 0.9rem;}
+        .btn-small { padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer; color: white; margin-right: 5px;}
+        .btn-delete { background: #ff4757; }
+        .btn-toggle { background: #2ed573; color: #222;}
+    </style>
+</head>
+<body>
+
+    <!-- ==============================================
+         USER VIEW (Homepage)
+         ============================================== -->
+    <div id="user-view">
+        <header class="header">
+            <div class="logo">QxzStore </div>
+        </header>
+
+        <main class="hero">
+            <div class="hero-content">
+                <h1>Earn Money Online with Surveys</h1>
+                <p>Complete simple surveys and get rewarded instantly. No hidden fees!</p>
+                
+                <div class="social-proof">
+                    🔥 <strong>1000+ users</strong> joined today!
+                </div>
+
+                <div class="card">
+                    <h2>Ready to earn?</h2>
+                    <form id="surveyForm">
+                        <div class="input-group">
+                            <label for="name">Name (Optional)</label>
+                            <input type="text" id="name" placeholder="Enter your name">
+                        </div>
+                        <div class="input-group">
+                            <label for="email">Email (Optional)</label>
+                            <input type="email" id="email" placeholder="Enter your email">
+                        </div>
+                        <button type="submit" class="gradient-btn">Start Survey Now</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+
+        <section class="info-section">
+            <div class="info-card card">
+                <h3>How it works</h3>
+                <ol>
+                    <li>Click on "Start Survey" above.</li>
+                    <li>Wait securely while we find the best paying survey for you.</li>
+                    <li>Complete the questions and earn your rewards!</li>
+                </ol>
+            </div>
+            <div class="info-card card">
+                <h3>Benefits of QxzStore</h3>
+                <ul>
+                    <li>✅ 100% Free to join</li>
+                    <li>✅ Highest paying survey partners</li>
+                    <li>✅ Mobile-friendly platform</li>
+                </ul>
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 QxzStore. All rights reserved.</p>
+        </footer>
+    </div>
+
+
+    <!-- ==============================================
+         ADMIN VIEW (Hidden by default, accessible via #admin)
+         ============================================== -->
+    <div id="admin-view" class="hidden">
+        <header class="header admin-header">
+            <div class="logo">Admin Panel ⚙️</div>
+        </header>
+
+        <main style="padding: 20px;">
+            <!-- Login -->
+            <div id="loginSection" class="card">
+                <h2>Admin Login</h2>
+                <div class="input-group">
+                    <input type="text" id="adminUser" placeholder="Username (admin)">
+                </div>
+                <div class="input-group">
+                    <input type="password" id="adminPass" placeholder="Password (admin123)">
+                </div>
+                <button id="loginBtn" class="gradient-btn">Login</button>
+                <p id="loginError" style="color:red; display:none; margin-top:10px;">Incorrect Credentials</p>
+            </div>
+
+            <!-- Dashboard -->
+            <div id="dashboardSection" class="hidden">
+                <div class="card">
+                    <h2>Add New Survey Link</h2>
+                    <div class="input-group">
+                        <input type="text" id="linkTitle" placeholder="Link Title (e.g., Survey Provider 1)">
+                    </div>
+                    <div class="input-group">
+                        <input type="url" id="linkUrl" placeholder="https://example.com/survey">
+                    </div>
+                    <button id="addLinkBtn" class="gradient-btn">Add Link</button>
+                </div>
+
+                <div class="card" style="max-width: 800px;">
+                    <h2>Manage Links</h2>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>URL</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="linksTableBody">
+                                <!-- Data injected via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+
+    <!-- ==============================================
+         LOADING OVERLAY
+         ============================================== -->
+    <div id="loadingOverlay" class="overlay hidden">
+        <div class="spinner"></div>
+        <h3 id="loadingText">Connecting to survey...</h3>
+        <p>Redirecting in <span id="timer">4</span> seconds</p>
+    </div>
+
+
+    <!-- ==============================================
+         JAVASCRIPT & FIREBASE LOGIC
+         ============================================== -->
+    <script type="module">
+        // Import Firebase Version 10 directly from CDN
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, push, get, child, onValue, remove, update } 
+        from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        // 🔥 EXACT FIREBASE CONFIGURATION PROVIDED
+        const firebaseConfig = {
+            apiKey: "AIzaSyDkf7b74_MwajOKaCSHpE8gEM48NvrVBJA",
+            authDomain: "e-commerce-4f0ac.firebaseapp.com",
+            databaseURL: "https://e-commerce-4f0ac-default-rtdb.firebaseio.com",
+            projectId: "e-commerce-4f0ac",
+            storageBucket: "e-commerce-4f0ac.firebasestorage.app",
+            messagingSenderId: "958168898428",
+            appId: "1:958168898428:web:4a91a7405220aeedaf22f9"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // --- ROUTING LOGIC (Show Admin if URL has #admin) ---
+        const userView = document.getElementById("user-view");
+        const adminView = document.getElementById("admin-view");
+
+        if (window.location.hash === "#admin") {
+            userView.classList.add("hidden");
+            adminView.classList.remove("hidden");
+        }
+
+        // ==========================================
+        // USER LOGIC
+        // ==========================================
+        const form = document.getElementById("surveyForm");
+        const overlay = document.getElementById("loadingOverlay");
+        const loadingText = document.getElementById("loadingText");
+        const timerSpan = document.getElementById("timer");
+
+        if (form) {
+            form.addEventListener("submit", async (e) => {
+                e.preventDefault();
+
+                // 1. Anti-spam Check
+                if (localStorage.getItem("surveyClicked") === "true") {
+                    alert("You have already started a survey recently. Redirecting...");
+                    redirectToSurvey();
+                    return;
+                }
+                localStorage.setItem("surveyClicked", "true");
+
+                // 2. Gather User Data
+                const name = document.getElementById("name").value.trim() || "Anonymous";
+                const email = document.getElementById("email").value.trim() || "No Email";
+                const userData = {
+                    name: name,
+                    email: email,
+                    timestamp: new Date().toISOString(),
+                    userAgent: navigator.userAgent
+                };
+
+                // 3. Save User Data
+                try {
+                    await push(ref(db, 'users'), userData);
+                } catch (error) {
+                    console.error("Firebase Error:", error);
+                }
+
+                // 4. Start Redirect
+                redirectToSurvey();
+            });
+        }
+
+        async function redirectToSurvey() {
+            overlay.classList.remove("hidden");
+            let redirectUrl = "https://google.com"; // Default fallback
+
+            // Fetch Active Link from Database
+            try {
+                const snapshot = await get(child(ref(db), `links`));
+                if (snapshot.exists()) {
+                    const links = snapshot.val();
+                    for (const key in links) {
+                        if (links[key].status === "active") {
+                            redirectUrl = links[key].url;
+                            break;
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching links:", error);
+            }
+
+            // Fake Loading Animation
+            let secondsLeft = 4;
+            const messages =["Analyzing profile...", "Finding best surveys...", "Connecting securely..."];
+            let msgIndex = 0;
+
+            const interval = setInterval(() => {
+                secondsLeft--;
+                timerSpan.innerText = secondsLeft;
+
+                if(secondsLeft % 2 === 0 && msgIndex < messages.length) {
+                    loadingText.innerText = messages[msgIndex];
+                    msgIndex++;
+                }
+
+                if (secondsLeft <= 0) {
+                    clearInterval(interval);
+                    window.location.href = redirectUrl; // Redirect user
+                }
+            }, 1000);
+        }
+
+        // ==========================================
+        // ADMIN LOGIC
+        // ==========================================
+        const loginBtn = document.getElementById("loginBtn");
+        const addLinkBtn = document.getElementById("addLinkBtn");
+        const linksTableBody = document.getElementById("linksTableBody");
+
+        // Simple Static Credentials
+        const ADMIN_USER = "admin";
+        const ADMIN_PASS = "admin123";
+
+        if (loginBtn) {
+            loginBtn.addEventListener("click", () => {
+                const user = document.getElementById("adminUser").value;
+                const pass = document.getElementById("adminPass").value;
+
+                if (user === ADMIN_USER && pass === ADMIN_PASS) {
+                    document.getElementById("loginSection").classList.add("hidden");
+                    document.getElementById("dashboardSection").classList.remove("hidden");
+                    loadLinks();
+                } else {
+                    document.getElementById("loginError").style.display = "block";
+                }
+            });
+        }
+
+        if (addLinkBtn) {
+            addLinkBtn.addEventListener("click", async () => {
+                const title = document.getElementById("linkTitle").value.trim();
+                const url = document.getElementById("linkUrl").value.trim();
+
+                if (!title || !url) return alert("Please fill both title and URL");
+
+                try {
+                    await push(ref(db, 'links'), { title, url, status: "active" });
+                    document.getElementById("linkTitle").value = "";
+                    document.getElementById("linkUrl").value = "";
+                    alert("Link added successfully!");
+                } catch (error) {
+                    console.error("Error adding link:", error);
+                }
+            });
+        }
+
+        function loadLinks() {
+            onValue(ref(db, 'links'), (snapshot) => {
+                linksTableBody.innerHTML = ""; 
+                if(snapshot.exists()) {
+                    const data = snapshot.val();
+                    for (let id in data) {
+                        const link = data[id];
+                        const tr = document.createElement("tr");
+                        tr.innerHTML = `
+                            <td>${link.title}</td>
+                            <td><a href="${link.url}" target="_blank">View Link</a></td>
+                            <td><b>${link.status.toUpperCase()}</b></td>
+                            <td>
+                                <button class="btn-small btn-toggle" data-id="${id}" data-status="${link.status}">Toggle</button>
+                                <button class="btn-small btn-delete" data-id="${id}">Delete</button>
+                            </td>
+                        `;
+                        linksTableBody.appendChild(tr);
+                    }
+                } else {
+                    linksTableBody.innerHTML = "<tr><td colspan='4'>No links found.</td></tr>";
+                }
+            });
+        }
+
+        // Event Delegation for Delete and Toggle buttons
+        if (linksTableBody) {
+            linksTableBody.addEventListener("click", async (e) => {
+                const btn = e.target;
+                const id = btn.getAttribute("data-id");
+
+                if (btn.classList.contains("btn-delete")) {
+                    if(confirm("Delete this link?")) {
+                        await remove(ref(db, `links/${id}`));
+                    }
+                } 
+                else if (btn.classList.contains("btn-toggle")) {
+                    const currentStatus = btn.getAttribute("data-status");
+                    const newStatus = currentStatus === "active" ? "inactive" : "active";
+                    await update(ref(db, `links/${id}`), { status: newStatus });
+                }
+            });
+        }
+    </script>
+</body>
+</html>
