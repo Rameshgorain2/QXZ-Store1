@@ -1,711 +1,281 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
-<head> <meta name="google-site-verification" content="C_GuTpJpQ99oAQq1ubx5qekLVvaY2jjLN-B38gJe-v4" />
-    
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QXZ Store | Learn. Build. Earn.</title>
-    
-    <!-- SEO Meta Tags -->
-    <meta name="description" content="QXZ Store is a modern digital learning platform focused on practical education, AI, digital products, content creation, business skills, and online learning.">
-    <meta name="keywords" content="QXZ Store, Ramesh Gorain, Learn Build Earn, Digital Skills, AI Education, Online Business, Content Creation, Digital Products">
-    <meta name="author" content="Ramesh Gorain">
-    
-    <!-- Open Graph Tags -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://qxzstore.in/">
-    <meta property="og:title" content="QXZ Store | Learn. Build. Earn.">
-    <meta property="og:description" content="Master practical digital skills, AI, business, content creation, and online learning with QXZ Store.">
-    <meta property="og:image" content="https://qxzstore.in/og-image.jpg">
-    <meta property="og:site_name" content="QXZ Store">
-    
-    <!-- Twitter Cards -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@QXZStore">
-    <meta name="twitter:title" content="QXZ Store | Learn. Build. Earn.">
-    <meta name="twitter:description" content="The Future of Digital Learning Starts Here.">
-    <meta name="twitter:image" content="https://qxzstore.in/twitter-image.jpg">
-    
-    <!-- Canonical URL, Manifest & Favicon -->
-    <link rel="canonical" href="https://qxzstore.in/">
-    <link rel="manifest" href="/manifest.json">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
-    
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Phosphor Icons -->
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-
-    <!-- Structured Data (JSON-LD) -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "EducationalOrganization",
-      "name": "QXZ Store",
-      "url": "https://qxzstore.in",
-      "logo": "https://qxzstore.in/logo.png",
-      "founder": {
-        "@type": "Person",
-        "name": "Ramesh Gorain"
-      },
-      "description": "A modern digital learning platform focused on practical education, AI, digital products, content creation, business skills, and online learning.",
-      "slogan": "Learn. Build. Earn.",
-      "sameAs": [
-        "https://www.instagram.com/qxzstore",
-        "https://www.youtube.com/@qxzstore"
-      ]
-    }
-    </script>
-
-    <style>
-        /* CSS Variables */
-        :root {
-            --bg: #000000;
-            --surface: rgba(25, 25, 25, 0.6);
-            --surface-hover: rgba(40, 40, 40, 0.8);
-            --border: rgba(255, 255, 255, 0.1);
-            --border-hover: rgba(255, 255, 255, 0.2);
-            --text: #ffffff;
-            --text-muted: #a1a1aa;
-            --primary: #3b82f6;
-            --accent: #8b5cf6;
-            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-            --font-head: 'Poppins', sans-serif;
-            --font-body: 'Inter', sans-serif;
-            --glass: blur(20px);
-            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        /* Light Theme */
-        [data-theme="light"] {
-            --bg: #fafafa;
-            --surface: rgba(255, 255, 255, 0.7);
-            --surface-hover: rgba(255, 255, 255, 0.9);
-            --border: rgba(0, 0, 0, 0.08);
-            --border-hover: rgba(0, 0, 0, 0.15);
-            --text: #09090b;
-            --text-muted: #52525b;
-        }
-
-        /* Reset */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; font-size: 16px; }
-        body {
-            font-family: var(--font-body);
-            background-color: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
-            overflow-x: hidden;
-            transition: background-color 0.4s ease, color 0.4s ease;
-        }
-        
-        h1, h2, h3, h4 { font-family: var(--font-head); font-weight: 600; line-height: 1.2; letter-spacing: -0.02em; }
-        a { text-decoration: none; color: inherit; transition: var(--transition); }
-        ul { list-style: none; }
-        
-        /* Utility */
-        .gradient-text {
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            display: inline-block;
-        }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
-        .text-center { text-align: center; }
-        section { padding: 8rem 0; position: relative; }
-        .section-header { text-align: center; margin-bottom: 4rem; }
-        .section-title { font-size: 2.5rem; margin-bottom: 1rem; }
-        .section-subtitle { color: var(--text-muted); font-size: 1.125rem; max-width: 600px; margin: 0 auto; }
-
-        /* Navigation */
-        nav {
-            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-            background: rgba(var(--bg), 0.7);
-            backdrop-filter: var(--glass);
-            -webkit-backdrop-filter: var(--glass);
-            border-bottom: 1px solid var(--border);
-            padding: 1rem 0;
-            transition: var(--transition);
-        }
-        .nav-container { display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-family: var(--font-head); font-size: 1.5rem; font-weight: 700; letter-spacing: -1px; }
-        .nav-links { display: flex; gap: 2.5rem; align-items: center; }
-        .nav-links a { font-size: 0.9375rem; font-weight: 500; color: var(--text-muted); }
-        .nav-links a:hover { color: var(--text); }
-        
-        .controls { display: flex; align-items: center; gap: 1rem; }
-        .theme-toggle {
-            background: var(--surface); border: 1px solid var(--border);
-            color: var(--text); cursor: pointer; width: 40px; height: 40px;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 1.25rem; transition: var(--transition);
-        }
-        .theme-toggle:hover { background: var(--surface-hover); }
-
-        /* Mobile Nav */
-        .mobile-menu-btn { display: none; background: none; border: none; color: var(--text); font-size: 1.5rem; cursor: pointer; }
-
-        /* Hero */
-        .hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; position: relative; overflow: hidden; padding-top: 5rem; }
-        .hero-bg {
-            position: absolute; width: 800px; height: 800px;
-            background: radial-gradient(circle, rgba(59,130,246,0.15) 0%, rgba(139,92,246,0.1) 40%, transparent 70%);
-            top: 50%; left: 50%; transform: translate(-50%, -50%);
-            z-index: -1; animation: pulse 10s ease-in-out infinite alternate;
-        }
-        .tagline-badge {
-            display: inline-flex; align-items: center; gap: 0.5rem;
-            padding: 0.5rem 1rem; border-radius: 100px;
-            background: var(--surface); border: 1px solid var(--border);
-            font-size: 0.875rem; font-weight: 500; margin-bottom: 2rem;
-            backdrop-filter: var(--glass);
-        }
-        .hero h1 { font-size: clamp(3rem, 6vw, 5.5rem); margin-bottom: 1.5rem; letter-spacing: -2px; line-height: 1.1; }
-        .hero p { font-size: clamp(1.125rem, 2vw, 1.375rem); color: var(--text-muted); max-width: 700px; margin: 0 auto 3rem; }
-        
-        .btn-group { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
-        .btn {
-            padding: 1rem 2rem; border-radius: 100px; font-weight: 500; font-family: var(--font-body);
-            transition: var(--transition); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
-        }
-        .btn-primary { background: var(--text); color: var(--bg); border: none; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(255,255,255,0.1); }
-        .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); backdrop-filter: var(--glass); }
-        .btn-secondary:hover { background: var(--surface-hover); border-color: var(--border-hover); }
-
-        /* Grids & Cards */
-        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 3rem; }
-        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
-        
-        .card {
-            background: var(--surface); border: 1px solid var(--border);
-            border-radius: 24px; padding: 2.5rem; backdrop-filter: var(--glass);
-            transition: var(--transition); display: flex; flex-direction: column;
-        }
-        .card:hover { transform: translateY(-5px); border-color: var(--border-hover); background: var(--surface-hover); }
-        .card-icon { 
-            width: 56px; height: 56px; border-radius: 16px; 
-            background: var(--gradient); display: flex; align-items: center; justify-content: center;
-            font-size: 1.75rem; color: #fff; margin-bottom: 1.5rem;
-        }
-
-        /* About Section */
-        .about-text h3 { font-size: 2rem; margin-bottom: 1.5rem; }
-        .about-text p { color: var(--text-muted); font-size: 1.125rem; margin-bottom: 1.5rem; }
-        .mission-vision { display: flex; gap: 2rem; margin-top: 3rem; }
-        .mv-box { flex: 1; border-left: 2px solid var(--primary); padding-left: 1.5rem; }
-        .mv-box h4 { margin-bottom: 0.5rem; }
-        .mv-box p { color: var(--text-muted); font-size: 0.9375rem; }
-
-        /* Community Banner */
-        .community-banner {
-            background: var(--gradient); border-radius: 32px; padding: 5rem 3rem;
-            text-align: center; color: white; position: relative; overflow: hidden;
-        }
-        .community-banner h2 { font-size: 3rem; margin-bottom: 1.5rem; }
-        .community-banner p { font-size: 1.25rem; max-width: 600px; margin: 0 auto 2.5rem; opacity: 0.9; }
-
-        /* Founder Section */
-        .founder-card { display: flex; align-items: center; gap: 4rem; padding: 4rem; }
-        .founder-photo {
-            width: 100%; max-width: 350px; aspect-ratio: 1; border-radius: 32px;
-            background: linear-gradient(135deg, var(--surface), var(--bg)); 
-            border: 1px solid var(--border); display: flex; align-items: center; justify-content: center;
-            font-size: 5rem; color: var(--border-hover);
-        }
-        .founder-info h3 { font-size: 2.5rem; margin-bottom: 0.5rem; }
-        .founder-info span { color: var(--primary); font-size: 1.125rem; font-weight: 500; display: block; margin-bottom: 2rem; }
-        .quote { font-size: 1.5rem; font-style: italic; color: var(--text-muted); line-height: 1.5; border-left: 3px solid var(--border); padding-left: 2rem; }
-
-        /* FAQ */
-        .faq-container { max-width: 800px; margin: 0 auto; }
-        details { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; margin-bottom: 1rem; overflow: hidden; transition: var(--transition); }
-        details:hover { border-color: var(--border-hover); }
-        summary { padding: 1.5rem; font-weight: 500; font-family: var(--font-head); cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; font-size: 1.125rem; }
-        summary::-webkit-details-marker { display: none; }
-        summary::after { content: '\25BC'; font-size: 0.875rem; transition: transform 0.3s; color: var(--text-muted); }
-        details[open] summary::after { transform: rotate(180deg); }
-        details p { padding: 0 1.5rem 1.5rem; color: var(--text-muted); line-height: 1.7; }
-
-        /* Contact Section */
-        .contact-info { display: flex; flex-direction: column; gap: 2rem; }
-        .contact-item { display: flex; align-items: center; gap: 1rem; font-size: 1.125rem; }
-        .contact-item i { font-size: 1.5rem; color: var(--primary); }
-        
-        .social-links { display: flex; gap: 1rem; margin-top: 1rem; }
-        .social-btn {
-            width: 50px; height: 50px; border-radius: 16px; background: var(--surface); border: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: center; font-size: 1.5rem; transition: var(--transition);
-        }
-        .social-btn:hover { background: var(--text); color: var(--bg); transform: translateY(-3px); }
-
-        .contact-form { display: flex; flex-direction: column; gap: 1.25rem; }
-        input, textarea {
-            width: 100%; padding: 1.25rem; border-radius: 16px; background: rgba(0,0,0,0.2);
-            border: 1px solid var(--border); color: var(--text); font-family: var(--font-body);
-            font-size: 1rem; transition: var(--transition);
-        }
-        [data-theme="light"] input, [data-theme="light"] textarea { background: rgba(255,255,255,0.5); }
-        input:focus, textarea:focus { outline: none; border-color: var(--primary); background: var(--surface); }
-
-        /* Footer */
-        footer { border-top: 1px solid var(--border); padding: 5rem 0 2rem; margin-top: 4rem; }
-        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 4rem; margin-bottom: 4rem; }
-        .footer-brand p { color: var(--text-muted); margin-top: 1rem; max-width: 300px; }
-        .footer-col h4 { margin-bottom: 1.5rem; font-size: 1.125rem; }
-        .footer-col ul { display: flex; flex-direction: column; gap: 1rem; }
-        .footer-col a { color: var(--text-muted); transition: var(--transition); }
-        .footer-col a:hover { color: var(--text); }
-        .footer-bottom { text-align: center; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 2rem; font-size: 0.875rem; }
-
-        /* Legal Modals */
-        dialog { 
-            margin: auto; padding: 3rem; border-radius: 24px; border: 1px solid var(--border);
-            background: var(--bg); color: var(--text); max-width: 600px; width: 90%;
-            backdrop-filter: var(--glass); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-        }
-        dialog::backdrop { background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); }
-        .dialog-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
-        .close-dialog { background: var(--surface); border: 1px solid var(--border); color: var(--text); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .dialog-content { color: var(--text-muted); font-size: 0.9375rem; line-height: 1.6; max-height: 60vh; overflow-y: auto; }
-        .dialog-content h3 { color: var(--text); margin: 1.5rem 0 0.5rem; }
-
-        /* Animations */
-        @keyframes pulse { 0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; } 100% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.4; } }
-        
-        .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
-        .reveal.active { opacity: 1; transform: translateY(0); }
-
-        /* Mobile Responsive */
-        @media (max-width: 900px) {
-            .founder-card { flex-direction: column; text-align: center; padding: 2rem; }
-            .quote { border-left: none; border-top: 3px solid var(--border); padding-left: 0; padding-top: 1.5rem; }
-            .footer-grid { grid-template-columns: 1fr; gap: 3rem; }
-        }
-        @media (max-width: 768px) {
-            .nav-links {
-                position: fixed; top: 72px; left: 0; width: 100%; background: var(--bg);
-                flex-direction: column; padding: 2rem; gap: 2rem; border-bottom: 1px solid var(--border);
-                clip-path: circle(0% at 100% 0); transition: clip-path 0.5s ease-out;
+    <title>QXZ Store | Professional Online Courses</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: { primary: '#6d28d9', primaryHover: '#5b21b6' }
+                }
             }
-            .nav-links.active { clip-path: circle(150% at 100% 0); }
-            .mobile-menu-btn { display: block; }
-            section { padding: 5rem 0; }
-            .community-banner { padding: 3rem 1.5rem; border-radius: 24px; }
         }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .page-view { display: none; }
+        .active-view { display: block; }
     </style>
 </head>
-<body>
+<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
 
     <!-- Navigation -->
-    <nav id="navbar">
-        <div class="container nav-container">
-            <a href="#" class="logo">QXZ Store<span class="gradient-text">.</span></a>
-            <ul class="nav-links" id="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#learning">Learning</a></li>
-                <li><a href="#community">Community</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-            <div class="controls">
-                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle Theme">
-                    <i class="ph ph-moon"></i>
-                </button>
-                <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Menu">
-                    <i class="ph ph-list"></i>
-                </button>
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center cursor-pointer" onclick="navigate('home')">
+                    <span class="text-2xl font-bold text-primary">QXZ Store</span>
+                </div>
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="#" onclick="navigate('home')" class="text-gray-600 hover:text-primary">Home</a>
+                    <a href="#" onclick="navigate('home')" class="text-gray-600 hover:text-primary">All Courses</a>
+                    <a href="#" onclick="navigate('dashboard')" class="text-gray-600 hover:text-primary">Student Area</a>
+                </div>
+                <div>
+                    <button onclick="navigate('dashboard')" class="bg-primary text-white px-4 py-2 rounded-md font-medium hover:bg-primaryHover transition">Login</button>
+                </div>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <header id="home" class="hero">
-        <div class="hero-bg"></div>
-        <div class="container reveal">
-            <div class="tagline-badge">
-                <i class="ph-fill ph-sparkle" style="color: var(--primary);"></i>
-                Learn. Build. Earn.
-            </div>
-            <h1>The Future of <br><span class="gradient-text">Digital Learning</span><br> Starts Here.</h1>
-            <p>Master practical digital skills, AI, business, content creation, and online learning with QXZ Store.</p>
-            <div class="btn-group">
-                <a href="#learning" class="btn btn-primary">
-                    Explore Learning <i class="ph ph-arrow-right"></i>
-                </a>
-                <a href="#contact" class="btn btn-secondary">Contact Us</a>
-            </div>
-        </div>
-    </header>
-
-    <!-- About Section -->
-    <section id="about" class="container reveal">
-        <div class="grid-2" style="align-items: center;">
-            <div class="about-text">
-                <h2 class="section-title">About QXZ Store</h2>
-                <p>QXZ Store is an independent digital learning platform created to help learners build practical skills through high-quality educational resources and digital products.</p>
-                <p style="font-weight: 500; color: var(--text);">Founded by Ramesh Gorain.</p>
-                
-                <div class="mission-vision">
-                    <div class="mv-box">
-                        <h4>Our Mission</h4>
-                        <p>To make practical digital education simple, accessible, and valuable.</p>
-                    </div>
-                    <div class="mv-box" style="border-color: var(--accent);">
-                        <h4>Our Vision</h4>
-                        <p>To build one of India's most trusted digital learning brands.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="card" style="text-align: center; padding: 4rem 2rem; border-radius: 32px; background: linear-gradient(to bottom right, var(--surface), transparent);">
-                <i class="ph-fill ph-rocket-launch" style="font-size: 5rem; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1.5rem;"></i>
-                <h3>Empowering the next generation of builders.</h3>
-            </div>
-        </div>
-    </section>
-
-    <!-- Learning Section -->
-    <section id="learning" class="container reveal">
-        <div class="section-header">
-            <h2 class="section-title">Premium Learning</h2>
-            <p class="section-subtitle">Master the exact skills needed to thrive in the modern creator and digital economy.</p>
-        </div>
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-grow">
         
-        <div class="grid-3">
-            <div class="card">
-                <div class="card-icon"><i class="ph ph-robot"></i></div>
-                <h3>Artificial Intelligence</h3>
-                <p style="color: var(--text-muted); margin-top: 0.75rem;">Leverage modern AI tools to automate workflows, create faster, and build smarter.</p>
-            </div>
-            <div class="card">
-                <div class="card-icon"><i class="ph ph-files"></i></div>
-                <h3>Digital Products</h3>
-                <p style="color: var(--text-muted); margin-top: 0.75rem;">Discover templates, guides, and premium assets designed to accelerate your work.</p>
-            </div>
-            <div class="card">
-                <div class="card-icon"><i class="ph ph-video-camera"></i></div>
-                <h3>Content Creation</h3>
-                <p style="color: var(--text-muted); margin-top: 0.75rem;">Learn modern editing, storytelling, and audience building strategies.</p>
-            </div>
-            <div class="card">
-                <div class="card-icon"><i class="ph ph-briefcase"></i></div>
-                <h3>Online Business</h3>
-                <p style="color: var(--text-muted); margin-top: 0.75rem;">Frameworks and practical systems to start and scale Internet-based businesses.</p>
-            </div>
-            <div class="card">
-                <div class="card-icon"><i class="ph ph-lightbulb"></i></div>
-                <h3>Creator Economy</h3>
-                <p style="color: var(--text-muted); margin-top: 0.75rem;">Understand monetization, personal branding, and the business of being a creator.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Why QXZ Store Section -->
-    <section id="why-us" class="container reveal">
-        <div class="section-header">
-            <h2 class="section-title">Why QXZ Store</h2>
-            <p class="section-subtitle">We focus on what actually works, skipping the fluff and outdated theory.</p>
-        </div>
-        <div class="grid-3">
-            <div class="card" style="padding: 2rem;">
-                <h3 style="display: flex; align-items: center; gap: 0.75rem;"><i class="ph-fill ph-check-circle" style="color: var(--primary);"></i> Practical Learning</h3>
-                <p style="color: var(--text-muted); margin-top: 0.5rem;">Actionable knowledge you can implement today.</p>
-            </div>
-            <div class="card" style="padding: 2rem;">
-                <h3 style="display: flex; align-items: center; gap: 0.75rem;"><i class="ph-fill ph-check-circle" style="color: var(--primary);"></i> Beginner Friendly</h3>
-                <p style="color: var(--text-muted); margin-top: 0.5rem;">Structured from zero to advanced logically.</p>
-            </div>
-            <div class="card" style="padding: 2rem;">
-                <h3 style="display: flex; align-items: center; gap: 0.75rem;"><i class="ph-fill ph-check-circle" style="color: var(--primary);"></i> Modern Resources</h3>
-                <p style="color: var(--text-muted); margin-top: 0.5rem;">High-quality, beautifully designed materials.</p>
-            </div>
-            <div class="card" style="padding: 2rem;">
-                <h3 style="display: flex; align-items: center; gap: 0.75rem;"><i class="ph-fill ph-check-circle" style="color: var(--primary);"></i> Continuous Updates</h3>
-                <p style="color: var(--text-muted); margin-top: 0.5rem;">Stay relevant as digital landscapes shift.</p>
-            </div>
-            <div class="card" style="padding: 2rem;">
-                <h3 style="display: flex; align-items: center; gap: 0.75rem;"><i class="ph-fill ph-check-circle" style="color: var(--primary);"></i> Community Driven</h3>
-                <p style="color: var(--text-muted); margin-top: 0.5rem;">Built with feedback from real learners.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Community Section -->
-    <section id="community" class="container reveal">
-        <div class="community-banner">
-            <h2>Grow Together</h2>
-            <p>QXZ Store is building a community where creators and learners can connect, share knowledge, and grow together. Don't build in isolation.</p>
-            <a href="#contact" class="btn btn-primary" style="background: white; color: black;">
-                Join the Ecosystem <i class="ph-bold ph-arrow-up-right"></i>
-            </a>
-        </div>
-    </section>
-
-    <!-- Founder Section -->
-    <section id="founder" class="container reveal">
-        <div class="card founder-card">
-            <div class="founder-photo">
-                <i class="ph ph-user"></i>
-            </div>
-            <div class="founder-info">
-                <h3>Ramesh Gorain</h3>
-                <span>Founder of QXZ Store</span>
-                <blockquote class="quote">
-                    "Learning practical digital skills can open new opportunities for everyone. That is why we built QXZ Store."
-                </blockquote>
-            </div>
-        </div>
-    </section>
-
-    <!-- FAQ Section -->
-    <section id="faq" class="container reveal">
-        <div class="section-header">
-            <h2 class="section-title">Frequently Asked Questions</h2>
-        </div>
-        <div class="faq-container">
-            <details>
-                <summary>Who is QXZ Store designed for?</summary>
-                <p>QXZ Store is for ambitious beginners, creators, and entrepreneurs looking to develop practical digital skills in AI, business, and content creation.</p>
-            </details>
-            <details>
-                <summary>How do I access the digital products?</summary>
-                <p>Once acquired, all resources and digital products are delivered instantly via email and accessible through your secure platform dashboard.</p>
-            </details>
-            <details>
-                <summary>Are the materials updated?</summary>
-                <p>Yes. The digital world evolves quickly, and we continuously update our educational resources to ensure you are learning the latest tools and strategies.</p>
-            </details>
-            <details>
-                <summary>Do I need prior experience?</summary>
-                <p>No prior experience is necessary. Our resources are beginner-friendly and designed to scale with your knowledge level over time.</p>
-            </details>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="container reveal">
-        <div class="grid-2">
-            <div class="contact-info">
-                <div>
-                    <h2 class="section-title">Get in Touch</h2>
-                    <p style="color: var(--text-muted);">Have questions about our resources or want to collaborate? Reach out to us directly.</p>
+        <!-- 1. HOMEPAGE VIEW -->
+        <div id="home" class="page-view active-view">
+            <!-- Hero Section -->
+            <section class="bg-primary text-white py-20 px-4 text-center">
+                <div class="max-w-4xl mx-auto">
+                    <h1 class="text-4xl md:text-5xl font-bold mb-6">Develop New Skills with Professional Courses</h1>
+                    <p class="text-lg md:text-xl text-purple-100 mb-8">Access high-quality, structured digital learning materials and video courses designed to help you master new concepts at your own pace.</p>
+                    <button onclick="document.getElementById('courses').scrollIntoView({behavior: 'smooth'})" class="bg-white text-primary px-8 py-3 rounded-md font-bold text-lg hover:bg-gray-100 transition shadow-lg">Explore Courses</button>
                 </div>
-                
-                <div class="contact-item">
-                    <i class="ph ph-envelope-simple"></i>
-                    <span>otp.qxzstore@gmail.com</span>
+            </section>
+
+            <!-- Featured Courses -->
+            <section id="courses" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">Available Programs</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Course Card -->
+                    <div class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden flex flex-col transition hover:shadow-md">
+                        <div class="bg-purple-100 h-48 flex items-center justify-center">
+                            <span class="text-primary font-bold text-xl">Digital Marketing Fundamentals</span>
+                        </div>
+                        <div class="p-6 flex-grow flex flex-col">
+                            <h3 class="text-xl font-bold mb-2">Digital Marketing Fundamentals</h3>
+                            <p class="text-gray-600 text-sm mb-4">Learn the core concepts of SEO, social media, and paid advertising.</p>
+                            <div class="text-sm text-gray-500 mb-4 space-y-1">
+                                <p><strong>Format:</strong> Video Modules & PDF Guides</p>
+                                <p><strong>Duration:</strong> 4 Weeks</p>
+                                <p><strong>For:</strong> Beginners & Small Business Owners</p>
+                            </div>
+                            <div class="mt-auto flex justify-between items-center pt-4 border-t border-gray-100">
+                                <span class="text-2xl font-bold text-gray-900">₹1,999</span>
+                                <button onclick="navigate('course')" class="bg-primary text-white px-4 py-2 rounded font-medium hover:bg-primaryHover">View Details</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                
-                <div>
-                    <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 0.5rem;">Connect with us</p>
-                    <div class="social-links">
-                        <a href="https://instagram.com" class="social-btn" aria-label="Instagram"><i class="ph ph-instagram-logo"></i></a>
-                        <a href="https://youtube.com" class="social-btn" aria-label="YouTube"><i class="ph ph-youtube-logo"></i></a>
+            </section>
+
+            <!-- Disclaimer Banner -->
+            <section class="bg-gray-100 py-8 px-4 border-y border-gray-200">
+                <div class="max-w-4xl mx-auto text-center text-sm text-gray-600">
+                    <p><strong>Earnings & Results Disclaimer:</strong> QXZ Store provides educational materials only. Any business or financial outcomes discussed depend entirely on the individual's effort, skills, experience, and market factors. We do not make guaranteed income claims.</p>
+                </div>
+            </section>
+        </div>
+
+        <!-- 2. COURSE DETAILS VIEW -->
+        <div id="course" class="page-view py-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <button onclick="navigate('home')" class="text-primary mb-6 hover:underline flex items-center">&larr; Back to Courses</button>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                <!-- Course Info -->
+                <div class="lg:col-span-2">
+                    <h1 class="text-3xl font-bold mb-4">Digital Marketing Fundamentals</h1>
+                    <p class="text-lg text-gray-600 mb-8">A comprehensive, step-by-step program designed to teach you the realities of modern digital marketing without the fluff. </p>
+                    
+                    <h2 class="text-2xl font-semibold mb-4">What You Will Learn</h2>
+                    <ul class="list-disc pl-5 space-y-2 text-gray-700 mb-8">
+                        <li>Core principles of Search Engine Optimization (SEO).</li>
+                        <li>Setting up and analyzing paid advertising campaigns.</li>
+                        <li>Content marketing strategies and planning.</li>
+                        <li>Analytics and measuring campaign success.</li>
+                    </ul>
+
+                    <h2 class="text-2xl font-semibold mb-4">Course Curriculum</h2>
+                    <div class="border border-gray-200 rounded-md bg-white">
+                        <div class="p-4 border-b border-gray-200 font-medium">Module 1: Introduction to Marketing (3 Lessons)</div>
+                        <div class="p-4 border-b border-gray-200 font-medium">Module 2: Mastering SEO (5 Lessons)</div>
+                        <div class="p-4 font-medium">Module 3: Paid Ads Management (4 Lessons)</div>
+                    </div>
+                </div>
+
+                <!-- Purchase Sidebar -->
+                <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm h-fit sticky top-24">
+                    <div class="text-3xl font-bold text-gray-900 mb-4">₹1,999</div>
+                    <button onclick="navigate('checkout')" class="w-full bg-primary text-white py-3 rounded-md font-bold text-lg hover:bg-primaryHover mb-4">Buy Now</button>
+                    
+                    <div class="text-sm text-gray-600 space-y-3 pt-4 border-t border-gray-200">
+                        <p class="flex justify-between"><span>Format:</span> <span class="font-medium text-gray-900">Pre-recorded Video</span></p>
+                        <p class="flex justify-between"><span>Modules:</span> <span class="font-medium text-gray-900">12 Lessons</span></p>
+                        <p class="flex justify-between"><span>Access:</span> <span class="font-medium text-gray-900">1 Year Digital Access</span></p>
+                        <p class="flex justify-between"><span>Delivery:</span> <span class="font-medium text-gray-900">Instant via Dashboard</span></p>
+                    </div>
+
+                    <div class="mt-6 pt-4 border-t border-gray-200 text-xs text-gray-500">
+                        <p><strong>Refund Policy:</strong> 7-day refund policy applicable only if less than 20% of the course has been viewed. See <a href="#" class="text-primary underline">Refund Policy</a> for terms.</p>
                     </div>
                 </div>
             </div>
-            
-            <div class="card">
-                <form class="contact-form" onsubmit="event.preventDefault(); alert('Message sent successfully!');">
-                    <input type="text" placeholder="Your Name" required>
-                    <input type="email" placeholder="Your Email" required>
-                    <textarea rows="5" placeholder="How can we help you?" required></textarea>
-                    <button type="submit" class="btn btn-primary">Send Message</button>
-                </form>
+        </div>
+
+        <!-- 3. CHECKOUT VIEW -->
+        <div id="checkout" class="page-view py-10 max-w-4xl mx-auto px-4">
+            <h1 class="text-3xl font-bold mb-8 text-center">Secure Checkout</h1>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Billing Details -->
+                <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+                    <h2 class="text-xl font-semibold mb-4">Customer Details</h2>
+                    <form onsubmit="event.preventDefault(); simulatePayment();" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+                            <input type="text" required class="w-full border border-gray-300 rounded p-2 focus:ring-primary focus:border-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
+                            <input type="email" required class="w-full border border-gray-300 rounded p-2 focus:ring-primary focus:border-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
+                            <input type="tel" required class="w-full border border-gray-300 rounded p-2 focus:ring-primary focus:border-primary">
+                        </div>
+                        
+                        <!-- Disclaimer Checklist -->
+                        <div class="pt-4 flex items-start">
+                            <input type="checkbox" required class="mt-1 mr-2 text-primary focus:ring-primary">
+                            <label class="text-xs text-gray-600">I agree to the Terms & Conditions and understand that results depend on individual effort. No guarantees of income are made.</label>
+                        </div>
+
+                        <button type="submit" class="w-full bg-primary text-white py-3 rounded-md font-bold mt-4 hover:bg-primaryHover">
+                            Proceed to Pay via Cashfree
+                        </button>
+                        <p class="text-xs text-center text-gray-500 mt-2">You will be securely redirected to Cashfree Payments.</p>
+                    </form>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 h-fit">
+                    <h2 class="text-xl font-semibold mb-4">Order Summary</h2>
+                    <div class="flex justify-between mb-2">
+                        <span class="text-gray-600">Digital Marketing Fundamentals</span>
+                        <span class="font-medium">₹1,999</span>
+                    </div>
+                    <div class="flex justify-between mb-4 pb-4 border-b border-gray-200">
+                        <span class="text-gray-600">Tax/GST (18%)</span>
+                        <span class="font-medium">Inclusive</span>
+                    </div>
+                    <div class="flex justify-between text-xl font-bold">
+                        <span>Total Pay</span>
+                        <span>₹1,999</span>
+                    </div>
+                </div>
             </div>
         </div>
-    </section>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-brand">
-                    <a href="#" class="logo">QXZ Store<span class="gradient-text">.</span></a>
-                    <p>Learn. Build. Earn.<br>Founded by Ramesh Gorain.</p>
+        <!-- 4. STUDENT DASHBOARD VIEW -->
+        <div id="dashboard" class="page-view py-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 class="text-3xl font-bold mb-8">Student Dashboard</h1>
+            <div class="flex flex-col md:flex-row gap-8">
+                <!-- Sidebar Nav -->
+                <div class="w-full md:w-64 flex-shrink-0 space-y-2">
+                    <button class="w-full text-left bg-purple-100 text-primary font-medium px-4 py-2 rounded-md">My Courses</button>
+                    <button class="w-full text-left text-gray-600 hover:bg-gray-100 px-4 py-2 rounded-md transition">Resources</button>
+                    <button class="w-full text-left text-gray-600 hover:bg-gray-100 px-4 py-2 rounded-md transition">Account Settings</button>
+                    <button class="w-full text-left text-gray-600 hover:bg-gray-100 px-4 py-2 rounded-md transition">Help & Support</button>
                 </div>
-                <div class="footer-col">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="#about">About</a></li>
-                        <li><a href="#learning">Learning</a></li>
-                        <li><a href="#contact">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Legal</h4>
-                    <ul>
-                        <li><a href="#" onclick="openModal('modal-privacy')">Privacy Policy</a></li>
-                        <li><a href="#" onclick="openModal('modal-terms')">Terms & Conditions</a></li>
-                        <li><a href="#" onclick="openModal('modal-refund')">Refund Policy</a></li>
-                        <li><a href="#" onclick="openModal('modal-disclaimer')">Disclaimer</a></li>
-                    </ul>
+                
+                <!-- Main Content -->
+                <div class="flex-grow">
+                    <h2 class="text-xl font-semibold mb-6">Purchased Courses</h2>
+                    <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm flex flex-col md:flex-row justify-between items-center gap-4">
+                        <div>
+                            <h3 class="font-bold text-lg">Digital Marketing Fundamentals</h3>
+                            <p class="text-sm text-gray-500 mb-2">12 Lessons • Video Access</p>
+                            
+                            <!-- Progress Bar -->
+                            <div class="w-full md:w-64 bg-gray-200 rounded-full h-2.5 mb-1">
+                                <div class="bg-primary h-2.5 rounded-full" style="width: 25%"></div>
+                            </div>
+                            <span class="text-xs font-medium text-gray-600">25% Completed (3/12 Lessons)</span>
+                        </div>
+                        <button class="bg-primary text-white px-6 py-2 rounded-md font-medium hover:bg-primaryHover">Resume Course</button>
+                    </div>
                 </div>
             </div>
-            <div class="footer-bottom">
-                <p>Copyright &copy; 2026 QXZ Store. All Rights Reserved.</p>
+        </div>
+    </main>
+
+    <!-- Footer with Mandatory Compliance Links -->
+    <footer class="bg-gray-900 text-gray-300 py-12 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <span class="text-2xl font-bold text-white mb-4 block">QXZ Store</span>
+                <p class="text-sm text-gray-400 mb-4">Providing professional educational courses and digital resources. We are committed to transparency and high-quality learning.</p>
+                <div class="text-sm text-gray-400 space-y-1">
+                    <p>Email: contact@qxzstore.in</p>
+                    <p>Phone: +91 XXXXX XXXXX</p>
+                    <p>Address: [Your Registered Business Address Here], India</p>
+                </div>
             </div>
+            <div>
+                <h3 class="text-white font-semibold mb-4">Legal & Policies</h3>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#" class="hover:text-white transition">Terms & Conditions</a></li>
+                    <li><a href="#" class="hover:text-white transition">Privacy Policy</a></li>
+                    <li><a href="#" class="hover:text-white transition">Refund & Cancellation Policy</a></li>
+                    <li><a href="#" class="hover:text-white transition">Course Delivery Policy</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-white font-semibold mb-4">Quick Links</h3>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#" onclick="navigate('home')" class="hover:text-white transition">Home</a></li>
+                    <li><a href="#" onclick="navigate('home')" class="hover:text-white transition">All Courses</a></li>
+                    <li><a href="#" class="hover:text-white transition">About Us</a></li>
+                    <li><a href="#" class="hover:text-white transition">Contact Us</a></li>
+                    <li><a href="#" class="hover:text-white transition">FAQ</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 pt-8 border-t border-gray-800 text-xs text-center text-gray-500">
+            <p>&copy; 2026 QXZ Store (https://www.qxzstore.in). All rights reserved.</p>
+            <p class="mt-2">Disclaimer: Results shown or discussed on this website are not guaranteed. Success requires dedication, implementation, and hard work.</p>
         </div>
     </footer>
 
-    <!-- Legal Modals -->
-    <dialog id="modal-privacy">
-        <div class="dialog-header">
-            <h2>Privacy Policy</h2>
-            <button class="close-dialog" onclick="closeModal('modal-privacy')"><i class="ph ph-x"></i></button>
-        </div>
-        <div class="dialog-content">
-            <p>At QXZ Store, your privacy is a top priority. We collect minimal information necessary to provide our digital learning services.</p>
-            <h3>Information Collection</h3>
-            <p>We only collect data provided voluntarily, such as your email address when contacting us or purchasing a digital product.</p>
-            <h3>Data Usage</h3>
-            <p>Data is strictly used to deliver educational content, updates, and customer support. We do not sell your data to third parties.</p>
-        </div>
-    </dialog>
-
-    <dialog id="modal-terms">
-        <div class="dialog-header">
-            <h2>Terms & Conditions</h2>
-            <button class="close-dialog" onclick="closeModal('modal-terms')"><i class="ph ph-x"></i></button>
-        </div>
-        <div class="dialog-content">
-            <p>By accessing QXZ Store, you agree to these terms.</p>
-            <h3>Intellectual Property</h3>
-            <p>All content, digital products, and resources are the intellectual property of QXZ Store and Ramesh Gorain. Unauthorized distribution is prohibited.</p>
-            <h3>Usage License</h3>
-            <p>Products are granted a single-user license. You may not resell, share, or reproduce the materials.</p>
-        </div>
-    </dialog>
-
-    <dialog id="modal-refund">
-        <div class="dialog-header">
-            <h2>Refund Policy</h2>
-            <button class="close-dialog" onclick="closeModal('modal-refund')"><i class="ph ph-x"></i></button>
-        </div>
-        <div class="dialog-content">
-            <p>Due to the digital and instantly accessible nature of our educational products, standard purchases are non-refundable.</p>
-            <p>If you encounter technical issues accessing your purchased resources, please contact our support team at hello@qxzstore.in, and we will ensure you receive your materials promptly.</p>
-        </div>
-    </dialog>
-
-    <dialog id="modal-disclaimer">
-        <div class="dialog-header">
-            <h2>Disclaimer</h2>
-            <button class="close-dialog" onclick="closeModal('modal-disclaimer')"><i class="ph ph-x"></i></button>
-        </div>
-        <div class="dialog-content">
-            <p>The information provided by QXZ Store is for educational and informational purposes only.</p>
-            <p>While our resources aim to teach practical online business and digital skills, we make no guarantees regarding financial success, income generation, or specific outcomes. Your results depend on your own dedication, execution, and external market factors.</p>
-        </div>
-    </dialog>
-
-    <!-- Scripts -->
+    <!-- Simple JS Router for Demo Purposes -->
     <script>
-        // Theme Toggle
-        const themeToggle = document.getElementById('theme-toggle');
-        const htmlElement = document.documentElement;
-        const themeIcon = themeToggle.querySelector('i');
-
-        // Check system preference initially
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-            htmlElement.setAttribute('data-theme', 'light');
-            themeIcon.classList.replace('ph-moon', 'ph-sun');
+        function navigate(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page-view').forEach(el => {
+                el.classList.remove('active-view');
+            });
+            // Show requested page
+            document.getElementById(pageId).classList.add('active-view');
+            window.scrollTo(0, 0);
         }
 
-        themeToggle.addEventListener('click', () => {
-            if (htmlElement.getAttribute('data-theme') === 'dark') {
-                htmlElement.setAttribute('data-theme', 'light');
-                themeIcon.classList.replace('ph-moon', 'ph-sun');
-            } else {
-                htmlElement.setAttribute('data-theme', 'dark');
-                themeIcon.classList.replace('ph-sun', 'ph-moon');
-            }
-        });
-
-        // Mobile Menu Toggle
-        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-        const navLinks = document.getElementById('nav-links');
-        
-        mobileMenuBtn.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-            const icon = mobileMenuBtn.querySelector('i');
-            if (navLinks.classList.contains('active')) {
-                icon.classList.replace('ph-list', 'ph-x');
-            } else {
-                icon.classList.replace('ph-x', 'ph-list');
-            }
-        });
-
-        // Close mobile menu on link click
-        navLinks.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                navLinks.classList.remove('active');
-                mobileMenuBtn.querySelector('i').classList.replace('ph-x', 'ph-list');
-            });
-        });
-
-        // Scroll Reveal Animation (Intersection Observer)
-        const revealElements = document.querySelectorAll('.reveal');
-        const revealOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
-
-        const revealOnScroll = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, revealOptions);
-
-        revealElements.forEach(el => revealOnScroll.observe(el));
-
-        // Sticky Navbar Effect
-        const navbar = document.getElementById('navbar');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                navbar.style.padding = '0.5rem 0';
-                navbar.style.boxShadow = '0 10px 30px rgba(0,0,0,0.1)';
-            } else {
-                navbar.style.padding = '1rem 0';
-                navbar.style.boxShadow = 'none';
-            }
-        });
-
-        // Modal Logic for Legal Pages
-        function openModal(id) {
-            event.preventDefault();
-            const modal = document.getElementById(id);
-            modal.showModal();
-            // Prevent body scrolling
-            document.body.style.overflow = 'hidden';
+        function simulatePayment() {
+            // In a real scenario, this initiates the Cashfree SDK / redirect.
+            alert("Redirecting to secure Cashfree Payment Gateway...\n\n(This is a compliant placeholder. Integrate the official Cashfree JS SDK or backend API here).");
+            navigate('dashboard'); // Simulate successful payment
         }
-
-        function closeModal(id) {
-            const modal = document.getElementById(id);
-            modal.close();
-            // Restore body scrolling
-            document.body.style.overflow = 'auto';
-        }
-
-        // Close modal when clicking outside
-        document.querySelectorAll('dialog').forEach(dialog => {
-            dialog.addEventListener('click', (e) => {
-                const dialogDimensions = dialog.getBoundingClientRect();
-                if (
-                    e.clientX < dialogDimensions.left ||
-                    e.clientX > dialogDimensions.right ||
-                    e.clientY < dialogDimensions.top ||
-                    e.clientY > dialogDimensions.bottom
-                ) {
-                    dialog.close();
-                    document.body.style.overflow = 'auto';
-                }
-            });
-        });
     </script>
 </body>
 </html>
