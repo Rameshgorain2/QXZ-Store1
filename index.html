@@ -3,279 +3,402 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QXZ Store | Professional Online Courses</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'] },
-                    colors: { primary: '#6d28d9', primaryHover: '#5b21b6' }
-                }
-            }
-        }
-    </script>
+    <title>Digital Growth Mastery | Qxz Store</title>
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        .page-view { display: none; }
-        .active-view { display: block; }
+        /* Base Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #0b0f19;
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            padding-bottom: 70px;
+        }
+        * { box-sizing: border-box; }
+
+        /* Timer Banner */
+        .timer-banner {
+            background: linear-gradient(90deg, #FFD84D 0%, #FFA903 100%);
+            color: #000;
+            text-align: center;
+            padding: 10px;
+            font-weight: 800;
+            font-size: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(255, 169, 3, 0.3);
+        }
+
+        /* Navbar */
+        .navbar {
+            padding: 20px;
+            text-align: center;
+            background: #131a2a;
+            border-bottom: 1px solid #1f2937;
+        }
+        .navbar h2 { margin: 0; color: #FFA903; font-size: 26px; font-weight: 800; }
+
+        /* Containers */
+        .container {
+            max-width: 1000px; /* Desktop width */
+            margin: 0 auto;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .form-container { max-width: 500px; margin: 0 auto; }
+
+        /* Headings */
+        h1 { font-size: 28px; font-weight: 800; line-height: 1.3; margin-bottom: 10px; }
+        p.subtitle { color: #cbd5e1; font-size: 16px; font-weight: 300; margin-bottom: 30px; }
+
+        /* Desktop Flexbox Layout */
+        .desktop-row { display: flex; flex-direction: column; gap: 20px; }
+
+        /* Video Section */
+        .video-box {
+            position: relative; width: 100%; padding-bottom: 56.25%;
+            border: 2px dashed #FFA903; border-radius: 15px; overflow: hidden;
+            margin: 0; box-shadow: 0 10px 30px rgba(0,0,0,0.5); background: #000;
+        }
+        .video-box iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+
+        /* Pricing */
+        .price-box { margin: 20px 0; font-size: 20px; font-weight: 600; }
+        .old-price { text-decoration: line-through; color: #ef4444; font-size: 18px; margin-left: 5px; }
+        .new-price { color: #22c55e; font-size: 42px; font-weight: 800; display: block; line-height: 1; margin-top: 5px; }
+
+        /* Animated Main Button */
+        .btn-animated {
+            background: linear-gradient(90deg, #FFD84D 0%, #FFA903 50%, #FFD84D 100%);
+            background-size: 200% 200%; color: #000; border: none; padding: 16px 30px;
+            font-size: 22px; font-weight: 800; border-radius: 10px; cursor: pointer; width: 100%;
+            font-family: 'Poppins', sans-serif; text-transform: uppercase;
+            box-shadow: 0 0 20px rgba(255, 169, 3, 0.5);
+            animation: gradientShift 2s ease infinite, glowPulse 1.5s infinite, shake 2.5s infinite;
+            transition: 0.3s;
+        }
+        .btn-animated:hover { transform: translateY(-3px); }
+        .btn-animated:disabled { animation: none; background: #64748b; color: #cbd5e1; cursor: not-allowed; box-shadow: none; }
+
+        /* Animations */
+        @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes glowPulse { 0%, 100% { box-shadow: 0 0 15px rgba(255,169,3,0.4); } 50% { box-shadow: 0 0 30px rgba(255,169,3,0.8); } }
+        @keyframes shake { 0%, 20%, 100% { transform: rotate(0deg) translateY(0); } 5%, 15% { transform: rotate(-2deg) translateY(-2px); } 10% { transform: rotate(2deg) translateY(-2px); } }
+
+        /* Card Section for Forms */
+        .form-card {
+            background: #131a2a; padding: 30px 25px; border-radius: 12px; text-align: left;
+            border: 1px solid #1f2937; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        /* Sticky Bottom Banner */
+        .sticky-enroll-banner {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: linear-gradient(90deg, #FFD84D 0%, #FFA903 100%);
+            padding: 12px 20px; display: flex; justify-content: space-between; align-items: center;
+            z-index: 999; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); transition: transform 0.3s ease-in-out;
+        }
+        .sticky-enroll-banner .sticky-price { color: #000; font-size: 20px; font-weight: 800; line-height: 1.1; }
+        .sticky-enroll-banner .sticky-price span { text-decoration: line-through; font-size: 14px; font-weight: 600; color: #d90000; }
+        .sticky-enroll-banner .sticky-btn {
+            background: #000; color: #FFA903; border: none; padding: 10px 20px;
+            font-size: 16px; font-weight: 800; font-family: 'Poppins', sans-serif;
+            border-radius: 6px; cursor: pointer; text-transform: uppercase;
+        }
+
+        /* Forms */
+        .form-group { margin-bottom: 20px; text-align: left; }
+        .form-group label { display: block; margin-bottom: 8px; color: #cbd5e1; font-size: 14px; font-weight: 600; }
+        .form-control {
+            width: 100%; padding: 15px; background: #1e293b; border: 1px solid #334155; color: white;
+            border-radius: 8px; font-size: 15px; font-family: 'Poppins', sans-serif; transition: 0.3s;
+        }
+        .form-control:focus { outline: none; border-color: #FFA903; background: #0f172a; box-shadow: 0 0 10px rgba(255, 169, 3, 0.2); }
+
+        /* Buttons Standard */
+        .btn-standard {
+            background: #3b82f6; color: white; border: none; padding: 15px; font-size: 18px;
+            font-weight: 600; border-radius: 8px; width: 100%; cursor: pointer;
+            font-family: 'Poppins', sans-serif; margin-top: 10px; transition: 0.3s;
+        }
+        .btn-standard:hover { filter: brightness(1.1); }
+        .btn-standard:disabled { background: #64748b; cursor: not-allowed; }
+
+        /* Payment Specific */
+        .qr-placeholder { width: 220px; height: 220px; background: white; margin: 20px auto; border-radius: 10px; padding: 10px; }
+        .qr-placeholder img { width: 100%; height: 100%; }
+        .upi-btn {
+            background: #10b981; color: white; display: block; text-align: center; text-decoration: none;
+            padding: 15px; border-radius: 8px; font-weight: 600; font-size: 18px; margin-bottom: 25px; transition: 0.3s;
+        }
+        .upi-btn:hover { background: #059669; }
+        
+        /* Footer */
+        .footer { background: #0f172a; text-align: center; padding: 40px 20px; margin-top: 50px; border-top: 1px solid #1f2937; }
+        .footer a { color: #94a3b8; text-decoration: none; margin: 0 15px; font-size: 14px; transition: 0.3s; }
+        .footer a:hover { color: #FFA903; }
+        .footer p { color: #64748b; font-size: 14px; margin-top: 20px; }
+
+        /* Hide Sections */
+        #checkout-section, #payment-section { display: none; }
+
+        /* Desktop Media Queries */
+        @media (min-width: 768px) {
+            h1 { font-size: 42px; margin-bottom: 15px; }
+            p.subtitle { font-size: 18px; margin-bottom: 40px; }
+            .desktop-row { flex-direction: row; align-items: center; text-align: left; }
+            .desktop-col-left { flex: 1.2; padding-right: 20px; }
+            .desktop-col-right { flex: 0.8; padding-left: 30px; }
+            .price-box { margin-top: 0; }
+            .sticky-enroll-banner { justify-content: center; gap: 50px; }
+        }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
+<body>
 
-    <!-- Navigation -->
-    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-                <div class="flex items-center cursor-pointer" onclick="navigate('home')">
-                    <span class="text-2xl font-bold text-primary">QXZ Store</span>
+    <!-- STICKY ENROLL BANNER -->
+    <div class="sticky-enroll-banner" id="stickyBanner">
+        <div class="sticky-price">₹299 <span>₹1999</span></div>
+        <button class="sticky-btn" onclick="showCheckout()">Enroll Now</button>
+    </div>
+
+    <!-- 1. LANDING PAGE -->
+    <div id="landing-section">
+        <div class="timer-banner" id="timerDisplay">⏳ OFFER ENDS IN: 30:00</div>
+        <div class="navbar"><h2>Qxz Store</h2></div>
+        <div class="container">
+            <h1>Start Your Online Digital Business Today!</h1>
+            <p class="subtitle">Learn practical skills, grow on social media, and start earning. No theory, only real results.</p>
+            <div class="desktop-row">
+                <!-- Left Side: Video -->
+                <div class="desktop-col-left">
+                    <div class="video-box">
+                        <iframe src="https://youtu.be/H8fsIgKe3lc?si=yBPA4de3GSkNNFLr" allowfullscreen></iframe>
+                    </div>
                 </div>
-                <div class="hidden md:flex space-x-8 items-center">
-                    <a href="#" onclick="navigate('home')" class="text-gray-600 hover:text-primary">Home</a>
-                    <a href="#" onclick="navigate('home')" class="text-gray-600 hover:text-primary">All Courses</a>
-                    <a href="#" onclick="navigate('dashboard')" class="text-gray-600 hover:text-primary">Student Area</a>
-                </div>
-                <div>
-                    <button onclick="navigate('dashboard')" class="bg-primary text-white px-4 py-2 rounded-md font-medium hover:bg-primaryHover transition">Login</button>
+                <!-- Right Side: Price & Button -->
+                <div class="desktop-col-right">
+                    <div class="price-box">
+                        Regular Price: <span class="old-price">₹1999</span>
+                        <span class="new-price">₹299</span>
+                    </div>
+                    <button class="btn-animated" onclick="showCheckout()">Enroll Now For ₹299</button>
+                    <p style="color: #64748b; font-size: 13px; margin-top: 15px; text-align: center;"><i class="fa-solid fa-shield-halved"></i> 100% Secure Checkout</p>
                 </div>
             </div>
         </div>
-    </nav>
+    </div>
 
-    <!-- MAIN CONTENT AREA -->
-    <main class="flex-grow">
-        
-        <!-- 1. HOMEPAGE VIEW -->
-        <div id="home" class="page-view active-view">
-            <!-- Hero Section -->
-            <section class="bg-primary text-white py-20 px-4 text-center">
-                <div class="max-w-4xl mx-auto">
-                    <h1 class="text-4xl md:text-5xl font-bold mb-6">Develop New Skills with Professional Courses</h1>
-                    <p class="text-lg md:text-xl text-purple-100 mb-8">Access high-quality, structured digital learning materials and video courses designed to help you master new concepts at your own pace.</p>
-                    <button onclick="document.getElementById('courses').scrollIntoView({behavior: 'smooth'})" class="bg-white text-primary px-8 py-3 rounded-md font-bold text-lg hover:bg-gray-100 transition shadow-lg">Explore Courses</button>
+    <!-- 2. CHECKOUT PAGE (Step 1) -->
+    <div id="checkout-section">
+        <div class="navbar"><h2>Step 1: Your Details</h2></div>
+        <div class="container form-container">
+            <div class="form-card">
+                <p style="text-align: center; color: #cbd5e1; margin-bottom: 25px; font-size: 15px;">Fill details to unlock the course.</p>
+                <div class="form-group">
+                    <label>First Name</label>
+                    <input type="text" id="fname" class="form-control" placeholder="E.g. Rahul" required>
                 </div>
-            </section>
-
-            <!-- Featured Courses -->
-            <section id="courses" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">Available Programs</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- Course Card -->
-                    <div class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden flex flex-col transition hover:shadow-md">
-                        <div class="bg-purple-100 h-48 flex items-center justify-center">
-                            <span class="text-primary font-bold text-xl">Digital Marketing Fundamentals</span>
-                        </div>
-                        <div class="p-6 flex-grow flex flex-col">
-                            <h3 class="text-xl font-bold mb-2">Digital Marketing Fundamentals</h3>
-                            <p class="text-gray-600 text-sm mb-4">Learn the core concepts of SEO, social media, and paid advertising.</p>
-                            <div class="text-sm text-gray-500 mb-4 space-y-1">
-                                <p><strong>Format:</strong> Video Modules & PDF Guides</p>
-                                <p><strong>Duration:</strong> 4 Weeks</p>
-                                <p><strong>For:</strong> Beginners & Small Business Owners</p>
-                            </div>
-                            <div class="mt-auto flex justify-between items-center pt-4 border-t border-gray-100">
-                                <span class="text-2xl font-bold text-gray-900">₹1,999</span>
-                                <button onclick="navigate('course')" class="bg-primary text-white px-4 py-2 rounded font-medium hover:bg-primaryHover">View Details</button>
-                            </div>
-                        </div>
-                    </div>
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input type="text" id="lname" class="form-control" placeholder="E.g. Kumar" required>
                 </div>
-            </section>
-
-            <!-- Disclaimer Banner -->
-            <section class="bg-gray-100 py-8 px-4 border-y border-gray-200">
-                <div class="max-w-4xl mx-auto text-center text-sm text-gray-600">
-                    <p><strong>Earnings & Results Disclaimer:</strong> QXZ Store provides educational materials only. Any business or financial outcomes discussed depend entirely on the individual's effort, skills, experience, and market factors. We do not make guaranteed income claims.</p>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="email" class="form-control" placeholder="youremail@gmail.com" required>
                 </div>
-            </section>
-        </div>
-
-        <!-- 2. COURSE DETAILS VIEW -->
-        <div id="course" class="page-view py-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <button onclick="navigate('home')" class="text-primary mb-6 hover:underline flex items-center">&larr; Back to Courses</button>
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                <!-- Course Info -->
-                <div class="lg:col-span-2">
-                    <h1 class="text-3xl font-bold mb-4">Digital Marketing Fundamentals</h1>
-                    <p class="text-lg text-gray-600 mb-8">A comprehensive, step-by-step program designed to teach you the realities of modern digital marketing without the fluff. </p>
-                    
-                    <h2 class="text-2xl font-semibold mb-4">What You Will Learn</h2>
-                    <ul class="list-disc pl-5 space-y-2 text-gray-700 mb-8">
-                        <li>Core principles of Search Engine Optimization (SEO).</li>
-                        <li>Setting up and analyzing paid advertising campaigns.</li>
-                        <li>Content marketing strategies and planning.</li>
-                        <li>Analytics and measuring campaign success.</li>
-                    </ul>
-
-                    <h2 class="text-2xl font-semibold mb-4">Course Curriculum</h2>
-                    <div class="border border-gray-200 rounded-md bg-white">
-                        <div class="p-4 border-b border-gray-200 font-medium">Module 1: Introduction to Marketing (3 Lessons)</div>
-                        <div class="p-4 border-b border-gray-200 font-medium">Module 2: Mastering SEO (5 Lessons)</div>
-                        <div class="p-4 font-medium">Module 3: Paid Ads Management (4 Lessons)</div>
-                    </div>
+                <div class="form-group">
+                    <label>WhatsApp Number</label>
+                    <input type="tel" id="phone" class="form-control" placeholder="10-Digit Mobile No." required>
                 </div>
-
-                <!-- Purchase Sidebar -->
-                <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm h-fit sticky top-24">
-                    <div class="text-3xl font-bold text-gray-900 mb-4">₹1,999</div>
-                    <button onclick="navigate('checkout')" class="w-full bg-primary text-white py-3 rounded-md font-bold text-lg hover:bg-primaryHover mb-4">Buy Now</button>
-                    
-                    <div class="text-sm text-gray-600 space-y-3 pt-4 border-t border-gray-200">
-                        <p class="flex justify-between"><span>Format:</span> <span class="font-medium text-gray-900">Pre-recorded Video</span></p>
-                        <p class="flex justify-between"><span>Modules:</span> <span class="font-medium text-gray-900">12 Lessons</span></p>
-                        <p class="flex justify-between"><span>Access:</span> <span class="font-medium text-gray-900">1 Year Digital Access</span></p>
-                        <p class="flex justify-between"><span>Delivery:</span> <span class="font-medium text-gray-900">Instant via Dashboard</span></p>
-                    </div>
-
-                    <div class="mt-6 pt-4 border-t border-gray-200 text-xs text-gray-500">
-                        <p><strong>Refund Policy:</strong> 7-day refund policy applicable only if less than 20% of the course has been viewed. See <a href="#" class="text-primary underline">Refund Policy</a> for terms.</p>
-                    </div>
-                </div>
+                <button id="proceedBtn" class="btn-animated" style="animation: none;" onclick="showPayment()">Proceed to Pay ₹299</button>
+                <button style="background: transparent; border:none; color: #94a3b8; width:100%; margin-top: 15px; font-family:'Poppins'; cursor:pointer; font-size: 15px;" onclick="goBack()">← Cancel & Go Back</button>
             </div>
         </div>
+    </div>
 
-        <!-- 3. CHECKOUT VIEW -->
-        <div id="checkout" class="page-view py-10 max-w-4xl mx-auto px-4">
-            <h1 class="text-3xl font-bold mb-8 text-center">Secure Checkout</h1>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Billing Details -->
-                <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-                    <h2 class="text-xl font-semibold mb-4">Customer Details</h2>
-                    <form onsubmit="event.preventDefault(); simulatePayment();" class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
-                            <input type="text" required class="w-full border border-gray-300 rounded p-2 focus:ring-primary focus:border-primary">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
-                            <input type="email" required class="w-full border border-gray-300 rounded p-2 focus:ring-primary focus:border-primary">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
-                            <input type="tel" required class="w-full border border-gray-300 rounded p-2 focus:ring-primary focus:border-primary">
-                        </div>
-                        
-                        <!-- Disclaimer Checklist -->
-                        <div class="pt-4 flex items-start">
-                            <input type="checkbox" required class="mt-1 mr-2 text-primary focus:ring-primary">
-                            <label class="text-xs text-gray-600">I agree to the Terms & Conditions and understand that results depend on individual effort. No guarantees of income are made.</label>
-                        </div>
+    <!-- 3. PAYMENT PAGE (Step 2) -->
+    <div id="payment-section">
+        <div class="navbar"><h2>Step 2: Make Payment</h2></div>
+        <div class="container form-container">
+            <div class="form-card" style="text-align: center;">
+                <h3 style="color: white; margin-top:0; font-size: 22px;">Pay ₹299 Securely</h3>
+                <p style="color: #cbd5e1; font-size: 14px;">Scan QR or Click button to pay via UPI</p>
 
-                        <button type="submit" class="w-full bg-primary text-white py-3 rounded-md font-bold mt-4 hover:bg-primaryHover">
-                            Proceed to Pay via Cashfree
-                        </button>
-                        <p class="text-xs text-center text-gray-500 mt-2">You will be securely redirected to Cashfree Payments.</p>
-                    </form>
+                <!-- CHANGE 'YOUR_UPI_ID@upi' TO YOUR ACTUAL UPI ID BELOW -->
+                <div class="qr-placeholder">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=YOUR_UPI_ID@upi&pn=QxzStore&am=299&cu=INR" alt="QR">
                 </div>
 
-                <!-- Order Summary -->
-                <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 h-fit">
-                    <h2 class="text-xl font-semibold mb-4">Order Summary</h2>
-                    <div class="flex justify-between mb-2">
-                        <span class="text-gray-600">Digital Marketing Fundamentals</span>
-                        <span class="font-medium">₹1,999</span>
-                    </div>
-                    <div class="flex justify-between mb-4 pb-4 border-b border-gray-200">
-                        <span class="text-gray-600">Tax/GST (18%)</span>
-                        <span class="font-medium">Inclusive</span>
-                    </div>
-                    <div class="flex justify-between text-xl font-bold">
-                        <span>Total Pay</span>
-                        <span>₹1,999</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+                <!-- UPI Intent Link -->
+                <a href="upi://pay?pa=YOUR_UPI_ID@upi&pn=QxzStore&am=299&cu=INR" class="upi-btn">
+                    <i class="fa-solid fa-mobile-screen"></i> Click Here to Pay via UPI App
+                </a>
 
-        <!-- 4. STUDENT DASHBOARD VIEW -->
-        <div id="dashboard" class="page-view py-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 class="text-3xl font-bold mb-8">Student Dashboard</h1>
-            <div class="flex flex-col md:flex-row gap-8">
-                <!-- Sidebar Nav -->
-                <div class="w-full md:w-64 flex-shrink-0 space-y-2">
-                    <button class="w-full text-left bg-purple-100 text-primary font-medium px-4 py-2 rounded-md">My Courses</button>
-                    <button class="w-full text-left text-gray-600 hover:bg-gray-100 px-4 py-2 rounded-md transition">Resources</button>
-                    <button class="w-full text-left text-gray-600 hover:bg-gray-100 px-4 py-2 rounded-md transition">Account Settings</button>
-                    <button class="w-full text-left text-gray-600 hover:bg-gray-100 px-4 py-2 rounded-md transition">Help & Support</button>
-                </div>
+                <hr style="border: 1px solid #1f2937; margin: 30px 0;">
+
+                <h3 style="color: #FFA903; font-size: 20px;">Payment Verification</h3>
+                <p style="color: #cbd5e1; font-size: 14px; margin-bottom: 20px;">Enter your 12-digit UTR / Reference ID after successful payment.</p>
                 
-                <!-- Main Content -->
-                <div class="flex-grow">
-                    <h2 class="text-xl font-semibold mb-6">Purchased Courses</h2>
-                    <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm flex flex-col md:flex-row justify-between items-center gap-4">
-                        <div>
-                            <h3 class="font-bold text-lg">Digital Marketing Fundamentals</h3>
-                            <p class="text-sm text-gray-500 mb-2">12 Lessons • Video Access</p>
-                            
-                            <!-- Progress Bar -->
-                            <div class="w-full md:w-64 bg-gray-200 rounded-full h-2.5 mb-1">
-                                <div class="bg-primary h-2.5 rounded-full" style="width: 25%"></div>
-                            </div>
-                            <span class="text-xs font-medium text-gray-600">25% Completed (3/12 Lessons)</span>
-                        </div>
-                        <button class="bg-primary text-white px-6 py-2 rounded-md font-medium hover:bg-primaryHover">Resume Course</button>
-                    </div>
+                <div class="form-group">
+                    <input type="number" id="utr" class="form-control" placeholder="Enter 12-Digit UTR Number" required>
                 </div>
-            </div>
-        </div>
-    </main>
 
-    <!-- Footer with Mandatory Compliance Links -->
-    <footer class="bg-gray-900 text-gray-300 py-12 border-t border-gray-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-                <span class="text-2xl font-bold text-white mb-4 block">QXZ Store</span>
-                <p class="text-sm text-gray-400 mb-4">Providing professional educational courses and digital resources. We are committed to transparency and high-quality learning.</p>
-                <div class="text-sm text-gray-400 space-y-1">
-                    <p>Email: contact@qxzstore.in</p>
-                    <p>Phone: +91 XXXXX XXXXX</p>
-                    <p>Address: [Your Registered Business Address Here], India</p>
-                </div>
-            </div>
-            <div>
-                <h3 class="text-white font-semibold mb-4">Legal & Policies</h3>
-                <ul class="space-y-2 text-sm">
-                    <li><a href="#" class="hover:text-white transition">Terms & Conditions</a></li>
-                    <li><a href="#" class="hover:text-white transition">Privacy Policy</a></li>
-                    <li><a href="#" class="hover:text-white transition">Refund & Cancellation Policy</a></li>
-                    <li><a href="#" class="hover:text-white transition">Course Delivery Policy</a></li>
-                </ul>
-            </div>
-            <div>
-                <h3 class="text-white font-semibold mb-4">Quick Links</h3>
-                <ul class="space-y-2 text-sm">
-                    <li><a href="#" onclick="navigate('home')" class="hover:text-white transition">Home</a></li>
-                    <li><a href="#" onclick="navigate('home')" class="hover:text-white transition">All Courses</a></li>
-                    <li><a href="#" class="hover:text-white transition">About Us</a></li>
-                    <li><a href="#" class="hover:text-white transition">Contact Us</a></li>
-                    <li><a href="#" class="hover:text-white transition">FAQ</a></li>
-                </ul>
+                <button id="verifyBtn" class="btn-standard" style="background:#22c55e;" onclick="submitOrder()">Submit Verification</button>
             </div>
         </div>
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 pt-8 border-t border-gray-800 text-xs text-center text-gray-500">
-            <p>&copy; 2026 QXZ Store (https://www.qxzstore.in). All rights reserved.</p>
-            <p class="mt-2">Disclaimer: Results shown or discussed on this website are not guaranteed. Success requires dedication, implementation, and hard work.</p>
-        </div>
-    </footer>
+    </div>
 
-    <!-- Simple JS Router for Demo Purposes -->
+    <!-- FOOTER -->
+    <div class="footer">
+        <div style="margin-bottom: 20px;">
+            <a href="#">Terms</a>
+            <a href="#">Privacy</a>
+            <a href="#">Refund Policy</a>
+            <a href="#">Contact</a>
+        </div>
+        <p><strong>Qxz Store</strong> - E-learning Platform</p>
+        <p>Built with ❤️ by <strong>EarnwithRamesh.official </strong></p>
+    </div>
+
+    <!-- FIREBASE SDK & JAVASCRIPT LOGIC -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
-        function navigate(pageId) {
-            // Hide all pages
-            document.querySelectorAll('.page-view').forEach(el => {
-                el.classList.remove('active-view');
-            });
-            // Show requested page
-            document.getElementById(pageId).classList.add('active-view');
+        // 1. FIREBASE CONFIGURATION
+        const firebaseConfig = {
+            apiKey: "AIzaSyBOu3BGlFXXSYUpP0P5VLo-qSGXITptN3c",
+            authDomain: "landing-page-305c5.firebaseapp.com",
+            databaseURL: "https://landing-page-305c5-default-rtdb.firebaseio.com",
+            projectId: "landing-page-305c5",
+            storageBucket: "landing-page-305c5.firebasestorage.app",
+            messagingSenderId: "337738276300",
+            appId: "1:337738276300:web:80c5b0c289a55f7dad9169"
+        };
+        
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+        const db = firebase.firestore();
+
+        let currentCustomerId = ""; // Store DB ID here
+
+        // Navigation Logic
+        function showCheckout() {
+            document.getElementById('landing-section').style.display = 'none';
+            document.getElementById('checkout-section').style.display = 'block';
+            document.getElementById('stickyBanner').style.display = 'none';
             window.scrollTo(0, 0);
         }
 
-        function simulatePayment() {
-            // In a real scenario, this initiates the Cashfree SDK / redirect.
-            alert("Redirecting to secure Cashfree Payment Gateway...\n\n(This is a compliant placeholder. Integrate the official Cashfree JS SDK or backend API here).");
-            navigate('dashboard'); // Simulate successful payment
+        function goBack() {
+            document.getElementById('checkout-section').style.display = 'none';
+            document.getElementById('landing-section').style.display = 'block';
+            document.getElementById('stickyBanner').style.display = 'flex';
+            window.scrollTo(0, 0);
         }
+
+        // STEP 1: Process Details & Save as "Incomplete"
+        function showPayment() {
+            let fname = document.getElementById('fname').value;
+            let lname = document.getElementById('lname').value;
+            let email = document.getElementById('email').value;
+            let phone = document.getElementById('phone').value;
+
+            if(fname === "" || lname === "" || email === "" || phone === "") {
+                alert("Please fill all details!"); return;
+            }
+
+            let btn = document.getElementById('proceedBtn');
+            let originalText = btn.innerHTML;
+            btn.innerHTML = "Processing...";
+            btn.disabled = true;
+
+            // Save to Database
+            db.collection("customers").add({
+                firstName: fname,
+                lastName: lname,
+                email: email,
+                phone: phone,
+                status: "Incomplete", // Lead captured!
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            })
+            .then((docRef) => {
+                currentCustomerId = docRef.id; 
+                document.getElementById('checkout-section').style.display = 'none';
+                document.getElementById('payment-section').style.display = 'block';
+                window.scrollTo(0, 0);
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            })
+            .catch((error) => {
+                alert("Connection error. Please try again.");
+                console.error("Error:", error);
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            });
+        }
+
+        // STEP 2: Update Data with UTR & Change status to "Almost Complete"
+        function submitOrder() {
+            let utr = document.getElementById('utr').value;
+            if(utr.length < 10) {
+                alert("Please enter a valid 12-Digit UTR / Reference number!"); return;
+            }
+            if(currentCustomerId === "") {
+                alert("Session expired. Please refresh and fill the details again."); return;
+            }
+
+            let btn = document.getElementById('verifyBtn');
+            btn.innerHTML = "Verifying...";
+            btn.disabled = true;
+
+            db.collection("customers").doc(currentCustomerId).update({
+                utrNumber: utr,
+                status: "Almost Complete",
+                paymentTime: firebase.firestore.FieldValue.serverTimestamp()
+            })
+            .then(() => {
+                alert("Thank You! UTR: " + utr + " submitted successfully. You will receive access details shortly after verification.");
+                window.location.reload(); 
+            })
+            .catch((error) => {
+                alert("Error submitting. Please try again.");
+                console.error("Error:", error);
+                btn.innerHTML = "Submit Verification";
+                btn.disabled = false;
+            });
+        }
+
+        // Timer Logic (Auto restart 30 mins)
+        function startTimer() {
+            let endTime = localStorage.getItem("qxz_timer_end");
+            if (!endTime || new Date().getTime() > endTime) {
+                let newEndTime = new Date().getTime() + (30 * 60 * 1000); 
+                localStorage.setItem("qxz_timer_end", newEndTime);
+                endTime = newEndTime;
+            }
+            setInterval(function() {
+                let now = new Date().getTime();
+                let distance = endTime - now;
+                if (distance < 0) {
+                    let newEndTime = new Date().getTime() + (30 * 60 * 1000);
+                    localStorage.setItem("qxz_timer_end", newEndTime);
+                    endTime = newEndTime;
+                    distance = newEndTime - now;
+                }
+                let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+                document.getElementById("timerDisplay").innerHTML = "⏳ OFFER ENDS IN: " + minutes + ":" + seconds;
+            }, 1000);
+        }
+        window.onload = startTimer;
     </script>
 </body>
 </html>
