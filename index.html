@@ -9,162 +9,76 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* Base Styles */
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #0b0f19;
-            color: #ffffff;
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
-            padding-bottom: 70px;
-        }
+        body { font-family: 'Poppins', sans-serif; background-color: #0b0f19; color: #ffffff; margin: 0; padding: 0; overflow-x: hidden; padding-bottom: 70px; }
         * { box-sizing: border-box; }
 
         /* Timer Banner */
-        .timer-banner {
-            background: linear-gradient(90deg, #FFD84D 0%, #FFA903 100%);
-            color: #000;
-            text-align: center;
-            padding: 10px;
-            font-weight: 800;
-            font-size: 15px;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            letter-spacing: 1px;
-            box-shadow: 0 4px 15px rgba(255, 169, 3, 0.3);
-        }
+        .timer-banner { background: linear-gradient(90deg, #FFD84D 0%, #FFA903 100%); color: #000; text-align: center; padding: 10px; font-weight: 800; font-size: 15px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(255, 169, 3, 0.3); }
 
         /* Navbar */
-        .navbar {
-            padding: 20px;
-            text-align: center;
-            background: #131a2a;
-            border-bottom: 1px solid #1f2937;
-        }
+        .navbar { padding: 20px; text-align: center; background: #131a2a; border-bottom: 1px solid #1f2937; }
         .navbar h2 { margin: 0; color: #FFA903; font-size: 26px; font-weight: 800; }
 
         /* Containers */
-        .container {
-            max-width: 1000px; /* Desktop width */
-            margin: 0 auto;
-            padding: 30px 20px;
-            text-align: center;
-        }
+        .container { max-width: 1000px; margin: 0 auto; padding: 30px 20px; text-align: center; }
         .form-container { max-width: 500px; margin: 0 auto; }
 
         /* Headings */
         h1 { font-size: 28px; font-weight: 800; line-height: 1.3; margin-bottom: 10px; }
         p.subtitle { color: #cbd5e1; font-size: 16px; font-weight: 300; margin-bottom: 30px; }
 
-        /* Desktop Flexbox Layout */
+        /* Desktop Layout */
         .desktop-row { display: flex; flex-direction: column; gap: 20px; }
-
-        /* Video Section */
-        .video-box {
-            position: relative; width: 100%; padding-bottom: 56.25%;
-            border: 2px dashed #FFA903; border-radius: 15px; overflow: hidden;
-            margin: 0; box-shadow: 0 10px 30px rgba(0,0,0,0.5); background: #000;
-        }
+        .video-box { position: relative; width: 100%; padding-bottom: 56.25%; border: 2px dashed #FFA903; border-radius: 15px; overflow: hidden; background: #000; }
         .video-box iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-
-        /* Pricing */
+        
         .price-box { margin: 20px 0; font-size: 20px; font-weight: 600; }
         .old-price { text-decoration: line-through; color: #ef4444; font-size: 18px; margin-left: 5px; }
         .new-price { color: #22c55e; font-size: 42px; font-weight: 800; display: block; line-height: 1; margin-top: 5px; }
 
-        /* Animated Main Button */
-        .btn-animated {
-            background: linear-gradient(90deg, #FFD84D 0%, #FFA903 50%, #FFD84D 100%);
-            background-size: 200% 200%; color: #000; border: none; padding: 16px 30px;
-            font-size: 22px; font-weight: 800; border-radius: 10px; cursor: pointer; width: 100%;
-            font-family: 'Poppins', sans-serif; text-transform: uppercase;
-            box-shadow: 0 0 20px rgba(255, 169, 3, 0.5);
-            animation: gradientShift 2s ease infinite, glowPulse 1.5s infinite, shake 2.5s infinite;
-            transition: 0.3s;
-        }
-        .btn-animated:hover { transform: translateY(-3px); }
+        /* Animated Button */
+        .btn-animated { background: linear-gradient(90deg, #FFD84D 0%, #FFA903 50%, #FFD84D 100%); background-size: 200% 200%; color: #000; border: none; padding: 16px 30px; font-size: 22px; font-weight: 800; border-radius: 10px; cursor: pointer; width: 100%; font-family: 'Poppins', sans-serif; text-transform: uppercase; box-shadow: 0 0 20px rgba(255, 169, 3, 0.5); animation: gradientShift 2s ease infinite, glowPulse 1.5s infinite, shake 2.5s infinite; transition: 0.3s; }
         .btn-animated:disabled { animation: none; background: #64748b; color: #cbd5e1; cursor: not-allowed; box-shadow: none; }
-
-        /* Animations */
         @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         @keyframes glowPulse { 0%, 100% { box-shadow: 0 0 15px rgba(255,169,3,0.4); } 50% { box-shadow: 0 0 30px rgba(255,169,3,0.8); } }
         @keyframes shake { 0%, 20%, 100% { transform: rotate(0deg) translateY(0); } 5%, 15% { transform: rotate(-2deg) translateY(-2px); } 10% { transform: rotate(2deg) translateY(-2px); } }
 
-        /* Card Section for Forms */
-        .form-card {
-            background: #131a2a; padding: 30px 25px; border-radius: 12px; text-align: left;
-            border: 1px solid #1f2937; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
+        .form-card { background: #131a2a; padding: 30px 25px; border-radius: 12px; text-align: left; border: 1px solid #1f2937; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
 
         /* Sticky Bottom Banner */
-        .sticky-enroll-banner {
-            position: fixed; bottom: 0; left: 0; width: 100%;
-            background: linear-gradient(90deg, #FFD84D 0%, #FFA903 100%);
-            padding: 12px 20px; display: flex; justify-content: space-between; align-items: center;
-            z-index: 999; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); transition: transform 0.3s ease-in-out;
-        }
-        .sticky-enroll-banner .sticky-price { color: #000; font-size: 20px; font-weight: 800; line-height: 1.1; }
-        .sticky-enroll-banner .sticky-price span { text-decoration: line-through; font-size: 14px; font-weight: 600; color: #d90000; }
-        .sticky-enroll-banner .sticky-btn {
-            background: #000; color: #FFA903; border: none; padding: 10px 20px;
-            font-size: 16px; font-weight: 800; font-family: 'Poppins', sans-serif;
-            border-radius: 6px; cursor: pointer; text-transform: uppercase;
-        }
+        .sticky-enroll-banner { position: fixed; bottom: 0; left: 0; width: 100%; background: linear-gradient(90deg, #FFD84D 0%, #FFA903 100%); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 999; }
+        .sticky-enroll-banner .sticky-price { color: #000; font-size: 20px; font-weight: 800; }
+        .sticky-enroll-banner .sticky-btn { background: #000; color: #FFA903; border: none; padding: 10px 20px; font-weight: 800; border-radius: 6px; cursor: pointer; text-transform: uppercase; }
 
         /* Forms */
         .form-group { margin-bottom: 20px; text-align: left; }
         .form-group label { display: block; margin-bottom: 8px; color: #cbd5e1; font-size: 14px; font-weight: 600; }
-        .form-control {
-            width: 100%; padding: 15px; background: #1e293b; border: 1px solid #334155; color: white;
-            border-radius: 8px; font-size: 15px; font-family: 'Poppins', sans-serif; transition: 0.3s;
-        }
-        .form-control:focus { outline: none; border-color: #FFA903; background: #0f172a; box-shadow: 0 0 10px rgba(255, 169, 3, 0.2); }
+        .form-control { width: 100%; padding: 15px; background: #1e293b; border: 1px solid #334155; color: white; border-radius: 8px; font-family: 'Poppins', sans-serif; }
+        .btn-standard { background: #3b82f6; color: white; border: none; padding: 15px; font-weight: 600; border-radius: 8px; width: 100%; cursor: pointer; font-family: 'Poppins'; }
 
-        /* Buttons Standard */
-        .btn-standard {
-            background: #3b82f6; color: white; border: none; padding: 15px; font-size: 18px;
-            font-weight: 600; border-radius: 8px; width: 100%; cursor: pointer;
-            font-family: 'Poppins', sans-serif; margin-top: 10px; transition: 0.3s;
-        }
-        .btn-standard:hover { filter: brightness(1.1); }
-        .btn-standard:disabled { background: #64748b; cursor: not-allowed; }
-
-        /* Payment Specific */
+        /* UPI Section */
         .qr-placeholder { width: 220px; height: 220px; background: white; margin: 20px auto; border-radius: 10px; padding: 10px; }
         .qr-placeholder img { width: 100%; height: 100%; }
-        .upi-btn {
-            background: #10b981; color: white; display: block; text-align: center; text-decoration: none;
-            padding: 15px; border-radius: 8px; font-weight: 600; font-size: 18px; margin-bottom: 25px; transition: 0.3s;
-        }
-        .upi-btn:hover { background: #059669; }
-        
+        .upi-btn { background: #10b981; color: white; display: block; text-align: center; text-decoration: none; padding: 15px; border-radius: 8px; font-weight: 600; margin-bottom: 25px; }
+
         /* Footer */
-        .footer { background: #0f172a; text-align: center; padding: 40px 20px; margin-top: 50px; border-top: 1px solid #1f2937; }
-        .footer a { color: #94a3b8; text-decoration: none; margin: 0 15px; font-size: 14px; transition: 0.3s; }
+        .footer { background: #0f172a; text-align: center; padding: 40px 20px; margin-top: 50px; border-top: 1px solid #1f2937; display: flex; flex-direction: column; gap: 15px; }
+        .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; }
+        .footer a { color: #94a3b8; text-decoration: none; font-size: 14px; cursor: pointer; }
         .footer a:hover { color: #FFA903; }
-        .footer p { color: #64748b; font-size: 14px; margin-top: 20px; }
+        .footer p { color: #64748b; font-size: 14px; margin: 0; }
 
-        /* Hide Sections */
-        #checkout-section, #payment-section { display: none; }
+        /* Section Visibility */
+        #checkout-section, #payment-section, #policy-section { display: none; }
 
-        /* Desktop Media Queries */
-        @media (min-width: 768px) {
-            h1 { font-size: 42px; margin-bottom: 15px; }
-            p.subtitle { font-size: 18px; margin-bottom: 40px; }
-            .desktop-row { flex-direction: row; align-items: center; text-align: left; }
-            .desktop-col-left { flex: 1.2; padding-right: 20px; }
-            .desktop-col-right { flex: 0.8; padding-left: 30px; }
-            .price-box { margin-top: 0; }
-            .sticky-enroll-banner { justify-content: center; gap: 50px; }
-        }
+        @media (min-width: 768px) { h1 { font-size: 42px; } .desktop-row { flex-direction: row; align-items: center; text-align: left; } .desktop-col-left { flex: 1.2; padding-right: 20px; } .desktop-col-right { flex: 0.8; padding-left: 30px; } }
     </style>
 </head>
 <body>
 
-    <!-- STICKY ENROLL BANNER -->
+    <!-- STICKY BANNER -->
     <div class="sticky-enroll-banner" id="stickyBanner">
-        <div class="sticky-price">₹299 <span>₹1999</span></div>
+        <div class="sticky-price">₹299</div>
         <button class="sticky-btn" onclick="showCheckout()">Enroll Now</button>
     </div>
 
@@ -176,226 +90,254 @@
             <h1>Start Your Online Digital Business Today!</h1>
             <p class="subtitle">Learn practical skills, grow on social media, and start earning. No theory, only real results.</p>
             <div class="desktop-row">
-                <!-- Left Side: Video -->
                 <div class="desktop-col-left">
-                    <div class="video-box">
-                        <iframe src="https://www.youtube.com/embed/H8fsIgKe3lc?autoplay=0" allowfullscreen></iframe>
-                    </div>
+                    <div class="video-box"><iframe src="https://www.youtube.com/embed/H8fsIgKe3lc?autoplay=0" allowfullscreen></iframe></div>
                 </div>
-                <!-- Right Side: Price & Button -->
                 <div class="desktop-col-right">
-                    <div class="price-box">
-                        Regular Price: <span class="old-price">₹1999</span>
-                        <span class="new-price">₹299</span>
-                    </div>
+                    <div class="price-box">Regular Price: <span class="old-price">₹1999</span><span class="new-price">₹299</span></div>
                     <button class="btn-animated" onclick="showCheckout()">Enroll Now For ₹299</button>
-                    <p style="color: #64748b; font-size: 13px; margin-top: 15px; text-align: center;"><i class="fa-solid fa-shield-halved"></i> 100% Secure Checkout</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 2. CHECKOUT PAGE (Step 1) -->
+    <!-- 2. CHECKOUT PAGE -->
     <div id="checkout-section">
         <div class="navbar"><h2>Step 1: Your Details</h2></div>
         <div class="container form-container">
             <div class="form-card">
-                <p style="text-align: center; color: #cbd5e1; margin-bottom: 25px; font-size: 15px;">Fill details to unlock the course.</p>
-                <div class="form-group">
-                    <label>First Name</label>
-                    <input type="text" id="fname" class="form-control" placeholder="E.g. Rahul" required>
-                </div>
-                <div class="form-group">
-                    <label>Last Name</label>
-                    <input type="text" id="lname" class="form-control" placeholder="E.g. Kumar" required>
-                </div>
-                <div class="form-group">
-                    <label>Email Address</label>
-                    <input type="email" id="email" class="form-control" placeholder="youremail@gmail.com" required>
-                </div>
-                <div class="form-group">
-                    <label>WhatsApp Number</label>
-                    <input type="tel" id="phone" class="form-control" placeholder="10-Digit Mobile No." required>
-                </div>
+                <div class="form-group"><label>First Name</label><input type="text" id="fname" class="form-control" required></div>
+                <div class="form-group"><label>Last Name</label><input type="text" id="lname" class="form-control" required></div>
+                <div class="form-group"><label>Email Address</label><input type="email" id="email" class="form-control" required></div>
+                <div class="form-group"><label>WhatsApp Number</label><input type="tel" id="phone" class="form-control" placeholder="10-Digit Mobile No." maxlength="10" required></div>
                 <button id="proceedBtn" class="btn-animated" style="animation: none;" onclick="showPayment()">Proceed to Pay ₹299</button>
-                <button style="background: transparent; border:none; color: #94a3b8; width:100%; margin-top: 15px; font-family:'Poppins'; cursor:pointer; font-size: 15px;" onclick="goBack()">← Cancel & Go Back</button>
+                <button style="background: transparent; border:none; color: #94a3b8; width:100%; margin-top: 15px; font-family:'Poppins'; cursor:pointer;" onclick="goBack()">← Cancel & Go Back</button>
             </div>
         </div>
     </div>
 
-    <!-- 3. PAYMENT PAGE (Step 2) -->
+    <!-- 3. PAYMENT PAGE -->
     <div id="payment-section">
         <div class="navbar"><h2>Step 2: Make Payment</h2></div>
         <div class="container form-container">
             <div class="form-card" style="text-align: center;">
-                <h3 style="color: white; margin-top:0; font-size: 22px;">Pay ₹299 Securely</h3>
-                <p style="color: #cbd5e1; font-size: 14px;">Scan QR or Click button to pay via UPI</p>
-
-                <!-- CHANGE 'ramesh.gorai@superyes' TO YOUR ACTUAL UPI ID BELOW -->
-                <div class="qr-placeholder">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=YOUR_UPI_ID@upi&pn=QxzStore&am=299&cu=INR" alt="QR">
-                </div>
-
-                <!-- UPI Intent Link -->
-                <a href="upi://pay?pa=ramesh.gorai@superyes&pn=QxzStore&am=299&cu=INR" class="upi-btn">
-                    <i class="fa-solid fa-mobile-screen"></i> Click Here to Pay via UPI App
-                </a>
-
+                <h3 style="color: white; margin-top:0;">Pay ₹299 Securely</h3>
+                <div class="qr-placeholder"><img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=ramesh.gorai@superyes&pn=QxzStore&am=299&cu=INR" alt="QR"></div>
+                <a href="upi://pay?pa=ramesh.gorai@superyes&pn=QxzStore&am=299&cu=INR" class="upi-btn"><i class="fa-solid fa-mobile-screen"></i> Click Here to Pay via UPI App</a>
                 <hr style="border: 1px solid #1f2937; margin: 30px 0;">
-
-                <h3 style="color: #FFA903; font-size: 20px;">Payment Verification</h3>
-                <p style="color: #cbd5e1; font-size: 14px; margin-bottom: 20px;">Enter your 12-digit UTR / Reference ID after successful payment.</p>
-                
-                <div class="form-group">
-                    <input type="number" id="utr" class="form-control" placeholder="Enter 12-Digit UTR Number" required>
-                </div>
-
+                <h3 style="color: #FFA903;">Payment Verification</h3>
+                <div class="form-group"><input type="number" id="utr" class="form-control" placeholder="Enter 12-Digit UTR Number" required></div>
                 <button id="verifyBtn" class="btn-standard" style="background:#22c55e;" onclick="submitOrder()">Submit Verification</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. POLICIES PAGE -->
+    <div id="policy-section">
+        <div class="navbar"><h2 id="policy-title">Policy</h2></div>
+        <div class="container form-container" style="max-width: 800px;">
+            <div class="form-card" style="color: #cbd5e1; font-size: 14px; line-height: 1.8;">
+                <div id="policy-content"></div>
+                <button class="btn-standard" style="margin-top: 30px; background: #334155;" onclick="goBackToHome()">← Back to Home</button>
             </div>
         </div>
     </div>
 
     <!-- FOOTER -->
     <div class="footer">
-        <div style="margin-bottom: 20px;">
-            <a href="#">Terms</a>
-            <a href="#">Privacy</a>
-            <a href="#">Refund Policy</a>
-            <a href="#">Contact</a>
+        <div class="footer-links">
+            <a onclick="showPolicy('terms')">Terms & Conditions</a>
+            <a onclick="showPolicy('privacy')">Privacy Policy</a>
+            <a onclick="showPolicy('refund')">Refund Policy</a>
+            <a onclick="showPolicy('shipping')">Shipping Policy</a>
+            <a onclick="showPolicy('contact')">Contact Us</a>
         </div>
         <p><strong>Qxz Store</strong> - E-learning Platform</p>
-        <p>Built with ❤️ by <strong>EarnwithRamesh.official </strong></p>
+        <p>Built with ❤️ by <strong>EarnwithRamesh.official</strong></p>
     </div>
 
-    <!-- FIREBASE SDK & JAVASCRIPT LOGIC -->
+    <!-- FIREBASE SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <!-- HIDDEN CONFIG FILE -->
+    <script src="config.js"></script>
+
     <script>
-        // 1. FIREBASE CONFIGURATION
-        const firebaseConfig = {
-            apiKey: "AIzaSyBOu3BGlFXXSYUpP0P5VLo-qSGXITptN3c",
-            authDomain: "landing-page-305c5.firebaseapp.com",
-            databaseURL: "https://landing-page-305c5-default-rtdb.firebaseio.com",
-            projectId: "landing-page-305c5",
-            storageBucket: "landing-page-305c5.firebasestorage.app",
-            messagingSenderId: "337738276300",
-            appId: "1:337738276300:web:80c5b0c289a55f7dad9169"
-        };
-        
+        // FIREBASE INITIALIZATION
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.firestore();
+        let currentCustomerId = ""; 
 
-        let currentCustomerId = ""; // Store DB ID here
-
-        // Navigation Logic
-        function showCheckout() {
+        // VIEWS LOGIC
+        function hideAll() {
             document.getElementById('landing-section').style.display = 'none';
-            document.getElementById('checkout-section').style.display = 'block';
-            document.getElementById('stickyBanner').style.display = 'none';
-            window.scrollTo(0, 0);
-        }
-
-        function goBack() {
             document.getElementById('checkout-section').style.display = 'none';
-            document.getElementById('landing-section').style.display = 'block';
-            document.getElementById('stickyBanner').style.display = 'flex';
-            window.scrollTo(0, 0);
+            document.getElementById('payment-section').style.display = 'none';
+            document.getElementById('policy-section').style.display = 'none';
+            document.getElementById('stickyBanner').style.display = 'none';
         }
 
-        // STEP 1: Process Details & Save as "Incomplete"
+        function showCheckout() { hideAll(); document.getElementById('checkout-section').style.display = 'block'; window.scrollTo(0, 0); }
+        function goBack() { hideAll(); document.getElementById('landing-section').style.display = 'block'; document.getElementById('stickyBanner').style.display = 'flex'; window.scrollTo(0, 0); }
+        function goBackToHome() { window.history.pushState({}, '', '/'); goBack(); }
+
+        // EXTREMELY DETAILED POLICIES FOR CASHFREE APPROVAL
+        function showPolicy(type) {
+            hideAll();
+            document.getElementById('policy-section').style.display = 'block';
+            window.scrollTo(0, 0);
+
+            let title = "";
+            let content = "";
+
+            if(type === 'terms') {
+                title = "Terms and Conditions";
+                window.history.pushState({}, '', '/terms-and-conditions');
+                content = `
+                    <h3>1. Introduction</h3>
+                    <p>Welcome to <strong>Qxz Store</strong>. These Terms and Conditions govern your use of our website and the purchase of our digital courses. By accessing this website, you accept these terms in full.</p>
+                    
+                    <h3>2. Products and Services</h3>
+                    <p>We sell purely digital products, specifically online educational courses and video tutorials. No physical items will be shipped to you.</p>
+                    
+                    <h3>3. User Obligations</h3>
+                    <p>You agree to provide true and accurate information (Name, Email, WhatsApp number) during the checkout process. You are strictly prohibited from reselling, sharing, or distributing the course materials to third parties. Any violation will result in immediate termination of your access without refund.</p>
+                    
+                    <h3>4. Intellectual Property</h3>
+                    <p>All content included on this site (videos, text, graphics, logos) is the property of Qxz Store and protected by applicable copyright laws.</p>
+                    
+                    <h3>5. Payment Terms</h3>
+                    <p>All payments are processed securely. Prices are clearly displayed in INR. We reserve the right to change course prices at any time, but this will not affect previous purchases.</p>
+                `;
+            } 
+            else if(type === 'privacy') {
+                title = "Privacy Policy";
+                window.history.pushState({}, '', '/privacy-policy');
+                content = `
+                    <h3>1. Information Collection</h3>
+                    <p>To provide our digital courses, we collect essential information including your First Name, Last Name, Email Address, and WhatsApp/Phone Number when you initiate a checkout.</p>
+                    
+                    <h3>2. How We Use Your Data</h3>
+                    <p>Your information is used strictly to: <br>
+                    - Process your payment and verify UTR. <br>
+                    - Deliver course access details to your email and WhatsApp. <br>
+                    - Provide customer support and respond to your queries.</p>
+                    
+                    <h3>3. Data Security</h3>
+                    <p>We are committed to ensuring that your information is secure. We use highly secure databases (Firebase by Google) to store your information. We do not store any sensitive banking or credit card details on our servers.</p>
+                    
+                    <h3>4. Third-Party Sharing</h3>
+                    <p>We do not sell, rent, or trade your personal information to third parties. Data is only shared with our payment gateway partners (e.g., Cashfree) strictly for completing your transaction.</p>
+                `;
+            }
+            else if(type === 'refund') {
+                title = "Cancellation & Refund Policy";
+                window.history.pushState({}, '', '/refund-policy');
+                content = `
+                    <h3>1. Strictly No Refunds</h3>
+                    <p>Due to the digital nature of our products (video courses, e-books, exclusive links), you receive immediate access to our proprietary knowledge upon purchase. Therefore, <strong>all sales are final and non-refundable.</strong> We do not offer refunds, exchanges, or cancellations once the payment is completed.</p>
+                    
+                    <h3>2. Exceptions</h3>
+                    <p>The only exception to this strict no-refund policy is in the case of a technical glitch where you are charged multiple times for a single order. In such rare scenarios, please contact our support team with proof of duplicate deduction, and we will initiate a refund for the extra charge within 5-7 business days.</p>
+
+                    <h3>3. Cancellations</h3>
+                    <p>Since delivery of the digital access is initiated immediately after payment verification, order cancellations are not possible.</p>
+                `;
+            }
+            else if(type === 'shipping') {
+                title = "Shipping & Delivery Policy";
+                window.history.pushState({}, '', '/shipping-policy');
+                content = `
+                    <h3>1. Digital Delivery Only</h3>
+                    <p>Please note that Qxz Store deals strictly in <strong>Digital Goods</strong>. We do not sell any physical products, and therefore, no physical items will be shipped to your postal address.</p>
+                    
+                    <h3>2. Delivery Timeline & Process</h3>
+                    <p>Once you make the payment and submit your 12-Digit UTR / Reference ID, our system verifies the transaction.</p>
+                    <ul>
+                        <li><strong>Standard Access:</strong> You will receive access to the course content directly on your provided Email Address and WhatsApp Number within 2 to 4 hours of payment verification.</li>
+                        <li><strong>Instant Access (Post Automation):</strong> Once verified, access links are generated instantly.</li>
+                    </ul>
+                    
+                    <h3>3. Delivery Issues</h3>
+                    <p>If you do not receive the access link within 24 hours of successful payment, please check your Spam/Junk folder. If it is not there, contact our support team immediately.</p>
+                `;
+            }
+            else if(type === 'contact') {
+                title = "Contact Us";
+                window.history.pushState({}, '', '/contact-us');
+                content = `
+                    <h3>Get in Touch</h3>
+                    <p>If you have any issues regarding course access, payments, or general inquiries, our support team is ready to help you.</p>
+                    <ul style="list-style: none; padding-left: 0;">
+                        <li style="margin-bottom: 10px;">📧 <strong>Email:</strong> otp.qxzstore.in@gmail.com</li>
+                        <li style="margin-bottom: 10px;">📞 <strong>WhatsApp/Phone:</strong> +91-7501495916</li>
+                        <li style="margin-bottom: 10px;">🏢 <strong>Business Address:</strong>West Bengal, india</li>
+                        <li style="margin-bottom: 10px;">🕒 <strong>Support Hours:</strong> All Time </li>
+                    </ul>
+                    <p><em>Note: We usually respond to all queries within 24 hours.</em></p>
+                `;
+            }
+
+            document.getElementById('policy-title').innerText = title;
+            document.getElementById('policy-content').innerHTML = content;
+        }
+
+        // CHECKOUT LOGIC
         function showPayment() {
             let fname = document.getElementById('fname').value;
             let lname = document.getElementById('lname').value;
             let email = document.getElementById('email').value;
             let phone = document.getElementById('phone').value;
 
-            if(fname === "" || lname === "" || email === "" || phone === "") {
-                alert("Please fill all details!"); return;
-            }
+            if(fname === "" || lname === "" || email === "" || phone === "") { alert("Please fill all details!"); return; }
+            if(phone.length !== 10) { alert("Please enter a valid 10-digit WhatsApp Number!"); return; }
 
             let btn = document.getElementById('proceedBtn');
             let originalText = btn.innerHTML;
-            btn.innerHTML = "Processing...";
-            btn.disabled = true;
+            btn.innerHTML = "Processing..."; btn.disabled = true;
 
-            // Save to Database
             db.collection("customers").add({
-                firstName: fname,
-                lastName: lname,
-                email: email,
-                phone: phone,
-                status: "Incomplete", // Lead captured!
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            })
-            .then((docRef) => {
+                firstName: fname, lastName: lname, email: email, phone: phone,
+                status: "Incomplete", timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            }).then((docRef) => {
                 currentCustomerId = docRef.id; 
-                document.getElementById('checkout-section').style.display = 'none';
-                document.getElementById('payment-section').style.display = 'block';
-                window.scrollTo(0, 0);
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            })
-            .catch((error) => {
-                alert("Connection error. Please try again.");
-                console.error("Error:", error);
-                btn.innerHTML = originalText;
-                btn.disabled = false;
+                hideAll(); document.getElementById('payment-section').style.display = 'block'; window.scrollTo(0, 0);
+                btn.innerHTML = originalText; btn.disabled = false;
+            }).catch((error) => {
+                alert("Connection error. Please try again."); btn.innerHTML = originalText; btn.disabled = false;
             });
         }
 
-        // STEP 2: Update Data with UTR & Change status to "Almost Complete"
         function submitOrder() {
             let utr = document.getElementById('utr').value;
-            if(utr.length < 10) {
-                alert("Please enter a valid 12-Digit UTR / Reference number!"); return;
-            }
-            if(currentCustomerId === "") {
-                alert("Session expired. Please refresh and fill the details again."); return;
-            }
+            if(utr.length < 10) { alert("Please enter a valid 12-Digit UTR number!"); return; }
+            if(currentCustomerId === "") { alert("Session expired. Please refresh."); return; }
 
             let btn = document.getElementById('verifyBtn');
-            btn.innerHTML = "Verifying...";
-            btn.disabled = true;
+            btn.innerHTML = "Verifying..."; btn.disabled = true;
 
             db.collection("customers").doc(currentCustomerId).update({
-                utrNumber: utr,
-                status: "Almost Complete",
-                paymentTime: firebase.firestore.FieldValue.serverTimestamp()
-            })
-            .then(() => {
-                alert("Thank You! UTR: " + utr + " submitted successfully. You will receive access details shortly after verification.");
-                window.location.reload(); 
-            })
-            .catch((error) => {
-                alert("Error submitting. Please try again.");
-                console.error("Error:", error);
-                btn.innerHTML = "Submit Verification";
-                btn.disabled = false;
+                utrNumber: utr, status: "Almost Complete", paymentTime: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                alert("Thank You! UTR: " + utr + " submitted successfully. You will receive access details shortly."); window.location.reload(); 
+            }).catch((error) => {
+                alert("Error submitting."); btn.innerHTML = "Submit Verification"; btn.disabled = false;
             });
         }
 
-        // Timer Logic (Auto restart 30 mins)
+        // TIMER LOGIC
         function startTimer() {
             let endTime = localStorage.getItem("qxz_timer_end");
             if (!endTime || new Date().getTime() > endTime) {
-                let newEndTime = new Date().getTime() + (30 * 60 * 1000); 
-                localStorage.setItem("qxz_timer_end", newEndTime);
-                endTime = newEndTime;
+                endTime = new Date().getTime() + (30 * 60 * 1000); 
+                localStorage.setItem("qxz_timer_end", endTime);
             }
             setInterval(function() {
-                let now = new Date().getTime();
-                let distance = endTime - now;
-                if (distance < 0) {
-                    let newEndTime = new Date().getTime() + (30 * 60 * 1000);
-                    localStorage.setItem("qxz_timer_end", newEndTime);
-                    endTime = newEndTime;
-                    distance = newEndTime - now;
-                }
-                let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                let seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                minutes = minutes < 10 ? "0" + minutes : minutes;
-                seconds = seconds < 10 ? "0" + seconds : seconds;
-                document.getElementById("timerDisplay").innerHTML = "⏳ OFFER ENDS IN: " + minutes + ":" + seconds;
+                let now = new Date().getTime(); let distance = endTime - now;
+                if (distance < 0) { endTime = new Date().getTime() + (30 * 60 * 1000); localStorage.setItem("qxz_timer_end", endTime); distance = endTime - now; }
+                let m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)); let s = Math.floor((distance % (1000 * 60)) / 1000);
+                document.getElementById("timerDisplay").innerHTML = "⏳ OFFER ENDS IN: " + (m < 10 ? "0"+m : m) + ":" + (s < 10 ? "0"+s : s);
             }, 1000);
         }
         window.onload = startTimer;
