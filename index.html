@@ -4,72 +4,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Growth Mastery | Qxz Store</title>
-    <!-- Google Fonts: Poppins -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CASHFREE SDK -->
+    <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
+    
     <style>
-        /* Base Styles */
+        /* [SAARA PURANA CSS SAME HAI] */
         body { font-family: 'Poppins', sans-serif; background-color: #0b0f19; color: #ffffff; margin: 0; padding: 0; overflow-x: hidden; padding-bottom: 70px; }
         * { box-sizing: border-box; }
-
-        /* Timer Banner */
         .timer-banner { background: linear-gradient(90deg, #FFD84D 0%, #FFA903 100%); color: #000; text-align: center; padding: 10px; font-weight: 800; font-size: 15px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(255, 169, 3, 0.3); }
-
-        /* Navbar */
         .navbar { padding: 20px; text-align: center; background: #131a2a; border-bottom: 1px solid #1f2937; }
         .navbar h2 { margin: 0; color: #FFA903; font-size: 26px; font-weight: 800; }
-
-        /* Containers */
         .container { max-width: 1000px; margin: 0 auto; padding: 30px 20px; text-align: center; }
         .form-container { max-width: 500px; margin: 0 auto; }
-
-        /* Headings */
         h1 { font-size: 28px; font-weight: 800; line-height: 1.3; margin-bottom: 10px; }
         p.subtitle { color: #cbd5e1; font-size: 16px; font-weight: 300; margin-bottom: 30px; }
-
-        /* Desktop Layout */
         .desktop-row { display: flex; flex-direction: column; gap: 20px; }
         .video-box { position: relative; width: 100%; padding-bottom: 56.25%; border: 2px dashed #FFA903; border-radius: 15px; overflow: hidden; background: #000; }
         .video-box iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-        
         .price-box { margin: 20px 0; font-size: 20px; font-weight: 600; }
         .old-price { text-decoration: line-through; color: #ef4444; font-size: 18px; margin-left: 5px; }
         .new-price { color: #22c55e; font-size: 42px; font-weight: 800; display: block; line-height: 1; margin-top: 5px; }
-
-        /* Animated Button */
         .btn-animated { background: linear-gradient(90deg, #FFD84D 0%, #FFA903 50%, #FFD84D 100%); background-size: 200% 200%; color: #000; border: none; padding: 16px 30px; font-size: 22px; font-weight: 800; border-radius: 10px; cursor: pointer; width: 100%; font-family: 'Poppins', sans-serif; text-transform: uppercase; box-shadow: 0 0 20px rgba(255, 169, 3, 0.5); animation: gradientShift 2s ease infinite, glowPulse 1.5s infinite, shake 2.5s infinite; transition: 0.3s; }
         .btn-animated:disabled { animation: none; background: #64748b; color: #cbd5e1; cursor: not-allowed; box-shadow: none; }
         @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         @keyframes glowPulse { 0%, 100% { box-shadow: 0 0 15px rgba(255,169,3,0.4); } 50% { box-shadow: 0 0 30px rgba(255,169,3,0.8); } }
         @keyframes shake { 0%, 20%, 100% { transform: rotate(0deg) translateY(0); } 5%, 15% { transform: rotate(-2deg) translateY(-2px); } 10% { transform: rotate(2deg) translateY(-2px); } }
-
         .form-card { background: #131a2a; padding: 30px 25px; border-radius: 12px; text-align: left; border: 1px solid #1f2937; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-
-        /* Sticky Bottom Banner */
         .sticky-enroll-banner { position: fixed; bottom: 0; left: 0; width: 100%; background: linear-gradient(90deg, #FFD84D 0%, #FFA903 100%); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 999; }
         .sticky-enroll-banner .sticky-price { color: #000; font-size: 20px; font-weight: 800; }
         .sticky-enroll-banner .sticky-btn { background: #000; color: #FFA903; border: none; padding: 10px 20px; font-weight: 800; border-radius: 6px; cursor: pointer; text-transform: uppercase; }
-
-        /* Forms */
         .form-group { margin-bottom: 20px; text-align: left; }
         .form-group label { display: block; margin-bottom: 8px; color: #cbd5e1; font-size: 14px; font-weight: 600; }
         .form-control { width: 100%; padding: 15px; background: #1e293b; border: 1px solid #334155; color: white; border-radius: 8px; font-family: 'Poppins', sans-serif; }
         .btn-standard { background: #3b82f6; color: white; border: none; padding: 15px; font-weight: 600; border-radius: 8px; width: 100%; cursor: pointer; font-family: 'Poppins'; }
-
-        /* UPI Section */
-        .qr-placeholder { width: 220px; height: 220px; background: white; margin: 20px auto; border-radius: 10px; padding: 10px; }
-        .qr-placeholder img { width: 100%; height: 100%; }
-        .upi-btn { background: #10b981; color: white; display: block; text-align: center; text-decoration: none; padding: 15px; border-radius: 8px; font-weight: 600; margin-bottom: 25px; }
-
-        /* Footer */
         .footer { background: #0f172a; text-align: center; padding: 40px 20px; margin-top: 50px; border-top: 1px solid #1f2937; display: flex; flex-direction: column; gap: 15px; }
         .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; }
         .footer a { color: #94a3b8; text-decoration: none; font-size: 14px; cursor: pointer; }
         .footer a:hover { color: #FFA903; }
         .footer p { color: #64748b; font-size: 14px; margin: 0; }
 
-        /* Section Visibility */
-        #checkout-section, #payment-section, #policy-section { display: none; }
+        /* HIDING ALL SECTIONS BY DEFAULT EXCEPT WHAT JS SHOWS */
+        #landing-section, #checkout-section, #success-section, #policy-section { display: none; }
 
         @media (min-width: 768px) { h1 { font-size: 42px; } .desktop-row { flex-direction: row; align-items: center; text-align: left; } .desktop-col-left { flex: 1.2; padding-right: 20px; } .desktop-col-right { flex: 0.8; padding-left: 30px; } }
     </style>
@@ -103,31 +80,37 @@
 
     <!-- 2. CHECKOUT PAGE -->
     <div id="checkout-section">
-        <div class="navbar"><h2>Step 1: Your Details</h2></div>
+        <div class="navbar"><h2>Checkout Details</h2></div>
         <div class="container form-container">
             <div class="form-card">
                 <div class="form-group"><label>First Name</label><input type="text" id="fname" class="form-control" required></div>
                 <div class="form-group"><label>Last Name</label><input type="text" id="lname" class="form-control" required></div>
                 <div class="form-group"><label>Email Address</label><input type="email" id="email" class="form-control" required></div>
                 <div class="form-group"><label>WhatsApp Number</label><input type="tel" id="phone" class="form-control" placeholder="10-Digit Mobile No." maxlength="10" required></div>
-                <button id="proceedBtn" class="btn-animated" style="animation: none;" onclick="showPayment()">Proceed to Pay ₹299</button>
+                
+                <!-- CASHFREE PAY BUTTON -->
+                <button id="payBtn" class="btn-animated" style="animation: none;" onclick="startCashfreePayment()">Pay ₹299 Securely</button>
+                
                 <button style="background: transparent; border:none; color: #94a3b8; width:100%; margin-top: 15px; font-family:'Poppins'; cursor:pointer;" onclick="goBack()">← Cancel & Go Back</button>
             </div>
         </div>
     </div>
 
-    <!-- 3. PAYMENT PAGE -->
-    <div id="payment-section">
-        <div class="navbar"><h2>Step 2: Make Payment</h2></div>
+    <!-- 3. SUCCESS & DOWNLOAD APK PAGE -->
+    <div id="success-section">
+        <div class="navbar"><h2>Payment Successful!</h2></div>
         <div class="container form-container">
-            <div class="form-card" style="text-align: center;">
-                <h3 style="color: white; margin-top:0;">Pay ₹299 Securely</h3>
-                <div class="qr-placeholder"><img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=ramesh.gorai@superyes&pn=QxzStore&am=299&cu=INR" alt="QR"></div>
-                <a href="upi://pay?pa=ramesh.gorai@superyes&pn=QxzStore&am=299&cu=INR" class="upi-btn"><i class="fa-solid fa-mobile-screen"></i> Click Here to Pay via UPI App</a>
-                <hr style="border: 1px solid #1f2937; margin: 30px 0;">
-                <h3 style="color: #FFA903;">Payment Verification</h3>
-                <div class="form-group"><input type="number" id="utr" class="form-control" placeholder="Enter 12-Digit UTR Number" required></div>
-                <button id="verifyBtn" class="btn-standard" style="background:#22c55e;" onclick="submitOrder()">Submit Verification</button>
+            <div class="form-card" style="text-align: center; padding: 40px 25px;">
+                <i class="fa-solid fa-circle-check" style="color: #22c55e; font-size: 70px; margin-bottom: 20px;"></i>
+                <h2 style="color: white; margin-top: 0; margin-bottom: 10px;">Welcome Aboard!</h2>
+                <p style="color: #cbd5e1; font-size: 15px; margin-bottom: 30px;">
+                    Your payment was successful. Download the app below to access your courses immediately.
+                </p>
+                
+                <!-- ⚠️⚠️ YAHAN APNE APK KA GOOGLE DRIVE YA MEDIAFIRE LINK DAALNA ⚠️⚠️ -->
+                <a href="https://link-to-your-apk-file.com/app.apk" target="_blank" class="btn-animated" style="display: block; text-decoration: none; padding: 18px 20px; border-radius: 8px;">
+                    <i class="fa-brands fa-android"></i> Download App (APK)
+                </a>
             </div>
         </div>
     </div>
@@ -136,8 +119,7 @@
     <div id="policy-section">
         <div class="navbar"><h2 id="policy-title">Policy</h2></div>
         <div class="container form-container" style="max-width: 800px;">
-            <div class="form-card" style="color: #cbd5e1; font-size: 14px; line-height: 1.8;">
-                <div id="policy-content"></div>
+            <div class="form-card" style="color: #cbd5e1; font-size: 14px; line-height: 1.8;"><div id="policy-content"></div>
                 <button class="btn-standard" style="margin-top: 30px; background: #334155;" onclick="goBackToHome()">← Back to Home</button>
             </div>
         </div>
@@ -156,24 +138,35 @@
         <p>Built with ❤️ by <strong>EarnwithRamesh.official</strong></p>
     </div>
 
-    <!-- FIREBASE SDK -->
+    <!-- FIREBASE SDK & CONFIG -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
-    <!-- HIDDEN CONFIG FILE -->
     <script src="config.js"></script>
 
     <script>
-        // FIREBASE INITIALIZATION
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.firestore();
-        let currentCustomerId = ""; 
+
+        // 🟢 PAGE LOAD LOGIC (Check if payment is successful)
+        window.onload = function() {
+            startTimer();
+            const urlParams = new URLSearchParams(window.location.search);
+            // Agar URL me ?payment=success hai toh seedha Download page dikhao
+            if (urlParams.get('payment') === 'success') {
+                hideAll();
+                document.getElementById('success-section').style.display = 'block';
+            } else {
+                // Warna normal landing page dikhao
+                document.getElementById('landing-section').style.display = 'block';
+                document.getElementById('stickyBanner').style.display = 'flex';
+            }
+        };
 
         // VIEWS LOGIC
         function hideAll() {
             document.getElementById('landing-section').style.display = 'none';
             document.getElementById('checkout-section').style.display = 'none';
-            document.getElementById('payment-section').style.display = 'none';
+            document.getElementById('success-section').style.display = 'none';
             document.getElementById('policy-section').style.display = 'none';
             document.getElementById('stickyBanner').style.display = 'none';
         }
@@ -182,109 +175,10 @@
         function goBack() { hideAll(); document.getElementById('landing-section').style.display = 'block'; document.getElementById('stickyBanner').style.display = 'flex'; window.scrollTo(0, 0); }
         function goBackToHome() { window.history.pushState({}, '', '/'); goBack(); }
 
-        // EXTREMELY DETAILED POLICIES FOR CASHFREE APPROVAL
-        function showPolicy(type) {
-            hideAll();
-            document.getElementById('policy-section').style.display = 'block';
-            window.scrollTo(0, 0);
+        // 🔵 CASHFREE PAYMENT INTEGRATION
+        const cashfree = Cashfree({ mode: "sandbox" }); // Test mode. Change to "production" later
 
-            let title = "";
-            let content = "";
-
-            if(type === 'terms') {
-                title = "Terms and Conditions";
-                window.history.pushState({}, '', '/terms-and-conditions');
-                content = `
-                    <h3>1. Introduction</h3>
-                    <p>Welcome to <strong>Qxz Store</strong>. These Terms and Conditions govern your use of our website and the purchase of our digital courses. By accessing this website, you accept these terms in full.</p>
-                    
-                    <h3>2. Products and Services</h3>
-                    <p>We sell purely digital products, specifically online educational courses and video tutorials. No physical items will be shipped to you.</p>
-                    
-                    <h3>3. User Obligations</h3>
-                    <p>You agree to provide true and accurate information (Name, Email, WhatsApp number) during the checkout process. You are strictly prohibited from reselling, sharing, or distributing the course materials to third parties. Any violation will result in immediate termination of your access without refund.</p>
-                    
-                    <h3>4. Intellectual Property</h3>
-                    <p>All content included on this site (videos, text, graphics, logos) is the property of Qxz Store and protected by applicable copyright laws.</p>
-                    
-                    <h3>5. Payment Terms</h3>
-                    <p>All payments are processed securely. Prices are clearly displayed in INR. We reserve the right to change course prices at any time, but this will not affect previous purchases.</p>
-                `;
-            } 
-            else if(type === 'privacy') {
-                title = "Privacy Policy";
-                window.history.pushState({}, '', '/privacy-policy');
-                content = `
-                    <h3>1. Information Collection</h3>
-                    <p>To provide our digital courses, we collect essential information including your First Name, Last Name, Email Address, and WhatsApp/Phone Number when you initiate a checkout.</p>
-                    
-                    <h3>2. How We Use Your Data</h3>
-                    <p>Your information is used strictly to: <br>
-                    - Process your payment and verify UTR. <br>
-                    - Deliver course access details to your email and WhatsApp. <br>
-                    - Provide customer support and respond to your queries.</p>
-                    
-                    <h3>3. Data Security</h3>
-                    <p>We are committed to ensuring that your information is secure. We use highly secure databases (Firebase by Google) to store your information. We do not store any sensitive banking or credit card details on our servers.</p>
-                    
-                    <h3>4. Third-Party Sharing</h3>
-                    <p>We do not sell, rent, or trade your personal information to third parties. Data is only shared with our payment gateway partners (e.g., Cashfree) strictly for completing your transaction.</p>
-                `;
-            }
-            else if(type === 'refund') {
-                title = "Cancellation & Refund Policy";
-                window.history.pushState({}, '', '/refund-policy');
-                content = `
-                    <h3>1. Strictly No Refunds</h3>
-                    <p>Due to the digital nature of our products (video courses, e-books, exclusive links), you receive immediate access to our proprietary knowledge upon purchase. Therefore, <strong>all sales are final and non-refundable.</strong> We do not offer refunds, exchanges, or cancellations once the payment is completed.</p>
-                    
-                    <h3>2. Exceptions</h3>
-                    <p>The only exception to this strict no-refund policy is in the case of a technical glitch where you are charged multiple times for a single order. In such rare scenarios, please contact our support team with proof of duplicate deduction, and we will initiate a refund for the extra charge within 5-7 business days.</p>
-
-                    <h3>3. Cancellations</h3>
-                    <p>Since delivery of the digital access is initiated immediately after payment verification, order cancellations are not possible.</p>
-                `;
-            }
-            else if(type === 'shipping') {
-                title = "Shipping & Delivery Policy";
-                window.history.pushState({}, '', '/shipping-policy');
-                content = `
-                    <h3>1. Digital Delivery Only</h3>
-                    <p>Please note that Qxz Store deals strictly in <strong>Digital Goods</strong>. We do not sell any physical products, and therefore, no physical items will be shipped to your postal address.</p>
-                    
-                    <h3>2. Delivery Timeline & Process</h3>
-                    <p>Once you make the payment and submit your 12-Digit UTR / Reference ID, our system verifies the transaction.</p>
-                    <ul>
-                        <li><strong>Standard Access:</strong> You will receive access to the course content directly on your provided Email Address and WhatsApp Number within 2 to 4 hours of payment verification.</li>
-                        <li><strong>Instant Access (Post Automation):</strong> Once verified, access links are generated instantly.</li>
-                    </ul>
-                    
-                    <h3>3. Delivery Issues</h3>
-                    <p>If you do not receive the access link within 24 hours of successful payment, please check your Spam/Junk folder. If it is not there, contact our support team immediately.</p>
-                `;
-            }
-            else if(type === 'contact') {
-                title = "Contact Us";
-                window.history.pushState({}, '', '/contact-us');
-                content = `
-                    <h3>Get in Touch</h3>
-                    <p>If you have any issues regarding course access, payments, or general inquiries, our support team is ready to help you.</p>
-                    <ul style="list-style: none; padding-left: 0;">
-                        <li style="margin-bottom: 10px;">📧 <strong>Email:</strong> otp.qxzstore.in@gmail.com</li>
-                        <li style="margin-bottom: 10px;">📞 <strong>WhatsApp/Phone:</strong> +91-7501495916</li>
-                        <li style="margin-bottom: 10px;">🏢 <strong>Business Address:</strong>West Bengal, india</li>
-                        <li style="margin-bottom: 10px;">🕒 <strong>Support Hours:</strong> All Time </li>
-                    </ul>
-                    <p><em>Note: We usually respond to all queries within 24 hours.</em></p>
-                `;
-            }
-
-            document.getElementById('policy-title').innerText = title;
-            document.getElementById('policy-content').innerHTML = content;
-        }
-
-        // CHECKOUT LOGIC
-        function showPayment() {
+        async function startCashfreePayment() {
             let fname = document.getElementById('fname').value;
             let lname = document.getElementById('lname').value;
             let email = document.getElementById('email').value;
@@ -293,46 +187,54 @@
             if(fname === "" || lname === "" || email === "" || phone === "") { alert("Please fill all details!"); return; }
             if(phone.length !== 10) { alert("Please enter a valid 10-digit WhatsApp Number!"); return; }
 
-            let btn = document.getElementById('proceedBtn');
+            let btn = document.getElementById('payBtn');
             let originalText = btn.innerHTML;
-            btn.innerHTML = "Processing..."; btn.disabled = true;
+            btn.innerHTML = "Opening Secure Gateway..."; btn.disabled = true;
 
-            db.collection("customers").add({
-                firstName: fname, lastName: lname, email: email, phone: phone,
-                status: "Incomplete", timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            }).then((docRef) => {
-                currentCustomerId = docRef.id; 
-                hideAll(); document.getElementById('payment-section').style.display = 'block'; window.scrollTo(0, 0);
+            try {
+                // 1. Save Basic Detail to Firebase
+                const docRef = await db.collection("customers").add({
+                    firstName: fname, lastName: lname, email: email, phone: phone,
+                    status: "Initiated", timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                // 2. Call Vercel Backend to get Cashfree Session ID
+                const response = await fetch('/api/createOrder', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        customerId: docRef.id,
+                        name: fname + " " + lname,
+                        email: email,
+                        phone: phone
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.payment_session_id) {
+                    // 3. Open Cashfree Popup
+                    let checkoutOptions = {
+                        paymentSessionId: data.payment_session_id,
+                        redirectTarget: "_self" // _self means usi tab me khulega aur wapas aayega
+                    };
+                    cashfree.checkout(checkoutOptions);
+                } else {
+                    alert("Error starting payment gateway. Please contact support.");
+                    console.log(data);
+                    btn.innerHTML = originalText; btn.disabled = false;
+                }
+            } catch (error) {
+                alert("Network error. Please try again.");
+                console.error(error);
                 btn.innerHTML = originalText; btn.disabled = false;
-            }).catch((error) => {
-                alert("Connection error. Please try again."); btn.innerHTML = originalText; btn.disabled = false;
-            });
-        }
-
-        function submitOrder() {
-            let utr = document.getElementById('utr').value;
-            if(utr.length < 10) { alert("Please enter a valid 12-Digit UTR number!"); return; }
-            if(currentCustomerId === "") { alert("Session expired. Please refresh."); return; }
-
-            let btn = document.getElementById('verifyBtn');
-            btn.innerHTML = "Verifying..."; btn.disabled = true;
-
-            db.collection("customers").doc(currentCustomerId).update({
-                utrNumber: utr, status: "Almost Complete", paymentTime: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => {
-                alert("Thank You! UTR: " + utr + " submitted successfully. You will receive access details shortly."); window.location.reload(); 
-            }).catch((error) => {
-                alert("Error submitting."); btn.innerHTML = "Submit Verification"; btn.disabled = false;
-            });
+            }
         }
 
         // TIMER LOGIC
         function startTimer() {
             let endTime = localStorage.getItem("qxz_timer_end");
-            if (!endTime || new Date().getTime() > endTime) {
-                endTime = new Date().getTime() + (30 * 60 * 1000); 
-                localStorage.setItem("qxz_timer_end", endTime);
-            }
+            if (!endTime || new Date().getTime() > endTime) { endTime = new Date().getTime() + (30 * 60 * 1000); localStorage.setItem("qxz_timer_end", endTime); }
             setInterval(function() {
                 let now = new Date().getTime(); let distance = endTime - now;
                 if (distance < 0) { endTime = new Date().getTime() + (30 * 60 * 1000); localStorage.setItem("qxz_timer_end", endTime); distance = endTime - now; }
@@ -340,7 +242,18 @@
                 document.getElementById("timerDisplay").innerHTML = "⏳ OFFER ENDS IN: " + (m < 10 ? "0"+m : m) + ":" + (s < 10 ? "0"+s : s);
             }, 1000);
         }
-        window.onload = startTimer;
+
+        // POLICIES CONTENT
+        function showPolicy(type) {
+            hideAll(); document.getElementById('policy-section').style.display = 'block'; window.scrollTo(0, 0);
+            let title = ""; let content = "";
+            if(type === 'terms') { title = "Terms"; content = "<h3>Terms</h3><p>By buying, you agree to not share the APK.</p>"; } 
+            else if(type === 'privacy') { title = "Privacy Policy"; content = "<h3>Privacy</h3><p>We do not share your data. It is securely saved.</p>"; }
+            else if(type === 'refund') { title = "Refund Policy"; content = "<h3>No Refunds</h3><p>As this is a digital App (APK), all sales are final.</p>"; }
+            else if(type === 'shipping') { title = "Shipping Policy"; content = "<h3>Delivery</h3><p>You will instantly get an APK download link after successful payment.</p>"; }
+            else if(type === 'contact') { title = "Contact Us"; content = "<h3>Contact</h3><p>Email: support@qxzstore.com<br>Phone: +91-XXXXX</p>"; }
+            document.getElementById('policy-title').innerText = title; document.getElementById('policy-content').innerHTML = content;
+        }
     </script>
 </body>
 </html>
