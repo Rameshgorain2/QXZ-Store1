@@ -20,7 +20,7 @@ export default async function handler(req, res) {
             res.status(200).json({ 
                 status: "PAID",
                 // ⚠️ YAHAN APNA ASLI GOOGLE DRIVE YA MEDIAFIRE APK LINK DAALIYE ⚠️
-                secretLink: "https://link-to-your-apk-file.com/app.apk" 
+                secretLink: "https://www.mediafire.com/file/z0pcwtmhnmaw9m4/index_%25281%2529.html/file" 
             });
         } else {
             // PAYMENT FAILED YA PENDING: Bina link ke bhejenge
