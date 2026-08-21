@@ -2,17 +2,17 @@ export default async function handler(req, res) {
     if (req.method !== 'POST') return res.status(405).send('Method Not Allowed');
 
     try {
-        // This tells Cashfree where to redirect after payment
+        // IMPORTANT UPDATE: Cashfree ab wapas order_id ke saath bhejega
         const host = req.headers.host;
         const protocol = host.includes('localhost') ? 'http' : 'https';
-        const returnUrl = `${protocol}://${host}/?payment=success`; 
+        const returnUrl = `${protocol}://${host}/?order_id={order_id}`; 
 
         const orderData = {
             order_id: "QXZ_" + Date.now(),
             order_amount: 299.00, // Price of your App
             order_currency: "INR",
             customer_details: {
-                customer_id: req.body.customerId || "CUST_123", // From Firebase
+                customer_id: req.body.customerId || "CUST_123", // Firebase ID
                 customer_name: req.body.name,
                 customer_email: req.body.email,
                 customer_phone: req.body.phone
@@ -22,7 +22,7 @@ export default async function handler(req, res) {
             }
         };
 
-        // BINA AXIOS KE CASHFREE KO CALL KARNA (Using built-in fetch)
+        // Secured Fetch request to Cashfree
         const response = await fetch("https://sandbox.cashfree.com/pg/orders", {
             method: "POST",
             headers: {
@@ -36,7 +36,7 @@ export default async function handler(req, res) {
 
         const data = await response.json();
 
-        // Agar Cashfree se ID mil gayi, toh wapas HTML ko bhej do
+        // Return Payment Session ID to HTML
         if (data.payment_session_id) {
             res.status(200).json({ payment_session_id: data.payment_session_id });
         } else {
