@@ -6,8 +6,6 @@
     <title>Digital Growth Mastery | Qxz Store</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- CASHFREE SDK -->
     <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
     
     <style>
@@ -49,7 +47,6 @@
         .footer a:hover { color: #FFA903; }
         .footer p { color: #64748b; font-size: 14px; margin: 0; }
 
-        /* HIDING ALL SECTIONS BY DEFAULT */
         #landing-section, #checkout-section, #success-section, #policy-section { display: none; }
 
         @media (min-width: 768px) { h1 { font-size: 42px; } .desktop-row { flex-direction: row; align-items: center; text-align: left; } .desktop-col-left { flex: 1.2; padding-right: 20px; } .desktop-col-right { flex: 0.8; padding-left: 30px; } }
@@ -57,7 +54,6 @@
 </head>
 <body>
 
-    <!-- STICKY BANNER -->
     <div class="sticky-enroll-banner" id="stickyBanner">
         <div class="sticky-price">₹299</div>
         <button class="sticky-btn" onclick="showCheckout()">Enroll Now</button>
@@ -93,13 +89,12 @@
                 <div class="form-group"><label>WhatsApp Number</label><input type="tel" id="phone" class="form-control" placeholder="10-Digit Mobile No." maxlength="10" required></div>
                 
                 <button id="payBtn" class="btn-animated" style="animation: none;" onclick="startCashfreePayment()">Pay ₹299 Securely</button>
-                
                 <button style="background: transparent; border:none; color: #94a3b8; width:100%; margin-top: 15px; font-family:'Poppins'; cursor:pointer;" onclick="goBack()">← Cancel & Go Back</button>
             </div>
         </div>
     </div>
 
-    <!-- 3. SUCCESS & DOWNLOAD APK PAGE -->
+    <!-- 3. SUCCESS PAGE (Link Hidden here initially) -->
     <div id="success-section">
         <div class="navbar"><h2>Payment Successful!</h2></div>
         <div class="container form-container">
@@ -107,11 +102,11 @@
                 <i class="fa-solid fa-circle-check" style="color: #22c55e; font-size: 70px; margin-bottom: 20px;"></i>
                 <h2 style="color: white; margin-top: 0; margin-bottom: 10px;">Welcome Aboard!</h2>
                 <p style="color: #cbd5e1; font-size: 15px; margin-bottom: 30px;">
-                    Your payment was successful. Download the app below to access your courses immediately.
+                    Your payment was successful. Download the app below to access your courses.
                 </p>
                 
-                <!-- ⚠️ YAHAN APNE APK KA LINK DAALNA ⚠️ -->
-                <a href="https://link-to-your-apk-file.com/app.apk" target="_blank" class="btn-animated" style="display: block; text-decoration: none; padding: 18px 20px; border-radius: 8px;">
+                <!-- Link JS se aayega, inspect element karne wale ko kuch nahi milega -->
+                <a href="#" id="downloadAppBtn" target="_blank" class="btn-animated" style="display: block; text-decoration: none; padding: 18px 20px; border-radius: 8px;">
                     <i class="fa-brands fa-android"></i> Download App (APK)
                 </a>
             </div>
@@ -128,59 +123,60 @@
         </div>
     </div>
 
-    <!-- FOOTER -->
     <div class="footer">
         <div class="footer-links">
             <a onclick="showPolicy('terms')">Terms & Conditions</a>
             <a onclick="showPolicy('privacy')">Privacy Policy</a>
             <a onclick="showPolicy('refund')">Refund Policy</a>
-            <a onclick="showPolicy('shipping')">Shipping Policy</a>
             <a onclick="showPolicy('contact')">Contact Us</a>
         </div>
         <p><strong>Qxz Store</strong> - E-learning Platform</p>
-        <p>Built with ❤️ by <strong>EarnwithRamesh.official</strong></p>
     </div>
 
-    <!-- FIREBASE SDK & CONFIG -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="config.js"></script>
 
     <script>
-        // Initialize Firebase
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.firestore();
 
-        // 🟢 PAGE LOAD LOGIC (SECURE PAYMENT VERIFICATION)
         window.onload = function() {
             startTimer();
             const urlParams = new URLSearchParams(window.location.search);
             const orderId = urlParams.get('order_id');
+            const docId = urlParams.get('doc_id'); // URL se Firebase ID pakda
             
-            // Agar URL me order_id hai, iska matlab user payment attempt karke wapas aaya hai
             if (orderId) {
                 hideAll();
                 document.getElementById('checkout-section').style.display = 'block';
                 
-                // Form hide karke Loading UI dikhao
                 let formCard = document.getElementById('form-card-box');
-                formCard.innerHTML = `
-                    <div style="text-align:center; padding: 30px 0;">
-                        <h3 style="color:#FFA903;"><i class="fa-solid fa-spinner fa-spin"></i> Verifying Payment...</h3>
-                        <p style="font-size:14px; color:#cbd5e1;">Please do not press back or refresh.</p>
-                    </div>`;
+                formCard.innerHTML = `<div style="text-align:center; padding: 30px 0;"><h3 style="color:#FFA903;"><i class="fa-solid fa-spinner fa-spin"></i> Verifying Payment...</h3><p style="font-size:14px; color:#cbd5e1;">Please do not close this window.</p></div>`;
                 
-                // Securely check payment status via Vercel Backend
+                // Securely check payment via Vercel Backend
                 fetch(`/api/verifyOrder?order_id=${orderId}`)
                 .then(res => res.json())
                 .then(data => {
                     if(data.status === "PAID") {
-                        // PAYMENT SUCCESS
+                        
+                        // 1. Firebase me status 'Successful' update karo
+                        if(docId) {
+                            db.collection("customers").doc(docId).update({
+                                status: "Successful",
+                                paymentMethod: "Cashfree",
+                                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                            }).catch(err => console.log("Firebase Error", err));
+                        }
+                        
+                        // 2. Secret Link Inject Karo!
+                        document.getElementById('downloadAppBtn').href = data.secretLink;
+
+                        // 3. Success Screen Dikhao
                         hideAll();
                         document.getElementById('success-section').style.display = 'block';
                     } else {
-                        // PAYMENT FAILED YA PENDING
-                        alert(`Payment Status: ${data.status || "FAILED"}. If amount deducted, it will be refunded. Please try again.`);
+                        alert(`Payment Status: ${data.status || "FAILED"}. If amount deducted, it will be refunded.`);
                         window.location.href = "/"; 
                     }
                 })
@@ -190,13 +186,11 @@
                 });
 
             } else {
-                // Normal visitor - landing page dikhao
                 document.getElementById('landing-section').style.display = 'block';
                 document.getElementById('stickyBanner').style.display = 'flex';
             }
         };
 
-        // VIEWS LOGIC
         function hideAll() {
             document.getElementById('landing-section').style.display = 'none';
             document.getElementById('checkout-section').style.display = 'none';
@@ -209,8 +203,8 @@
         function goBack() { hideAll(); document.getElementById('landing-section').style.display = 'block'; document.getElementById('stickyBanner').style.display = 'flex'; window.scrollTo(0, 0); }
         function goBackToHome() { window.location.href = "/"; }
 
-        // 🔵 CASHFREE SECURE PAYMENT INTEGRATION
-        const cashfree = Cashfree({ mode: "sandbox" }); // Change "sandbox" to "production" when going live
+        // Note: Live jane ke liye mode ko "production" karein
+        const cashfree = Cashfree({ mode: "sandbox" }); 
 
         async function startCashfreePayment() {
             let fname = document.getElementById('fname').value;
@@ -224,26 +218,14 @@
             let btn = document.getElementById('payBtn');
             let originalText = btn.innerHTML;
             btn.disabled = true;
-
-            // ⏱️ TIMER LOGIC
-            let countdown = 10;
-            btn.innerHTML = `Securing Gateway... ${countdown}s`;
-            
-            let timerInterval = setInterval(() => {
-                countdown--;
-                if(countdown > 0) {
-                    btn.innerHTML = `Securing Gateway... ${countdown}s`;
-                }
-            }, 1000);
+            btn.innerHTML = `Securing Gateway...`;
 
             try {
-                // 1. Save Basic Details to Firebase
                 const docRef = await db.collection("customers").add({
                     firstName: fname, lastName: lname, email: email, phone: phone,
                     status: "Initiated", timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 });
 
-                // 2. Call Vercel Backend to Create Order
                 const response = await fetch('/api/createOrder', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -257,30 +239,23 @@
 
                 const data = await response.json();
 
-                // 3. Stop timer jab response aa jaye
-                clearInterval(timerInterval);
-
                 if (data.payment_session_id) {
-                    btn.innerHTML = "Opening Payment Gateway...";
+                    btn.innerHTML = "Opening Gateway...";
                     let checkoutOptions = {
                         paymentSessionId: data.payment_session_id,
-                        redirectTarget: "_self" // _self is required so they redirect back with order_id
+                        redirectTarget: "_self" 
                     };
                     cashfree.checkout(checkoutOptions);
                 } else {
-                    alert("Error starting payment gateway. Please try again.");
-                    console.log(data);
+                    alert("Gateway Error. Please try again.");
                     btn.innerHTML = originalText; btn.disabled = false;
                 }
             } catch (error) {
-                clearInterval(timerInterval);
-                alert("Network error. Please check your internet connection.");
-                console.error(error);
+                alert("Network error.");
                 btn.innerHTML = originalText; btn.disabled = false;
             }
         }
 
-        // TIMER LOGIC FOR HEADER
         function startTimer() {
             let endTime = localStorage.getItem("qxz_timer_end");
             if (!endTime || new Date().getTime() > endTime) { endTime = new Date().getTime() + (30 * 60 * 1000); localStorage.setItem("qxz_timer_end", endTime); }
@@ -293,14 +268,12 @@
             }, 1000);
         }
 
-        // POLICIES CONTENT
         function showPolicy(type) {
             hideAll(); document.getElementById('policy-section').style.display = 'block'; window.scrollTo(0, 0);
             let title = ""; let content = "";
             if(type === 'terms') { title = "Terms"; content = "<h3>Terms</h3><p>By buying, you agree to not share the APK.</p>"; } 
             else if(type === 'privacy') { title = "Privacy Policy"; content = "<h3>Privacy</h3><p>We do not share your data. It is securely saved.</p>"; }
             else if(type === 'refund') { title = "Refund Policy"; content = "<h3>No Refunds</h3><p>As this is a digital App (APK), all sales are final.</p>"; }
-            else if(type === 'shipping') { title = "Shipping Policy"; content = "<h3>Delivery</h3><p>You will instantly get an APK download link after successful payment.</p>"; }
             else if(type === 'contact') { title = "Contact Us"; content = "<h3>Contact</h3><p>Email: support@qxzstore.com<br>Phone: +91-XXXXX</p>"; }
             document.getElementById('policy-title').innerText = title; document.getElementById('policy-content').innerHTML = content;
         }
