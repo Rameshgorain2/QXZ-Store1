@@ -6,11 +6,11 @@
     <title>Digital Growth Mastery | Qxz Store</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <!-- CASHFREE SDK -->
     <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
     
     <style>
-        /* [SAARA PURANA CSS SAME HAI] */
         body { font-family: 'Poppins', sans-serif; background-color: #0b0f19; color: #ffffff; margin: 0; padding: 0; overflow-x: hidden; padding-bottom: 70px; }
         * { box-sizing: border-box; }
         .timer-banner { background: linear-gradient(90deg, #FFD84D 0%, #FFA903 100%); color: #000; text-align: center; padding: 10px; font-weight: 800; font-size: 15px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(255, 169, 3, 0.3); }
@@ -26,11 +26,14 @@
         .price-box { margin: 20px 0; font-size: 20px; font-weight: 600; }
         .old-price { text-decoration: line-through; color: #ef4444; font-size: 18px; margin-left: 5px; }
         .new-price { color: #22c55e; font-size: 42px; font-weight: 800; display: block; line-height: 1; margin-top: 5px; }
+        
         .btn-animated { background: linear-gradient(90deg, #FFD84D 0%, #FFA903 50%, #FFD84D 100%); background-size: 200% 200%; color: #000; border: none; padding: 16px 30px; font-size: 22px; font-weight: 800; border-radius: 10px; cursor: pointer; width: 100%; font-family: 'Poppins', sans-serif; text-transform: uppercase; box-shadow: 0 0 20px rgba(255, 169, 3, 0.5); animation: gradientShift 2s ease infinite, glowPulse 1.5s infinite, shake 2.5s infinite; transition: 0.3s; }
         .btn-animated:disabled { animation: none; background: #64748b; color: #cbd5e1; cursor: not-allowed; box-shadow: none; }
+        
         @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         @keyframes glowPulse { 0%, 100% { box-shadow: 0 0 15px rgba(255,169,3,0.4); } 50% { box-shadow: 0 0 30px rgba(255,169,3,0.8); } }
         @keyframes shake { 0%, 20%, 100% { transform: rotate(0deg) translateY(0); } 5%, 15% { transform: rotate(-2deg) translateY(-2px); } 10% { transform: rotate(2deg) translateY(-2px); } }
+        
         .form-card { background: #131a2a; padding: 30px 25px; border-radius: 12px; text-align: left; border: 1px solid #1f2937; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
         .sticky-enroll-banner { position: fixed; bottom: 0; left: 0; width: 100%; background: linear-gradient(90deg, #FFD84D 0%, #FFA903 100%); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 999; }
         .sticky-enroll-banner .sticky-price { color: #000; font-size: 20px; font-weight: 800; }
@@ -39,13 +42,14 @@
         .form-group label { display: block; margin-bottom: 8px; color: #cbd5e1; font-size: 14px; font-weight: 600; }
         .form-control { width: 100%; padding: 15px; background: #1e293b; border: 1px solid #334155; color: white; border-radius: 8px; font-family: 'Poppins', sans-serif; }
         .btn-standard { background: #3b82f6; color: white; border: none; padding: 15px; font-weight: 600; border-radius: 8px; width: 100%; cursor: pointer; font-family: 'Poppins'; }
+        
         .footer { background: #0f172a; text-align: center; padding: 40px 20px; margin-top: 50px; border-top: 1px solid #1f2937; display: flex; flex-direction: column; gap: 15px; }
         .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; }
         .footer a { color: #94a3b8; text-decoration: none; font-size: 14px; cursor: pointer; }
         .footer a:hover { color: #FFA903; }
         .footer p { color: #64748b; font-size: 14px; margin: 0; }
 
-        /* HIDING ALL SECTIONS BY DEFAULT EXCEPT WHAT JS SHOWS */
+        /* HIDING ALL SECTIONS BY DEFAULT */
         #landing-section, #checkout-section, #success-section, #policy-section { display: none; }
 
         @media (min-width: 768px) { h1 { font-size: 42px; } .desktop-row { flex-direction: row; align-items: center; text-align: left; } .desktop-col-left { flex: 1.2; padding-right: 20px; } .desktop-col-right { flex: 0.8; padding-left: 30px; } }
@@ -68,7 +72,7 @@
             <p class="subtitle">Learn practical skills, grow on social media, and start earning. No theory, only real results.</p>
             <div class="desktop-row">
                 <div class="desktop-col-left">
-                    <div class="video-box"><iframe src="https://www.youtube.com/embed/?autoplay=0" allowfullscreen></iframe></div>
+                    <div class="video-box"><iframe src="https://www.youtube.com/embed/H8fsIgKe3lc?autoplay=0" allowfullscreen></iframe></div>
                 </div>
                 <div class="desktop-col-right">
                     <div class="price-box">Regular Price: <span class="old-price">₹1999</span><span class="new-price">₹299</span></div>
@@ -82,13 +86,12 @@
     <div id="checkout-section">
         <div class="navbar"><h2>Checkout Details</h2></div>
         <div class="container form-container">
-            <div class="form-card">
+            <div class="form-card" id="form-card-box">
                 <div class="form-group"><label>First Name</label><input type="text" id="fname" class="form-control" required></div>
                 <div class="form-group"><label>Last Name</label><input type="text" id="lname" class="form-control" required></div>
                 <div class="form-group"><label>Email Address</label><input type="email" id="email" class="form-control" required></div>
                 <div class="form-group"><label>WhatsApp Number</label><input type="tel" id="phone" class="form-control" placeholder="10-Digit Mobile No." maxlength="10" required></div>
                 
-                <!-- CASHFREE PAY BUTTON -->
                 <button id="payBtn" class="btn-animated" style="animation: none;" onclick="startCashfreePayment()">Pay ₹299 Securely</button>
                 
                 <button style="background: transparent; border:none; color: #94a3b8; width:100%; margin-top: 15px; font-family:'Poppins'; cursor:pointer;" onclick="goBack()">← Cancel & Go Back</button>
@@ -107,7 +110,7 @@
                     Your payment was successful. Download the app below to access your courses immediately.
                 </p>
                 
-                <!-- ⚠️⚠️ YAHAN APNE APK KA GOOGLE DRIVE YA MEDIAFIRE LINK DAALNA ⚠️⚠️ -->
+                <!-- ⚠️ YAHAN APNE APK KA LINK DAALNA ⚠️ -->
                 <a href="https://link-to-your-apk-file.com/app.apk" target="_blank" class="btn-animated" style="display: block; text-decoration: none; padding: 18px 20px; border-radius: 8px;">
                     <i class="fa-brands fa-android"></i> Download App (APK)
                 </a>
@@ -135,7 +138,7 @@
             <a onclick="showPolicy('contact')">Contact Us</a>
         </div>
         <p><strong>Qxz Store</strong> - E-learning Platform</p>
-        <p>Built with ❤️ by <strong>Ramesh</strong></p>
+        <p>Built with ❤️ by <strong>EarnwithRamesh.official</strong></p>
     </div>
 
     <!-- FIREBASE SDK & CONFIG -->
@@ -144,19 +147,50 @@
     <script src="config.js"></script>
 
     <script>
+        // Initialize Firebase
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.firestore();
 
-        // 🟢 PAGE LOAD LOGIC (Check if payment is successful)
+        // 🟢 PAGE LOAD LOGIC (SECURE PAYMENT VERIFICATION)
         window.onload = function() {
             startTimer();
             const urlParams = new URLSearchParams(window.location.search);
-            // Agar URL me ?payment=success hai toh seedha Download page dikhao
-            if (urlParams.get('payment') === 'success') {
+            const orderId = urlParams.get('order_id');
+            
+            // Agar URL me order_id hai, iska matlab user payment attempt karke wapas aaya hai
+            if (orderId) {
                 hideAll();
-                document.getElementById('success-section').style.display = 'block';
+                document.getElementById('checkout-section').style.display = 'block';
+                
+                // Form hide karke Loading UI dikhao
+                let formCard = document.getElementById('form-card-box');
+                formCard.innerHTML = `
+                    <div style="text-align:center; padding: 30px 0;">
+                        <h3 style="color:#FFA903;"><i class="fa-solid fa-spinner fa-spin"></i> Verifying Payment...</h3>
+                        <p style="font-size:14px; color:#cbd5e1;">Please do not press back or refresh.</p>
+                    </div>`;
+                
+                // Securely check payment status via Vercel Backend
+                fetch(`/api/verifyOrder?order_id=${orderId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if(data.status === "PAID") {
+                        // PAYMENT SUCCESS
+                        hideAll();
+                        document.getElementById('success-section').style.display = 'block';
+                    } else {
+                        // PAYMENT FAILED YA PENDING
+                        alert(`Payment Status: ${data.status || "FAILED"}. If amount deducted, it will be refunded. Please try again.`);
+                        window.location.href = "/"; 
+                    }
+                })
+                .catch(err => {
+                    alert("Network error while verifying payment. Please contact support.");
+                    window.location.href = "/";
+                });
+
             } else {
-                // Warna normal landing page dikhao
+                // Normal visitor - landing page dikhao
                 document.getElementById('landing-section').style.display = 'block';
                 document.getElementById('stickyBanner').style.display = 'flex';
             }
@@ -173,10 +207,10 @@
 
         function showCheckout() { hideAll(); document.getElementById('checkout-section').style.display = 'block'; window.scrollTo(0, 0); }
         function goBack() { hideAll(); document.getElementById('landing-section').style.display = 'block'; document.getElementById('stickyBanner').style.display = 'flex'; window.scrollTo(0, 0); }
-        function goBackToHome() { window.history.pushState({}, '', '/'); goBack(); }
+        function goBackToHome() { window.location.href = "/"; }
 
-        // 🔵 CASHFREE PAYMENT INTEGRATION
-        const cashfree = Cashfree({ mode: "sandbox" }); // Test mode. Change to "production" later
+        // 🔵 CASHFREE SECURE PAYMENT INTEGRATION
+        const cashfree = Cashfree({ mode: "sandbox" }); // Change "sandbox" to "production" when going live
 
         async function startCashfreePayment() {
             let fname = document.getElementById('fname').value;
@@ -189,16 +223,27 @@
 
             let btn = document.getElementById('payBtn');
             let originalText = btn.innerHTML;
-            btn.innerHTML = "Opening Secure Gateway..."; btn.disabled = true;
+            btn.disabled = true;
+
+            // ⏱️ TIMER LOGIC
+            let countdown = 10;
+            btn.innerHTML = `Securing Gateway... ${countdown}s`;
+            
+            let timerInterval = setInterval(() => {
+                countdown--;
+                if(countdown > 0) {
+                    btn.innerHTML = `Securing Gateway... ${countdown}s`;
+                }
+            }, 1000);
 
             try {
-                // 1. Save Basic Detail to Firebase
+                // 1. Save Basic Details to Firebase
                 const docRef = await db.collection("customers").add({
                     firstName: fname, lastName: lname, email: email, phone: phone,
                     status: "Initiated", timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 });
 
-                // 2. Call Vercel Backend to get Cashfree Session ID
+                // 2. Call Vercel Backend to Create Order
                 const response = await fetch('/api/createOrder', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -212,26 +257,30 @@
 
                 const data = await response.json();
 
+                // 3. Stop timer jab response aa jaye
+                clearInterval(timerInterval);
+
                 if (data.payment_session_id) {
-                    // 3. Open Cashfree Popup
+                    btn.innerHTML = "Opening Payment Gateway...";
                     let checkoutOptions = {
                         paymentSessionId: data.payment_session_id,
-                        redirectTarget: "_self" // _self means usi tab me khulega aur wapas aayega
+                        redirectTarget: "_self" // _self is required so they redirect back with order_id
                     };
                     cashfree.checkout(checkoutOptions);
                 } else {
-                    alert("Error starting payment gateway. Please contact support.");
+                    alert("Error starting payment gateway. Please try again.");
                     console.log(data);
                     btn.innerHTML = originalText; btn.disabled = false;
                 }
             } catch (error) {
-                alert("Network error. Please try again.");
+                clearInterval(timerInterval);
+                alert("Network error. Please check your internet connection.");
                 console.error(error);
                 btn.innerHTML = originalText; btn.disabled = false;
             }
         }
 
-        // TIMER LOGIC
+        // TIMER LOGIC FOR HEADER
         function startTimer() {
             let endTime = localStorage.getItem("qxz_timer_end");
             if (!endTime || new Date().getTime() > endTime) { endTime = new Date().getTime() + (30 * 60 * 1000); localStorage.setItem("qxz_timer_end", endTime); }
@@ -239,7 +288,8 @@
                 let now = new Date().getTime(); let distance = endTime - now;
                 if (distance < 0) { endTime = new Date().getTime() + (30 * 60 * 1000); localStorage.setItem("qxz_timer_end", endTime); distance = endTime - now; }
                 let m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)); let s = Math.floor((distance % (1000 * 60)) / 1000);
-                document.getElementById("timerDisplay").innerHTML = "⏳ OFFER ENDS IN: " + (m < 10 ? "0"+m : m) + ":" + (s < 10 ? "0"+s : s);
+                let timerDisplay = document.getElementById("timerDisplay");
+                if(timerDisplay) timerDisplay.innerHTML = "⏳ OFFER ENDS IN: " + (m < 10 ? "0"+m : m) + ":" + (s < 10 ? "0"+s : s);
             }, 1000);
         }
 
