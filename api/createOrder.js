@@ -2,17 +2,18 @@ export default async function handler(req, res) {
     if (req.method !== 'POST') return res.status(405).send('Method Not Allowed');
 
     try {
-        // IMPORTANT UPDATE: Cashfree ab wapas order_id ke saath bhejega
         const host = req.headers.host;
         const protocol = host.includes('localhost') ? 'http' : 'https';
-        const returnUrl = `${protocol}://${host}/?order_id={order_id}`; 
+        
+        // UPDATE: ab hum URL me doc_id bhi pass kar rahe hain
+        const returnUrl = `${protocol}://${host}/?order_id={order_id}&doc_id=${req.body.customerId}`; 
 
         const orderData = {
             order_id: "QXZ_" + Date.now(),
-            order_amount: 299.00, // Price of your App
+            order_amount: 299.00, 
             order_currency: "INR",
             customer_details: {
-                customer_id: req.body.customerId || "CUST_123", // Firebase ID
+                customer_id: req.body.customerId || "CUST_123",
                 customer_name: req.body.name,
                 customer_email: req.body.email,
                 customer_phone: req.body.phone
@@ -22,7 +23,7 @@ export default async function handler(req, res) {
             }
         };
 
-        // Secured Fetch request to Cashfree
+        // Note: Live karne ke liye "sandbox.cashfree.com" ko "api.cashfree.com" kijiye
         const response = await fetch("https://sandbox.cashfree.com/pg/orders", {
             method: "POST",
             headers: {
@@ -36,14 +37,12 @@ export default async function handler(req, res) {
 
         const data = await response.json();
 
-        // Return Payment Session ID to HTML
         if (data.payment_session_id) {
             res.status(200).json({ payment_session_id: data.payment_session_id });
         } else {
             console.error("Cashfree Error:", data);
             res.status(500).json({ error: "Cashfree API Error", details: data });
         }
-
     } catch (error) {
         console.error("Server Error:", error);
         res.status(500).json({ error: "Internal Server Error" });

@@ -3,7 +3,7 @@ export default async function handler(req, res) {
     if (!order_id) return res.status(400).json({ error: "Order ID missing" });
 
     try {
-        // Cashfree se pucho ki payment ka status kya hai
+        // Note: Live karne ke liye "sandbox.cashfree.com" ko "api.cashfree.com" kijiye
         const response = await fetch(`https://sandbox.cashfree.com/pg/orders/${order_id}`, {
             method: "GET",
             headers: {
@@ -15,8 +15,17 @@ export default async function handler(req, res) {
 
         const data = await response.json();
         
-        // Return order status ("PAID", "ACTIVE", etc.)
-        res.status(200).json({ status: data.order_status });
+        if (data.order_status === "PAID") {
+            // PAYMENT SUCCESS: Tabhi link bhejenge
+            res.status(200).json({ 
+                status: "PAID",
+                // ⚠️ YAHAN APNA ASLI GOOGLE DRIVE YA MEDIAFIRE APK LINK DAALIYE ⚠️
+                secretLink: "https://link-to-your-apk-file.com/app.apk" 
+            });
+        } else {
+            // PAYMENT FAILED YA PENDING: Bina link ke bhejenge
+            res.status(200).json({ status: data.order_status });
+        }
 
     } catch (error) {
         res.status(500).json({ error: "Verification Failed" });
