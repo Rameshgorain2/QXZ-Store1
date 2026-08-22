@@ -48,9 +48,14 @@
         .form-group { margin-bottom: 20px; position: relative; }
         .form-group label { display: block; margin-bottom: 8px; color: #cbd5e1; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; }
         .input-wrapper { position: relative; display: flex; align-items: center; }
-        .input-wrapper i { position: absolute; left: 15px; color: #94a3b8; font-size: 18px; }
-        .form-control { width: 100%; padding: 15px 15px 15px 45px; background: #1e293b; border: 1px solid #334155; color: white; border-radius: 10px; font-family: 'Poppins', sans-serif; font-size: 15px; outline: none; transition: 0.3s; }
+        .input-wrapper i.left-icon { position: absolute; left: 15px; color: #94a3b8; font-size: 18px; }
+        
+        /* Added extra padding on right for the copy icon */
+        .form-control { width: 100%; padding: 15px 45px 15px 45px; background: #1e293b; border: 1px solid #334155; color: white; border-radius: 10px; font-family: 'Poppins', sans-serif; font-size: 15px; outline: none; transition: 0.3s; }
         .form-control:focus { border-color: #FFA903; box-shadow: 0 0 10px rgba(255, 169, 3, 0.2); }
+        
+        .copy-btn { position: absolute; right: 10px; background: transparent; border: none; color: #FFA903; font-size: 18px; cursor: pointer; transition: 0.3s; padding: 5px; }
+        .copy-btn:hover { color: #fff; transform: scale(1.1); }
         
         /* Multi-Step Setup */
         .step { display: none; animation: fadeIn 0.4s ease-in-out; }
@@ -128,14 +133,14 @@
                     <div class="form-group">
                         <label>First Name</label>
                         <div class="input-wrapper">
-                            <i class="fa-solid fa-user"></i>
+                            <i class="fa-solid fa-user left-icon"></i>
                             <input type="text" id="fname" class="form-control" placeholder="Enter First Name" required>
                         </div>
                     </div>
                     <div class="form-group">
                         <label>Last Name</label>
                         <div class="input-wrapper">
-                            <i class="fa-regular fa-user"></i>
+                            <i class="fa-regular fa-user left-icon"></i>
                             <input type="text" id="lname" class="form-control" placeholder="Enter Last Name" required>
                         </div>
                     </div>
@@ -146,20 +151,26 @@
                 <!-- STEP 2: Account Creation -->
                 <div class="step" id="step2">
                     <h3 style="margin-top: 0; color: #FFA903;">Create Account</h3>
-                    <p style="font-size: 12px; color: #cbd5e1; margin-top: -10px; margin-bottom: 20px;">Use these details to log into the App.</p>
                     <div class="form-group">
                         <label>Email Address</label>
                         <div class="input-wrapper">
-                            <i class="fa-solid fa-envelope"></i>
+                            <i class="fa-solid fa-envelope left-icon"></i>
                             <input type="email" id="email" class="form-control" placeholder="you@email.com" required>
                         </div>
                     </div>
                     <div class="form-group">
                         <label>Create a Password</label>
                         <div class="input-wrapper">
-                            <i class="fa-solid fa-lock"></i>
-                            <input type="password" id="password" class="form-control" placeholder="Create a strong password" required>
+                            <i class="fa-solid fa-lock left-icon"></i>
+                            <input type="text" id="password" class="form-control" placeholder="Create a strong password" required>
+                            <!-- COPY BUTTON -->
+                            <button type="button" class="copy-btn" onclick="copyPassword()" title="Copy Password">
+                                <i class="fa-regular fa-copy"></i>
+                            </button>
                         </div>
+                        <p style="font-size: 11.5px; color: #ef4444; margin-top: 8px; font-weight: 500; line-height: 1.4;">
+                            ⚠️ <strong style="color:#FFA903;">Note:</strong> Ise copy karke Note par save karlo. <br>App par login karne ke liye yahi Password use hoga!
+                        </p>
                     </div>
                     <button class="btn-animated" onclick="goToStep3()">Next <i class="fa-solid fa-arrow-right"></i></button>
                     <button class="btn-outline" style="margin-top: 15px;" onclick="goToStep1()"><i class="fa-solid fa-arrow-left"></i> Back</button>
@@ -171,7 +182,7 @@
                     <div class="form-group">
                         <label>WhatsApp Number</label>
                         <div class="input-wrapper">
-                            <i class="fa-brands fa-whatsapp" style="color: #22c55e;"></i>
+                            <i class="fa-brands fa-whatsapp left-icon" style="color: #22c55e;"></i>
                             <input type="tel" id="phone" class="form-control" placeholder="10-Digit Mobile No." maxlength="10" required>
                         </div>
                     </div>
@@ -231,6 +242,22 @@
     <script>
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.firestore();
+
+        // 🟢 COPY PASSWORD LOGIC
+        function copyPassword() {
+            let pwdInput = document.getElementById('password');
+            if(pwdInput.value === "") {
+                alert("Pehle apna password type karein!");
+                return;
+            }
+            navigator.clipboard.writeText(pwdInput.value).then(() => {
+                alert("✅ Password Copied! Ise kahin safe jagah paste (save) kar lein.");
+            }).catch(err => {
+                pwdInput.select();
+                document.execCommand("copy");
+                alert("✅ Password Copied! Ise kahin safe jagah paste (save) kar lein.");
+            });
+        }
 
         // 🟢 PAGE LOAD VERIFICATION
         window.onload = function() {
@@ -296,7 +323,7 @@
             let email = document.getElementById('email').value.trim();
             let password = document.getElementById('password').value.trim();
             if(!email.includes("@")) { alert("Please enter a valid Email!"); return; }
-            if(password.length < 6) { alert("Password must be at least 6 characters long!"); return; }
+            if(password.length < 5) { alert("Password thoda bada aur strong banaye!"); return; }
             
             document.getElementById('step2').classList.remove('active');
             document.getElementById('step3').classList.add('active');
@@ -318,58 +345,54 @@
         function goBack() { hideAll(); document.getElementById('landing-section').style.display = 'block'; document.getElementById('stickyBanner').style.display = 'flex'; window.scrollTo(0, 0); }
         function goBackToHome() { window.location.href = "/"; }
 
-        // 🔵 CASHFREE SECURE PAYMENT (WITH 3 SEC DELAY)
+        // 🔵 CASHFREE SECURE PAYMENT (FAST NO DELAY)
         const cashfree = Cashfree({ mode: "sandbox" }); // Change to "production" when live
 
         async function startCashfreePayment() {
             let fname = document.getElementById('fname').value;
             let lname = document.getElementById('lname').value;
             let email = document.getElementById('email').value;
-            let password = document.getElementById('password').value; // App Login Password
+            let password = document.getElementById('password').value; 
             let phone = document.getElementById('phone').value;
 
             if(phone.length !== 10) { alert("Please enter a valid 10-digit WhatsApp Number!"); return; }
 
             let btn = document.getElementById('payBtn');
             btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Opening Gateway...`;
 
-            // Premium 3 Second Wait Animation
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Securing Gateway...`;
+            try {
+                // Save to Firebase immediately
+                const docRef = await db.collection("customers").add({
+                    firstName: fname, lastName: lname, email: email, phone: phone, password: password,
+                    status: "Initiated", timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
 
-            setTimeout(async () => {
-                try {
-                    // Save everything (including password) to Firebase
-                    const docRef = await db.collection("customers").add({
-                        firstName: fname, lastName: lname, email: email, phone: phone, password: password,
-                        status: "Initiated", timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                    });
+                // Call Vercel Backend immediately (No artificial delay)
+                const response = await fetch('/api/createOrder', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        customerId: docRef.id, name: fname + " " + lname, email: email, phone: phone
+                    })
+                });
 
-                    // Call Vercel Backend
-                    const response = await fetch('/api/createOrder', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            customerId: docRef.id, name: fname + " " + lname, email: email, phone: phone
-                        })
-                    });
+                const data = await response.json();
 
-                    const data = await response.json();
-
-                    if (data.payment_session_id) {
-                        btn.innerHTML = `<i class="fa-solid fa-lock"></i> Opening Payment...`;
-                        let checkoutOptions = { paymentSessionId: data.payment_session_id, redirectTarget: "_self" };
-                        cashfree.checkout(checkoutOptions);
-                    } else {
-                        alert("Error starting gateway.");
-                        btn.innerHTML = `<i class="fa-solid fa-shield-halved"></i> Pay ₹299 Securely`;
-                        btn.disabled = false;
-                    }
-                } catch (error) {
-                    alert("Network error.");
+                if (data.payment_session_id) {
+                    // Open payment window instantly
+                    let checkoutOptions = { paymentSessionId: data.payment_session_id, redirectTarget: "_self" };
+                    cashfree.checkout(checkoutOptions);
+                } else {
+                    alert("Error starting gateway.");
                     btn.innerHTML = `<i class="fa-solid fa-shield-halved"></i> Pay ₹299 Securely`;
                     btn.disabled = false;
                 }
-            }, 3000); // Excatly wait for 3 seconds before processing!
+            } catch (error) {
+                alert("Network error. Please check your internet.");
+                btn.innerHTML = `<i class="fa-solid fa-shield-halved"></i> Pay ₹299 Securely`;
+                btn.disabled = false;
+            }
         }
 
         // TIMER LOGIC FOR HEADER
@@ -385,15 +408,39 @@
             }, 1000);
         }
 
-        // POLICIES CONTENT
+        // POLICIES CONTENT (FULL PROPER TEXT)
         function showPolicy(type) {
             hideAll(); document.getElementById('policy-section').style.display = 'block'; window.scrollTo(0, 0);
             let title = ""; let content = "";
-            if(type === 'terms') { title = "Terms"; content = "<h3>Terms</h3><p>By buying, you agree to not share the APK.</p>"; } 
-            else if(type === 'privacy') { title = "Privacy Policy"; content = "<h3>Privacy</h3><p>We do not share your data. It is securely saved.</p>"; }
-            else if(type === 'refund') { title = "Refund Policy"; content = "<h3>No Refunds</h3><p>As this is a digital App (APK), all sales are final.</p>"; }
-            else if(type === 'contact') { title = "Contact Us"; content = "<h3>Contact</h3><p>Email: support@qxzstore.com<br>Phone: +91-XXXXX</p>"; }
-            document.getElementById('policy-title').innerText = title; document.getElementById('policy-content').innerHTML = content;
+            
+            if(type === 'terms') { 
+                title = "Terms & Conditions"; 
+                content = `<h3>1. Introduction</h3><p>Welcome to Qxz Store. By purchasing our digital products (App/APK), you agree to these terms. If you do not agree, please do not use our services.</p>
+                <h3>2. Intellectual Property</h3><p>The Application (APK) and its original content, features, and functionality are owned by Qxz Store and are protected by international copyright laws. You may not copy, share, distribute, or sell our Application to third parties.</p>
+                <h3>3. User Accounts</h3><p>You are responsible for safeguarding the password that you use to access the App. You agree not to disclose your password to any third party.</p>`; 
+            } 
+            else if(type === 'privacy') { 
+                title = "Privacy Policy"; 
+                content = `<h3>1. Information We Collect</h3><p>We collect information you provide directly to us, such as your First Name, Last Name, Email Address, and WhatsApp Number when you make a purchase.</p>
+                <h3>2. How We Use Your Data</h3><p>Your data is used to process your payment securely, create your App account, and send you important updates regarding your purchase.</p>
+                <h3>3. Data Security</h3><p>We use strict security measures and do not sell or rent your personal information to any third party. Payments are processed securely via our trusted payment gateway (Cashfree).</p>`; 
+            }
+            else if(type === 'refund') { 
+                title = "Refund & Cancellation Policy"; 
+                content = `<h3>1. Digital Products</h3><p>Due to the nature of digital products and instant delivery (App/APK downloads), <strong>all sales are final</strong>. Once you have gained access to the App, we cannot issue a refund.</p>
+                <h3>2. Failed Payments</h3><p>If your money was deducted from your bank account but the payment status shows 'Failed', please do not panic. The amount will be automatically refunded to your original payment method by your bank within 5 to 7 working days.</p>
+                <h3>3. Exceptions</h3><p>If you face a technical issue where the App does not open or install, please contact our support team. We will fix the issue or provide an alternative solution.</p>`; 
+            }
+            else if(type === 'contact') { 
+                title = "Contact Us"; 
+                content = `<h3>Get in Touch</h3><p>If you have any questions, payment issues, or need technical support with the App, please reach out to us:</p>
+                <p><i class="fa-solid fa-envelope"></i> <strong>Email:</strong> support@qxzstore.in</p>
+                <p><i class="fa-brands fa-whatsapp"></i> <strong>WhatsApp:</strong> (Provide your support number here)</p>
+                <p>Our support team generally responds within 24 hours.</p>`; 
+            }
+            
+            document.getElementById('policy-title').innerText = title; 
+            document.getElementById('policy-content').innerHTML = content;
         }
     </script>
 </body>
